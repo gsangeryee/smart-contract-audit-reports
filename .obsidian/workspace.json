@@ -1,0 +1,174 @@
+{
+  "main": {
+    "id": "5feea7f7cd10ea4c",
+    "type": "split",
+    "children": [
+      {
+        "id": "ae7447203e93f77f",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "c6ec033355a1a5dc",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "New tab"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "d2a3e2a2cfd8a957",
+    "type": "split",
+    "children": [
+      {
+        "id": "56ee0f2e33f4db94",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "7e7eef149d23376a",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "3d32e1a6c5b97043",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "8a2dcf401aeb4a1e",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 266.5
+  },
+  "right": {
+    "id": "0e99fb6992220435",
+    "type": "split",
+    "children": [
+      {
+        "id": "88ad2c7693bf1442",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "4ebec3772fc1fe86",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks"
+            }
+          },
+          {
+            "id": "1e8f02c871f1abf9",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links"
+            }
+          },
+          {
+            "id": "e8bc563a72b22370",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "96fe2a4054c452c9",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {},
+              "icon": "lucide-list",
+              "title": "Outline"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "c6ec033355a1a5dc",
+  "lastOpenFiles": [
+    "Untitled.canvas",
+    "README.md",
+    "2024-10-22.md",
+    "Templates/Audit Project Template.md.md",
+    "audit_notes/Reports_1.md",
+    "audit_notes",
+    "ReportNotes/Reports_1.md",
+    "ReportNotes",
+    "scripts/README.md",
+    "scripts/auto_global_index.py",
+    "scripts",
+    "Templates/Global Index Template.md.md",
+    "Templates",
+    "Solidity-Intensive-CoLearning_saneryee.md"
+  ]
+}

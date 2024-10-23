@@ -1,7 +1,6 @@
-# Audit Project: {{project_name}}
-- **Date**: {{audit_date}}
-- **Auditors**: {{auditors}}
-- **Scope**: {{scope_of_audit}}
+
+# {{title}}
+- Note Create {{date}}
 - **Total Findings**: {{total_findings}}
   - **High**: {{high_findings}}
   - **Medium**: {{medium_findings}}

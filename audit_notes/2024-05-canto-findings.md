@@ -1,14 +1,12 @@
 
 # 2024-05-canto-findings
 - Note Create 2024-10-23
-- **High Risk Findings**: 2
-- **Medium Risk Findings**: 2
 ---
 ## Findings Summary
 
 ### High Severity Findings
-1. {{high_finding_1}} (link to details)
-2. {{high_finding_2}} (link to details)
+1. [[2024-05-canto-findings#[ [H-02 ] update_market() nextEpoch calculation incorrect](https //github.com/code-423n4/2024-01-canto-findings/issues/10)| [H-02]update_market() nextEpoch calculation incorrect]]
+2. [high_finding_2](link to details)
 
 ### Medium Severity Findings
 1. {{medium_finding_1}} (link to details)
@@ -226,7 +224,7 @@ Correct version:
 [  1 * 100  ][  2 * 0  ]
 ```
 
-**Comments**: 
+**Impressions**: 
 
 *This finding is very difficult to discover. It requires a very deep understanding of the project's business logic, underlying blockchain concepts, and code and being able to interconnect them.*
 
@@ -243,20 +241,16 @@ Analysis from the perspective of PCP vs SCP:
 	- Code implementation: `nextEpoch = i + BLOCK_EPOCH`.  
 	- This implementation leads to an inability to correctly identify the epoch junction.  
 	- As a result, all blocks use the same reward rate.  
-The code control point does not correctly implement the control requirements of the business process.
-
-  
-
-Essence of the problem:
-
-  
-
-The business process requires a reward rate switch at the epoch junction.  
-But the code implementation does not correctly capture this control point,  
-resulting in inconsistency between PCP (business requirement) and SCP (code implementation).
-
+	- The code control point does not correctly implement the control requirements of the business process.
+3. Essence of the problem:
+	- The business process requires a reward rate switch at the epoch junction.  
+	- But the code implementation does not correctly capture this control point,  
+	- resulting in inconsistency between PCP (business requirement) and SCP (code implementation).
 
 ---
+
+
+
 ## Audit Summary Notes
 - {{summary_notes}}
 

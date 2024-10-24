@@ -4,21 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "ae7447203e93f77f",
+        "id": "d9b1cd8df2c2b968",
         "type": "tabs",
         "children": [
           {
-            "id": "c6ec033355a1a5dc",
+            "id": "95a17274dff5532f",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "audit_notes/2024-05-canto-findings.md",
+                "file": "Templates/High Risk Finding Template.md.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "2024-05-canto-findings"
+              "title": "High Risk Finding Template.md"
             }
           }
         ]
@@ -52,7 +52,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "tag:#PCP-SCP",
+                "query": "tag:#PCPvsSCP",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -73,13 +73,11 @@
               "title": "Bookmarks"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "horizontal",
-    "width": 266.5,
-    "collapsed": true
+    "width": 266.5
   },
   "right": {
     "id": "0e99fb6992220435",
@@ -95,7 +93,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "audit_notes/2024-05-canto-findings.md",
+                "file": "Templates/High Risk Finding Template.md.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -105,7 +103,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for 2024-05-canto-findings"
+              "title": "Backlinks for High Risk Finding Template.md"
             }
           },
           {
@@ -114,12 +112,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "audit_notes/2024-05-canto-findings.md",
+                "file": "Templates/High Risk Finding Template.md.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from 2024-05-canto-findings"
+              "title": "Outgoing links from High Risk Finding Template.md"
             }
           },
           {
@@ -141,10 +139,10 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "audit_notes/2024-05-canto-findings.md"
+                "file": "Templates/High Risk Finding Template.md.md"
               },
               "icon": "lucide-list",
-              "title": "Outline of 2024-05-canto-findings"
+              "title": "Outline of High Risk Finding Template.md"
             }
           }
         ]
@@ -164,13 +162,17 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "c6ec033355a1a5dc",
+  "active": "95a17274dff5532f",
   "lastOpenFiles": [
     "Templates/Audit Project Template.md.md",
+    "Templates/High Risk Finding Template.md.md",
+    "Templates/Medium Risk Finding Template.md.md",
     "audit_notes/2024-05-canto-findings.md",
+    "Untitled.canvas",
+    "High Findings.md",
+    "2024-10-24.md",
     "audit_notes/Reports_1.md",
     "2024-10-23.md",
-    "Untitled.canvas",
     "README.md",
     "2024-10-22.md",
     "audit_notes",

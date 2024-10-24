@@ -1,23 +1,121 @@
 
 # 2024-05-canto-findings
+- **Category**: Dexes, CDP, Yield, Services, Cross Chain
 - Note Create 2024-10-23
 ---
 ## Findings Summary
 
 ### High Severity Findings
-1. [[2024-05-canto-findings#[ [H-02 ] update_market() nextEpoch calculation incorrect](https //github.com/code-423n4/2024-01-canto-findings/issues/10)| [H-02]update_market() nextEpoch calculation incorrect]]
-2. [high_finding_2](link to details)
+1. [[2024-05-canto-findings#H-01] update_market() market weight incorrect](https //github.com/code-423n4/2024-01-canto-findings/issues/10)|[H-01] update_market() market weight incorrect]]
+2. [[2024-05-canto-findings#[ [H-02 ] update_market() nextEpoch calculation incorrect](https //github.com/code-423n4/2024-01-canto-findings/issues/10)|[H-02] update_market() nextEpoch calculation incorrect]]
 
 ### Medium Severity Findings
-1. {{medium_finding_1}} (link to details)
-2. {{medium_finding_2}} (link to details)
+1. [[2024-05-canto-findings#M-01] secRewardsPerShare Insufficient precision](https //github.com/code-423n4/2024-01-canto-findings/issues/12)|[M-01]secRewardsPerShare Insufficient precision]]
 
 ---
 # High Risk Findings (2)
 ---
+
+## [[H-01] update_market() market weight incorrect](https://github.com/code-423n4/2024-01-canto-findings/issues/10)
+
+----
+- **Tags**:  
+- Number of finders: 2
+---
+
+### Detail
+
+In `update_market()`
+We need to get the weight percentage of the corresponding market epoch through `gaugeController`.
+
+Then allocate `cantoPerBlock[epoch]` according to the percentage
+The main logic code is as follows:
+
+```solidity
+    function update_market(address _market) public {
+        require(lendingMarketWhitelist[_market], "Market not whitelisted");
+        MarketInfo storage market = marketInfo[_market];
+        if (block.number > market.lastRewardBlock) {
+            uint256 marketSupply = lendingMarketTotalBalance[_market];
+            if (marketSupply > 0) {
+                uint256 i = market.lastRewardBlock;
+                while (i < block.number) {
+                    uint256 epoch = (i / BLOCK_EPOCH) * BLOCK_EPOCH; // Rewards and voting weights are aligned on a weekly basis
+                    uint256 nextEpoch = i + BLOCK_EPOCH;
+                    uint256 blockDelta = Math.min(nextEpoch, block.number) - i;
+                    uint256 cantoReward = (blockDelta *
+                        cantoPerBlock[epoch] *
+@>                      gaugeController.gauge_relative_weight_write(_market, epoch)) / 1e18;
+                    market.accCantoPerShare += uint128((cantoReward * 1e18) / marketSupply);
+                    market.secRewardsPerShare += uint128((blockDelta * 1e18) / marketSupply); // TODO: Scaling
+                    i += blockDelta;
+                }
+            }
+            market.lastRewardBlock = uint64(block.number);
+        }
+    }
+```
+
+1.  Calculate `epoch`
+2.  Then get the corresponding `weight` of the market through `gaugeController.gauge_relative_weight_write(market,epoch)`
+
+The problem is that `epoch` is  block number
+
+> market.lastRewardBlock = uint64(block.number)
+
+`uint256 epoch = (i / BLOCK_EPOCH) * BLOCK_EPOCH`
+
+But the second parameter of `gaugeController.gauge_relative_weight_write(market,epoch)` is `time`
+
+`gauge_relative_weight_write()`->`_gauge_relative_weight()`
+
+```solidity
+contract GaugeController {
+@>  uint256 public constant WEEK = 7 days;
+...
+    function _gauge_relative_weight(address _gauge, uint256 _time) private view returns (uint256) {
+@>      uint256 t = (_time / WEEK) * WEEK;
+        uint256 total_weight = points_sum[t].bias;
+        if (total_weight > 0) {
+            uint256 gauge_weight = points_weight[_gauge][t].bias;
+            return (MULTIPLIER * gauge_weight) / total_weight;
+        } else {
+            return 0;
+        }
+    }
+```
+
+For example, the current canto BLOCK: `7999034`
+After calculation in `gaugeController`, it is:  `7999034 / WEEK * WEEK = 1970-04-02`
+The wrong time cycle, the weight obtained is basically 0, so the reward cannot be obtained.
+
+### Impact
+
+Incorrectly using `block number` as a time parameter, unable to get `weight`, unable to accumulate rewards.
+
+### Recommended Mitigation
+
+It is recommended that `LendingLedger` refer to `GaugeController`, and also use `time` to record `epoch`.
+
+**[OpenCoreCH (Canto) confirmed and commented](https://github.com/code-423n4/2024-01-canto-findings/issues/10#issuecomment-1918860945):**
+ > True, this was time in the past, will be changed.
+
+**[Alex the Entreprenerd (Judge) commented](https://github.com/code-423n4/2024-01-canto-findings/issues/10#issuecomment-1920986358):**
+ > The finding shows how, due to using the incorrect units (blocks instead of seconds), it is possible to cause the `cantoReward` math to be incorrect.
+> 
+> Based on the block the result would either cause a total loss of rewards (example from the warden) or an incorrect amount.
+> 
+> While the impact is limited to rewards, the incorrect formula seems to warrant a High Severity.
+
+### Notes
+
+This is a data type compatibility issue. Although both are seemingly of type `uint256`, their actual  semantics are completely different:
+- One represents the `block number`.
+- One represents the `Uinx timestamp`
+
+---
 ## [\[H-02\] update_market() nextEpoch calculation incorrect](https://github.com/code-423n4/2024-01-canto-findings/issues/10)
 ---
-- **Category**: Dexes, CDP, Yield, Services, Cross Chain
 - **Tags**: #PCPvsSCP
 - Number of finders: 2
 ---
@@ -249,11 +347,229 @@ Analysis from the perspective of PCP vs SCP:
 
 ---
 
+# Medium Risk Findings (2)
 
+---
 
-## Audit Summary Notes
+## [[M-01] secRewardsPerShare Insufficient precision](https://github.com/code-423n4/2024-01-canto-findings/issues/12)
+
+----
+- **Tags**:  #Insufficient_Precision
+- Number of finders: 2
+---
+
+### Detail
+
+> We also introduced the field secRewardDebt. The idea of this field is to enable any lending platforms that are integrated with Neofinance Coordinator to send their own rewards based on this value (or rather the difference of this value since the last time secondary rewards were sent) and their own emission schedule for the tokens.
+
+The current calculation formula for `secRewardsPerShare` is as follows:
+
+```solidity
+market.secRewardsPerShare += uint128((blockDelta * 1e18) / marketSupply);
+```
+
+`marketSupply` is `cNOTE`, with a precision of `1e18`
+So as long as the supply is greater than `1` cNote, `secRewardsPerShare` is easily `rounded down` to `0`
+Example:
+`marketSupply = 10e18`
+`blockDelta = 1`
+`secRewardsPerShare=1 * 1e18 / 10e18 = 0`
+
+### Impact
+
+Due to insufficient precision, `secRewardsPerShare` will basically be `0`.
+
+### Recommended Mitigation
+
+It is recommended to use `1e27` for `secRewardsPerShare`:
+
+```solidity
+    market.secRewardsPerShare += uint128((blockDelta * 1e27) / marketSupply);
+```
+
+**[Alex the Entreprenerd (Judge) commented](https://github.com/code-423n4/2024-01-canto-findings/issues/12#issuecomment-1920977276):**
+ > The Warden has shown how, due to incorrect precision, it is possible to create a loss due to rounding down.
+> 
+> Because the loss is limited to yield, Medium Severity seems most appropriate.
+
+**[OpenCoreCH (sponsor) confirmed](https://github.com/code-423n4/2024-01-canto-findings/issues/12#issuecomment-1923534235)**
+
+### Notes
+
+- Always be aware of the potential loss of precision caused by division operations.
+- Consider appropriate precision when designing
+- Avoid loss of precision by increasing the precision of intermediate calculations.
+- Pay special attention to all calculation logics involving division during auditing.
+
+---
+
+## [[M-02] Loss of precision when calculating the accumulated CANTO per share](https://github.com/code-423n4/2024-01-canto-findings/issues/8)
+
+----
+- **Tags**:  #loss_of_precision
+- Number of finders: 1
+---
+
+When calculating the amount of CANTO per share in `update_market`, dividing by `1e18` in `cantoReward` and multiplying by the same value in `accCantoPerShare` rounds down the final value, making the amount of rewards users will receive be less than expected.
+
+### Proof of Concept
+
+It's well known that Solidity rounds down when doing an integer division, and because of that, it is always recommended to multiply before dividing to avoid that precision loss. However, if we go to:
+
+[**LendingLedger, function update_market**](https://github.com/code-423n4/2024-01-canto/blob/5e0d6f1f981993f83d0db862bcf1b2a49bb6ff50/src/LendingLedger.sol#L67C1-L70C93)
+
+```solidity
+    function update_market(address _market) public {
+        require(lendingMarketWhitelist[_market], "Market not whitelisted");
+        MarketInfo storage market = marketInfo[_market];
+        if (block.number > market.lastRewardBlock) {
+            uint256 marketSupply = lendingMarketTotalBalance[_market];
+            if (marketSupply > 0) {
+                uint256 i = market.lastRewardBlock;
+                while (i < block.number) {
+                    uint256 epoch = (i / BLOCK_EPOCH) * BLOCK_EPOCH; // Rewards and voting weights are aligned on a weekly basis
+                    uint256 nextEpoch = i + BLOCK_EPOCH;
+                    uint256 blockDelta = Math.min(nextEpoch, block.number) - i;
+                    uint256 cantoReward = (blockDelta *
+                        cantoPerBlock[epoch] *
+                        gaugeController.gauge_relative_weight_write(_market, epoch)) / 1e18;
+                    market.accCantoPerShare += uint128((cantoReward * 1e18) / marketSupply);
+                    market.secRewardsPerShare += uint128((blockDelta * 1e18) / marketSupply); // TODO: Scaling
+                    i += blockDelta;
+                }
+            }
+            market.lastRewardBlock = uint64(block.number);
+        }
+    }
+```
+
+and we expand the maths behind `accCantoPerShare` and `cantoReward`:
+
+```solidity
+                    uint256 cantoReward = (blockDelta *
+                        cantoPerBlock[epoch] *
+                        gaugeController.gauge_relative_weight_write(_market, epoch)) / 1e18;
+                    market.accCantoPerShare += uint128((cantoReward * 1e18) / marketSupply);
+```
+
+like follows:
+
+$$(cantoReward * 1e18) \ / \ marketSupply$$
+
+$$(((blockDelta * cantoPerBlock[epoch] * gaugeController.gauge\_relative\_weight\_write(\_market, epoch)) \ / \ 1e18) \ * \ 1e18) \ / \ marketSupply$$
+
+$$((stuff \ / \ 1e18) \ * \ 1e18) \ / \ marketSupply$$
+
+we see there is a hidden division before a multiplication that is rounding down the whole expression. This is bad as the precision loss can be significant, which leads to the given market having less rewards to offer to its users. Run the next test inside a foundry project to see such a divergence in the precision if we multiply before dividing:
+
+```solidity
+    // @audit the assumes are to avoid under/overflows errors
+    function testPOC(uint256 x) external pure {
+        vm.assume(x < type(uint256).max / 1e18);
+        vm.assume(x > 1e18);
+        console2.log("(x / 1e18) * 1e18", (x / 1e18) * 1e18);
+        console2.log("(x * 1e18) / 1e18", (x * 1e18) / 1e18);
+    }
+```
+
+Some examples:
+
+      [7725] POC::testPOC(1164518589284217277370 [1.164e21]) 
+        ├─ [0] VM::assume(true) [staticcall]
+        │   └─ ← ()
+        ├─ [0] VM::assume(true) [staticcall]
+        │   └─ ← ()
+        ├─ [0] console::log((x / 1e18) * 1e18, 1164000000000000000000 [1.164e21]) [staticcall]
+        │   └─ ← ()
+        ├─ [0] console::log((x * 1e18) / 1e18, 1164518589284217277370 [1.164e21]) [staticcall]
+        │   └─ ← ()
+        └─ ← ()
+
+      [7725] POC::testPOC(16826228168456047587 [1.682e19]) 
+        ├─ [0] VM::assume(true) [staticcall]
+        │   └─ ← ()
+        ├─ [0] VM::assume(true) [staticcall]
+        │   └─ ← ()
+        ├─ [0] console::log((x / 1e18) * 1e18, 16000000000000000000 [1.6e19]) [staticcall]
+        │   └─ ← ()
+        ├─ [0] console::log((x * 1e18) / 1e18, 16826228168456047587 [1.682e19]) [staticcall]
+        │   └─ ← ()
+        └─ ← ()
+
+      [7725] POC::testPOC(5693222591586418917 [5.693e18]) 
+        ├─ [0] VM::assume(true) [staticcall]
+        │   └─ ← ()
+        ├─ [0] VM::assume(true) [staticcall]
+        │   └─ ← ()
+        ├─ [0] console::log((x / 1e18) * 1e18, 5000000000000000000 [5e18]) [staticcall]
+        │   └─ ← ()
+        ├─ [0] console::log((x * 1e18) / 1e18, 5693222591586418917 [5.693e18]) [staticcall]
+        │   └─ ← ()
+        └─ ← ()
+
+### Recommended Mitigation Steps
+
+Change the `update_market` function to:
+
+```diff
+    function update_market(address _market) public {
+        require(lendingMarketWhitelist[_market], "Market not whitelisted");
+        MarketInfo storage market = marketInfo[_market];
+        if (block.number > market.lastRewardBlock) {
+            uint256 marketSupply = lendingMarketTotalBalance[_market];
+            if (marketSupply > 0) {
+                uint256 i = market.lastRewardBlock;
+                while (i < block.number) {
+                    uint256 epoch = (i / BLOCK_EPOCH) * BLOCK_EPOCH; // Rewards and voting weights are aligned on a weekly basis
+                    uint256 nextEpoch = i + BLOCK_EPOCH;
+                    uint256 blockDelta = Math.min(nextEpoch, block.number) - i;
+                    uint256 cantoReward = (blockDelta *
+                        cantoPerBlock[epoch] *
+-                       gaugeController.gauge_relative_weight_write(_market, epoch)) / 1e18;
+-                   market.accCantoPerShare += uint128((cantoReward * 1e18) / marketSupply);
++                       gaugeController.gauge_relative_weight_write(_market, epoch)) * 1e18;
++                   market.accCantoPerShare += uint128((cantoReward / 1e18) / marketSupply);
+                    market.secRewardsPerShare += uint128((blockDelta * 1e18) / marketSupply); // TODO: Scaling
+                    i += blockDelta;
+                }
+            }
+            market.lastRewardBlock = uint64(block.number);
+        }
+    }
+```
+
+**[OpenCoreCH (Canto) confirmed and commented](https://github.com/code-423n4/2024-01-canto-findings/issues/8#issuecomment-1918855809):**
+ > The given examples do not directly apply in our case, we divide a number with 36 decimals by `1e18` and then multiply by `1e18` again (`blockDelta` has 0, `cantoPerBlock` 18, `gauge_relative_weight_write` 18). Looking at it again, this is pretty inefficient, but I cannot think of a situation where it causes a non-negligible (higher than a few wei) difference in the end. Will double check that.
+
+ > Ok so I think it could lead to situations where up to 1 CANTO is not distributed, e.g. if `(blockDelta *
+>                         cantoPerBlock[epoch] *
+>                         gaugeController.gauge_relative_weight_write(_market, epoch))` is 0.99e18, it will round down to 0. Not a huge loss, but also not ideal (especially because it can be avoided easily), so will be changed.
+
+**[Alex the Entreprenerd (Judge) commented](https://github.com/code-423n4/2024-01-canto-findings/issues/8#issuecomment-1920971297):**
+ > The Warden has shown how, due to rounding a small loss of yield can accrue.
+> 
+> Due to the small scope of the codebase and the specificity of the finding, I'm leaving as Medium as of now.
+
+**[OpenCoreCH (Canto) commented](https://github.com/code-423n4/2024-01-canto-findings/issues/8#issuecomment-1923573595)**
+
+---
+### Notes
+
+Pay attention to the hidden "division before a multiplication"
+- On the surface, each calculation follows the principle of "a multiplication before division".
+- However, after substituting the intermediate result, it actually forms "division before a multiplication".
+- This problem can only be discovered by fully expanding the entire calculation expression.
+
+The key points:
+- We cannot only look ate a single calculation expression.
+- We need to track the complete calculation process of variables 
+- Analyze after expanding all calculation steps. 
+
+---
+
+# Audit Summary Notes
 - {{summary_notes}}
 
-## Tags
+# Tags
 - Category: {{tags_category}}
 - Priority:{{tags_priority}}

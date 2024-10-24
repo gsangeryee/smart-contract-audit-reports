@@ -9,6 +9,8 @@ This repository is used to save my notes on learning smart contract audit report
 - Write Notes using Obsidian
 	- Click **Inset template** 
 	- Chose `Audit Project Template.md`
+		- Chose `High Risk Finding Item.md` or `Medium Risk Finding Item.md`
+- If the finding is a typical issues, add it to the `Typical Issues`
 	
 	
 

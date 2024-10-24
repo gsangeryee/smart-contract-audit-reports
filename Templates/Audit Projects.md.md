@@ -1,7 +1,8 @@
 
 # {{title}}
+---
+- Category:
 - Note Create {{date}}
-
 ---
 ## Findings Summary
 

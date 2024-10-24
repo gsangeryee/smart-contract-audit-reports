@@ -2,7 +2,6 @@
 ## [H-XX] High Risk Finding Title
 
 ----
-- **Category**: {{Copy from solodit}}
 - **Tags**:  {{# tag from obsidian tags}}
 - Number of finders: nnn
 ---

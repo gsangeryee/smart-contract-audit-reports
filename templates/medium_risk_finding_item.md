@@ -2,11 +2,9 @@
 ## [M-XX] Medium Risk Finding Title
 
 ----
-- **Category**: {{Copy from solodit}}
-- **Tags**:  {{# tag from obsidian tags}}
+- **Tags**: refer from [[report_tags]]
 - Number of finders: nnn
 ---
-
 ### Detail
 
 {{Copy from solodit}}
@@ -23,5 +21,9 @@
 
 {{ Your feelings about uncovering this finding}}
 #### Impressions
+
+### Refine
+
+{{ Refine to typical issues}}
 
 ---

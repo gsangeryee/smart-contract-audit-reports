@@ -2,10 +2,9 @@
 ## [H-XX] High Risk Finding Title
 
 ----
-- **Tags**:  {{# tag from obsidian tags}}
+- **Tags**:  [[report_tags]]
 - Number of finders: nnn
 ---
-
 ### Detail
 
 {{Copy from solodit}}
@@ -22,5 +21,9 @@
 
 {{ Your feelings about uncovering this finding}}
 #### Impressions
+
+### Refine
+
+{{ Refine to typical issues}}
 
 ---

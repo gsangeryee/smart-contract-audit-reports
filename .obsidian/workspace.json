@@ -4,52 +4,39 @@
     "type": "split",
     "children": [
       {
-        "id": "d9b1cd8df2c2b968",
+        "id": "4c1f09525426b375",
         "type": "tabs",
         "children": [
           {
-            "id": "fcc600053993a15c",
+            "id": "406d182d966cba95",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "typical_issues/logical_issues.md",
+                "file": "audit_notes/2024-08-wildact-findings.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "logical_issues"
+              "title": "2024-08-wildact-findings"
             }
           },
           {
-            "id": "88f7e88dd2e5c533",
+            "id": "eac56537009acf77",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "audit_notes/2024-05-canto-findings.md",
+                "file": "utils/protocol_categories.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "2024-05-canto-findings"
-            }
-          },
-          {
-            "id": "098f003082e1fba0",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "checklist.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "checklist"
+              "title": "protocol_categories"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -80,7 +67,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "tag:#PCPvsSCP",
+                "query": "tag:#loss_of_precision",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -121,7 +108,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "typical_issues/logical_issues.md",
+                "file": "utils/protocol_categories.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -131,7 +118,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for logical_issues"
+              "title": "Backlinks for protocol_categories"
             }
           },
           {
@@ -140,12 +127,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "typical_issues/logical_issues.md",
+                "file": "report_tags.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from logical_issues"
+              "title": "Outgoing links from report_tags"
             }
           },
           {
@@ -167,13 +154,14 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "typical_issues/logical_issues.md"
+                "file": "utils/protocol_categories.md"
               },
               "icon": "lucide-list",
-              "title": "Outline of logical_issues"
+              "title": "Outline of protocol_categories"
             }
           }
-        ]
+        ],
+        "currentTab": 2
       }
     ],
     "direction": "horizontal",
@@ -190,17 +178,22 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "7e7eef149d23376a",
+  "active": "eac56537009acf77",
   "lastOpenFiles": [
+    "audit_notes/2024-08-wildact-findings.md",
+    "utils/protocol_categories.md",
+    "audit_notes/2024-01-canto-findings.md",
     "typical_issues/common_issues.md",
-    "templates/typical_logical_issues_item.md",
+    "typical_issues/logical_issues.md",
     "templates/medium_risk_finding_item.md",
+    "templates/typical_logical_issues_item.md",
     "templates/high_risk_finding_item.md",
+    "checklist.md",
     "templates/global_index.md",
     "templates/audit_projects.md",
-    "checklist.md",
-    "typical_issues/logical_issues.md",
-    "audit_notes/2024-05-canto-findings.md",
+    "utils/report_tags.md",
+    "Untitled.md",
+    "utils",
     "Typical Issues/Logical_Issues.md.md",
     "typical_issues",
     "templates",
@@ -217,14 +210,10 @@
     "Untitled.canvas",
     "2024-10-24.md",
     "2024-10-23.md",
-    "2024-10-22.md",
     "audit_notes",
-    "ReportNotes/Reports_1.md",
     "ReportNotes",
-    "scripts/README.md",
     "scripts/auto_global_index.py",
     "scripts",
-    "Templates",
-    "Solidity-Intensive-CoLearning_saneryee.md"
+    "templates"
   ]
 }

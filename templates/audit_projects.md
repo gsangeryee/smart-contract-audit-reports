@@ -1,7 +1,7 @@
 
 # {{title}}
 ---
-- Category:
+- Category: chose from [[protocol_categories]]
 - Note Create {{date}}
 ---
 ## Findings Summary

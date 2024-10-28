@@ -54,7 +54,7 @@ uint256 constant SHARE_PRECISION = 1e27;
 ```
 ### Real Cases
 
-- [[2024-05-canto-findings#M-01] secRewardsPerShare Insufficient precision](https //github.com/code-423n4/2024-01-canto-findings/issues/12)|secRewardsPerShare Insufficient precision]]
+- [[2024-01-canto-findings#M-01] secRewardsPerShare Insufficient precision](https //github.com/code-423n4/2024-01-canto-findings/issues/12)|secRewardsPerShare Insufficient precision]]
 
 ### Audit Key Points:
 
@@ -79,5 +79,31 @@ uint256 constant SHARE_PRECISION = 1e27;
 - Consider appropriate precision when designing
 - Avoid loss of precision by increasing the precision of intermediate calculations.
 - Pay special attention to all calculation logics involving division during auditing.
+
+---
+
+## Batch Average Pricing Conflicts with Market Status (One-size-fits-all(一刀切))
+
+### Problem pattern:
+
+- In specific market states (such as when the market is closed), the batch pricing mechanism causes conflicts of interest among users.
+- Creates user incentives contrary to the protocol's goals.
+### Common scenarios:
+
+- Using batch processing mechanism
+- Uniform price within batches (interest rate / exchange rate, etc.).
+- There is market state transition (such as open -> closed).
+### Real Cases
+
+- [[2024-08-wildact-findings#M-01] Users are incentivized to not withdraw immediately after the market is closed](https //github.com/code-423n4/2024-08-wildcat-findings/issues/121)|[M-01] Users are incentivized to not withdraw immediately after the market is closed]]
+
+### Audit Key Points:
+
+1. Check Points
+	- Does there exist batch processing + average pricing mechanism
+	- Does the market have state transitions?
+	- When there is a state transition, will the pricing mechanism within batches lead to misaligned user incentives?
+
+This essence of this issue is the inapplicability of the batch processing "one-size-fits-all(一刀切)" mechanism in specific market conditions. During audits, special attention must be paid to the interaction logic between batch processing and market states.
 
 ---

@@ -1,28 +1,27 @@
 
-# 2024-05-canto-findings
+# 2024-01-canto-findings
 - **Category**: Dexes, CDP, Yield, Services, Cross Chain
 - Note Create 2024-10-23
 ---
 ## Findings Summary
 
 ### High Severity Findings
-1. [[2024-05-canto-findings#H-01] update_market() market weight incorrect](https //github.com/code-423n4/2024-01-canto-findings/issues/10)|[H-01] update_market() market weight incorrect]]
-2. [[2024-05-canto-findings#[ [H-02 ] update_market() nextEpoch calculation incorrect](https //github.com/code-423n4/2024-01-canto-findings/issues/10)|[H-02] update_market() nextEpoch calculation incorrect]]
+1. [[2024-01-canto-findings#H-01] update_market() market weight incorrect](https //github.com/code-423n4/2024-01-canto-findings/issues/10)|[H-01] update_market() market weight incorrect]]
+2. [[2024-01-canto-findings#[ [H-02 ] update_market() nextEpoch calculation incorrect](https //github.com/code-423n4/2024-01-canto-findings/issues/10)|[H-02] update_market() nextEpoch calculation incorrect]]
 
 ### Medium Severity Findings
-1. [[2024-05-canto-findings#M-01] secRewardsPerShare Insufficient precision](https //github.com/code-423n4/2024-01-canto-findings/issues/12)|[M-01]secRewardsPerShare Insufficient precision]]
+1. [[2024-01-canto-findings#M-01] secRewardsPerShare Insufficient precision](https //github.com/code-423n4/2024-01-canto-findings/issues/12)|[M-01]secRewardsPerShare Insufficient precision]]
+2. [[2024-01-canto-findings#M-02] Loss of precision when calculating the accumulated CANTO per share](https //github.com/code-423n4/2024-01-canto-findings/issues/8)|[M-02]Loss of precision when calculating the accumulated CANTO per share]]
 
 ---
 # High Risk Findings (2)
 ---
 
 ## [[H-01] update_market() market weight incorrect](https://github.com/code-423n4/2024-01-canto-findings/issues/10)
-
 ----
 - **Tags**:  
 - Number of finders: 2
 ---
-
 ### Detail
 
 In `update_market()`
@@ -345,6 +344,10 @@ Analysis from the perspective of PCP vs SCP:
 	- But the code implementation does not correctly capture this control point,  
 	- resulting in inconsistency between PCP (business requirement) and SCP (code implementation).
 
+### Refine
+
+- [[logical_issues#Interval calculation boundary alignment|Interval calculation boundary alignment]]
+
 ---
 
 # Medium Risk Findings (2)
@@ -401,6 +404,9 @@ It is recommended to use `1e27` for `secRewardsPerShare`:
 - Avoid loss of precision by increasing the precision of intermediate calculations.
 - Pay special attention to all calculation logics involving division during auditing.
 
+### Refine
+
+- [[common_issues#Precision Loss|Precision Loss]]
 ---
 
 ## [[M-02] Loss of precision when calculating the accumulated CANTO per share](https://github.com/code-423n4/2024-01-canto-findings/issues/8)

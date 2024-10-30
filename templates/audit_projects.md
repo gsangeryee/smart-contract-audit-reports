@@ -3,6 +3,8 @@
 ---
 - Category: chose from [[protocol_categories]]
 - Note Create {{date}}
+- Platform: 
+- Report Url: [link](link)
 ---
 ## Findings Summary
 

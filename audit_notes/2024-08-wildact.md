@@ -1,13 +1,15 @@
 
-# 2024-08-wildact-findings
+# 2024-08-wildact
 ---
 - Category: Lending, Hooks
 - Note Create 2024-10-28
+- Platform: code4rena
+- Report Url
 ---
 ## Findings Summary
 
 ### High Severity Findings
-1. [[2024-08-wildact-findings#H-01] User could withdraw more than supposed to, forcing last user withdraw to fail](https //github.com/code-423n4/2024-08-wildcat-findings/issues/64)|[H-01]User could withdraw more than supposed to, forcing last user withdraw to fail]]
+1. [[2024-08-wildact#H-01] User could withdraw more than supposed to, forcing last user withdraw to fail](https //github.com/code-423n4/2024-08-wildcat-findings/issues/64)|[H-01]User could withdraw more than supposed to, forcing last user withdraw to fail]]
 ### Medium Severity Findings
 1. [[Medium Findings]](link to details)
 2. [[Medium Findings]](link to details)

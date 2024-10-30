@@ -2,7 +2,7 @@
 
 ---
 
-## Precision Loss
+## [01] Precision Loss
 
 ### Problem pattern:
 
@@ -54,7 +54,7 @@ uint256 constant SHARE_PRECISION = 1e27;
 ```
 ### Real Cases
 
-- [[2024-01-canto-findings#M-01] secRewardsPerShare Insufficient precision](https //github.com/code-423n4/2024-01-canto-findings/issues/12)|secRewardsPerShare Insufficient precision]]
+- [[2024-01-canto#M-01] secRewardsPerShare Insufficient precision](https //github.com/code-423n4/2024-01-canto-findings/issues/12)|secRewardsPerShare Insufficient precision]]
 
 ### Audit Key Points:
 
@@ -82,7 +82,7 @@ uint256 constant SHARE_PRECISION = 1e27;
 
 ---
 
-## Batch Average Pricing Conflicts with Market Status (One-size-fits-all(一刀切))
+## [02] Batch Average Pricing Conflicts with Market Status (One-size-fits-all(一刀切))
 
 ### Problem pattern:
 
@@ -95,7 +95,7 @@ uint256 constant SHARE_PRECISION = 1e27;
 - There is market state transition (such as open -> closed).
 ### Real Cases
 
-- [[2024-08-wildact-findings#M-01] Users are incentivized to not withdraw immediately after the market is closed](https //github.com/code-423n4/2024-08-wildcat-findings/issues/121)|[M-01] Users are incentivized to not withdraw immediately after the market is closed]]
+- [[2024-08-wildact#M-01] Users are incentivized to not withdraw immediately after the market is closed](https //github.com/code-423n4/2024-08-wildcat-findings/issues/121)|[M-01] Users are incentivized to not withdraw immediately after the market is closed]]
 
 ### Audit Key Points:
 
@@ -105,5 +105,47 @@ uint256 constant SHARE_PRECISION = 1e27;
 	- When there is a state transition, will the pricing mechanism within batches lead to misaligned user incentives?
 
 This essence of this issue is the inapplicability of the batch processing "one-size-fits-all(一刀切)" mechanism in specific market conditions. During audits, special attention must be paid to the interaction logic between batch processing and market states.
+
+---
+## [03] Integer Overflow
+
+### Problem pattern:
+
+- Using smaller uint types (`uint128`) for intermediate calculations that could overflow
+- Multiplication results being constrained to the same size as inputs
+### Common scenarios:
+
+- Token streaming contracts with rate-based calculations
+- Contracts handling high-precision or large number caculations
+### Typical Code:
+
+```solidity
+// Vulnerable pattern
+uint128 ratePerSecond;  // Could be set to very high value
+uint128 elapsedTime;    // Time difference
+uint128 scaledDebt = elapsedTime * ratePerSecond;  // Can overflow
+
+// Safe pattern
+uint256 ratePerSecond;  // or keep as uint128
+uint256 elapsedTime;    // or keep as uint128
+uint256 scaledDebt = uint256(elapsedTime) * uint256(ratePerSecond);  // Safe multiplication
+```
+
+### Real Cases
+
+- [[2024-10-sablier_flow#[H-01] Sender can brick stream by forcing overflow in debt calculation|[H-01] Sender can brick stream by forcing overflow in debt calculation]]
+
+### Audit Key Points:
+
+1. Identification Points
+	- Look for multiplication operations using fixed-size integers
+	- Review mathematical operations where inputs are user-controlled
+	- Identify critical functions that can't be reversed/recovered if they fail
+	- Look for missing overflow checks in financial calculations
+2. Check Points
+	- Verify integer size aer appropriate for all possible calculation results.
+	- Ensure overflow protection exists for all mathematical operations.
+	- Verify recovery mechanisms exist for critical operations.
+	- Test edge cases with maximum possible values
 
 ---

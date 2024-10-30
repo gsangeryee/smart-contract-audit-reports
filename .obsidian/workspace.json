@@ -27,12 +27,26 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "utils/protocol_categories.md",
+                "file": "checklist.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "protocol_categories"
+              "title": "checklist"
+            }
+          },
+          {
+            "id": "b7a61fc9888db6c6",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "templates/typical_logical_issues_item.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "typical_logical_issues_item"
             }
           }
         ],
@@ -108,7 +122,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "utils/protocol_categories.md",
+                "file": "audit_notes/2024-08-wildact-findings.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -118,7 +132,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for protocol_categories"
+              "title": "Backlinks for 2024-08-wildact-findings"
             }
           },
           {
@@ -154,10 +168,10 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "utils/protocol_categories.md"
+                "file": "audit_notes/2024-08-wildact-findings.md"
               },
               "icon": "lucide-list",
-              "title": "Outline of protocol_categories"
+              "title": "Outline of 2024-08-wildact-findings"
             }
           }
         ],
@@ -180,19 +194,20 @@
   },
   "active": "eac56537009acf77",
   "lastOpenFiles": [
-    "audit_notes/2024-08-wildact-findings.md",
-    "utils/protocol_categories.md",
-    "audit_notes/2024-01-canto-findings.md",
     "typical_issues/common_issues.md",
+    "audit_notes/2024-10-sablier_flow.md",
     "typical_issues/logical_issues.md",
-    "templates/medium_risk_finding_item.md",
     "templates/typical_logical_issues_item.md",
-    "templates/high_risk_finding_item.md",
-    "checklist.md",
-    "templates/global_index.md",
+    "audit_notes/2024-08-wildact.md",
+    "audit_notes/2024-01-canto.md",
     "templates/audit_projects.md",
-    "utils/report_tags.md",
     "Untitled.md",
+    "checklist.md",
+    "utils/protocol_categories.md",
+    "templates/medium_risk_finding_item.md",
+    "templates/high_risk_finding_item.md",
+    "templates/global_index.md",
+    "utils/report_tags.md",
     "utils",
     "Typical Issues/Logical_Issues.md.md",
     "typical_issues",

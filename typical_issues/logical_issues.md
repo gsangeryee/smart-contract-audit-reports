@@ -29,7 +29,7 @@ The essence of such problem is that the calculation is not anchored to the refer
 
 ### Real Cases
 
-- [[2024-01-canto-findings#[ [H-02 ] update_market() nextEpoch calculation incorrect](https //github.com/code-423n4/2024-01-canto-findings/issues/10)|update_market() nextEpoch calculation incorrect]]
+- [[2024-01-canto#[ [H-02 ] update_market() nextEpoch calculation incorrect](https //github.com/code-423n4/2024-01-canto-findings/issues/10)|update_market() nextEpoch calculation incorrect]]
 
 ### Audit Key Points:
 

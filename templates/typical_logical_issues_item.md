@@ -1,4 +1,4 @@
-## {{Issue Title}}
+## [XX] Issue Title
 
 ### Problem pattern:
 

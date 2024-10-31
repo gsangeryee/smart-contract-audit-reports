@@ -13,3 +13,4 @@
 
 - Process Control Points vs. System Control Points
 	- Interval calculation boundary alignment
+	- Compare `@natspec` and code comment with actual implementation code

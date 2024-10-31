@@ -4,16 +4,6 @@
 - Note Create 2024-10-30
 - Platform: cantina
 - report url: [https://cantina.xyz/portfolio/0e86d73a-3c3b-4b2b-9be5-9cecd4c7a5ac](https://cantina.xyz/portfolio/0e86d73a-3c3b-4b2b-9be5-9cecd4c7a5ac)
----
-## Findings Summary
-
-### High Severity Findings
-1. [[High Findings]](link to details)
-2. [[High Findings]](link to details)
-
-### Medium Severity Findings
-1. [[Medium Findings]](link to details)
-2. [[Medium Findings]](link to details)
 
 ---
 # High Risk Findings (xx)
@@ -93,11 +83,59 @@ Use a `uint256` for `scaledOngoingDebt`, and carry this type through all functio
 
 ---
 
-# Medium Risk Findings (xx)
+# Medium Risk Findings (1)
+
+---
+## [M-01] `isTransferable()` will succeed and return false for non-existent streams
+
+----
+- **Tags**: refer from [[report_tags]]
+- Number of finders: 2
+---
+### Detail
+
+All the public view functions in `SablierFlowBase.sol` use the `notNull` modifier to ensure that they revert when called for a non-existent stream. For example:
+
+```solidity
+function isPaused(uint256 streamId) external view override notNull(streamId) returns (bool result) { result = _streams[streamId].ratePerSecond.unwrap() == 0; }
+```
+
+However, the `isTransferable()` function is missing this modifier, so will return `false` instead:
+
+```solidity
+function isTransferable(uint256 streamId) external view override returns (bool result) { 
+	result = _streams[streamId].isTransferable; 
+}
+```
+
+This contradicts the `natspec`, which says:
+
+```solidity
+/// @dev Reverts if `streamId` references a null stream.
+```
+### Proof of Concept
+
+```solidity
+function test_isTransferableDoesNotRevert() public { assertEq(
+	flow.isTransferable(2387345), false); 
+}
+```
+### Recommended Mitigation
+
+```solidity
+- function isTransferable(uint256 streamId) external view override returns (bool result) { 
++ function isTransferable(uint256 streamId) external view override notNull(streamId) returns (bool result) { 
+      result = _streams[streamId].isTransferable; 
+   }
+```
+### Notes
+- PCP vs SCP 
+- Inconsistency between design (`@natspec`) and code.
+### Refine
+- [[logical_issues#[01] PCP vs SCP]]
 
 ---
 
-{{Copy from Medium Risk Finding Template.md}}
 
 ---
 

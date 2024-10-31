@@ -6,17 +6,6 @@
 - Platform: 
 - Report Url: [link](link)
 ---
-## Findings Summary
-
-### High Severity Findings
-1. [[High Findings]](link to details)
-2. [[High Findings]](link to details)
-
-### Medium Severity Findings
-1. [[Medium Findings]](link to details)
-2. [[Medium Findings]](link to details)
-
----
 # High Risk Findings (xx)
 
 ---

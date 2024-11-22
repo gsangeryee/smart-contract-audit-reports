@@ -17,10 +17,10 @@
 ### Recommended Mitigation
 
 {{Copy from solodit}}
-### Notes
+### Notes & Impressions
 
-{{ Your feelings about uncovering this finding}}
-#### Impressions
+{{Some key points that need to be noted. }}
+{{Your feelings about uncovering this finding.}}
 
 ### Refine
 

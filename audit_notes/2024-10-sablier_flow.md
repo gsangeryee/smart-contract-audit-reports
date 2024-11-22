@@ -6,7 +6,7 @@
 - report url: [https://cantina.xyz/portfolio/0e86d73a-3c3b-4b2b-9be5-9cecd4c7a5ac](https://cantina.xyz/portfolio/0e86d73a-3c3b-4b2b-9be5-9cecd4c7a5ac)
 
 ---
-# High Risk Findings (xx)
+# High Risk Findings (1)
 
 ---
 

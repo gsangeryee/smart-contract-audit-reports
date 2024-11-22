@@ -14,3 +14,9 @@
 - Process Control Points vs. System Control Points
 	- Interval calculation boundary alignment
 	- Compare `@natspec` and code comment with actual implementation code
+- Consistency
+	- Look for multiple functions with similar names or purposes
+    - Identify operations that handle the same business logic
+    - Search for duplicated code with slight variations
+    - Check for similar state mutations across different functions
+    - Review functions that interact with the same state variables

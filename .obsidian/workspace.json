@@ -8,17 +8,21 @@
         "type": "tabs",
         "children": [
           {
-            "id": "406d182d966cba95",
+            "id": "eac56537009acf77",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "checklist.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "New tab"
+              "title": "checklist"
             }
           },
           {
-            "id": "eac56537009acf77",
+            "id": "b7a61fc9888db6c6",
             "type": "leaf",
             "state": {
               "type": "markdown",
@@ -30,23 +34,8 @@
               "icon": "lucide-file",
               "title": "logical_issues"
             }
-          },
-          {
-            "id": "b7a61fc9888db6c6",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "templates/audit_projects.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "audit_projects"
-            }
           }
-        ],
-        "currentTab": 2
+        ]
       }
     ],
     "direction": "vertical"
@@ -77,7 +66,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "tag:#loss_of_precision",
+                "query": "tag:#business_logic_design",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -188,22 +177,25 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "b7a61fc9888db6c6",
+  "active": "eac56537009acf77",
   "lastOpenFiles": [
-    "audit_notes/2024-10-sablier_flow.md",
-    "typical_issues/logical_issues.md",
-    "templates/typical_logical_issues_item.md",
-    "typical_issues/common_issues.md",
-    "audit_notes/2024-01-canto.md",
-    "checklist.md",
-    "templates/audit_projects.md",
-    "templates/global_index.md",
-    "templates/high_risk_finding_item.md",
     "templates/medium_risk_finding_item.md",
+    "typical_issues/logical_issues.md",
+    "checklist.md",
     "audit_notes/2024-08-wildact.md",
-    "Untitled.md",
+    "Medium Findings.md",
+    "M-01] Users are incentivized to not withdraw immediately after the market is closed.md",
+    "[M-03]  Inconsistency across multiple repaying functions causing lender to pay extra fees.md",
     "utils/protocol_categories.md",
     "utils/report_tags.md",
+    "audit_notes/2024-01-canto.md",
+    "templates/global_index.md",
+    "templates/typical_logical_issues_item.md",
+    "typical_issues/common_issues.md",
+    "templates/high_risk_finding_item.md",
+    "templates/audit_projects.md",
+    "audit_notes/2024-10-sablier_flow.md",
+    "Untitled.md",
     "utils",
     "Typical Issues/Logical_Issues.md.md",
     "typical_issues",
@@ -217,10 +209,7 @@
     "README.md",
     "audit_notes/Reports_1.md",
     "Typical Issues",
-    "High Findings.md",
     "Untitled.canvas",
-    "2024-10-24.md",
-    "2024-10-23.md",
     "audit_notes",
     "ReportNotes",
     "scripts/auto_global_index.py",

@@ -29,6 +29,7 @@
 
 - [[2024-01-canto#[ [H-02 ] update_market() nextEpoch calculation incorrect](https //github.com/code-423n4/2024-01-canto-findings/issues/10)|2024-01-canto#[ [H-02 ] update_market() nextEpoch calculation incorrect]]
 - [[2024-10-sablier_flow#[H-01] Sender can brick stream by forcing overflow in debt calculation]]
+- [[2024-08-wildact#[M-02] [`FixedTermLoanHooks` allow Borrower to update Annual Interest before end of the "Fixed Term Period"]|FixedTermLoanHooks` allow Borrower to update Annual Interest before end of the "Fixed Term Period"]]
 
 ### Audit Key Points:
 
@@ -95,4 +96,83 @@ The essence of such problem is that the calculation is not anchored to the refer
 	- Whether boundary conditions are handled
 
 ---
+## [03] Consistency Issues
 
+### Problem pattern:
+- Multiple functions handling the same business logic but with inconsistent implementations
+- Inconsistency in state management across similar operations
+- Lack of role-based access control for functionally equivalent operations
+- Different execution paths leading to different results for the same business operation
+- Code duplication with variations in critical business logic
+
+### Common scenarios:
+- Multiple repayment functions with different state management patterns
+- Deposit/withdrawal functions implemented differently across the protocol
+- Reward distribution functions with inconsistent calculation methods
+- Price update mechanisms varying across different parts of the protocol
+- State transition logic implemented differently for similar operations
+- Multiple entry points for the same operation without standardization
+
+### Typical Code:
+
+```solidity
+contract InconsistentImplementation {
+    // Pattern 1: Transfer first, then update state
+    function operation1() external {
+        asset.transferFrom(msg.sender, address(this), amount);
+        State memory state = getLatestState();
+        // Update state...
+    }
+    
+    // Pattern 2: Update state first, then transfer
+    function operation2() external {
+        State memory state = getLatestState();
+        // Update state...
+        asset.transferFrom(msg.sender, address(this), amount);
+    }
+}
+
+// Better Implementation
+contract ConsistentImplementation {
+    // Unified internal logic
+    function _handleOperation(uint256 amount) internal {
+        // Standardized operation flow
+    }
+    
+    // Different entry points but consistent internal logic
+    function operation1() external onlyRole1 {
+        _handleOperation(amount);
+    }
+    
+    function operation2() external onlyRole2 {
+        _handleOperation(amount);
+    }
+}
+```
+
+### Real Cases
+
+- [[2024-08-wildact#[M-03] Inconsistency across multiple repaying functions causing lender to pay extra fees]]
+
+### Audit Key Points:
+1. Identification Points
+    - Look for multiple functions with similar names or purposes
+    - Identify operations that handle the same business logic
+    - Search for duplicated code with slight variations
+    - Check for similar state mutations across different functions
+    - Review functions that interact with the same state variables
+
+2. Check Points
+    - Compare the execution flow of similar operations
+    - Verify state update sequences across similar functions
+    - Check role-based access control implementation
+    - Analyze the impact of different implementations on results
+    - Review documentation for intended behavior
+    - Test same operations through different entry points
+    - Compare results of similar operations for consistency
+
+3. Risk Assessment
+    - Evaluate potential loss from inconsistent implementations
+    - Assess impact on user experience and expectations
+    - Consider exploitability of inconsistencies
+    - Review impact on protocol's economic model

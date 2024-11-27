@@ -150,3 +150,54 @@ uint256 scaledDebt = uint256(elapsedTime) * uint256(ratePerSecond);  // Safe mul
 
 ---
 
+## [04] State Transition Synchronization
+
+### Problem pattern:
+
+- Incomplete update of system parameters during critical status changes
+- Failure to synchronize interdependent states
+- Inconsistent propagation of status change implications
+### Common scenarios:
+
+- Market closure with unresolved time-locks
+- Withdrawal batches with unupdated rate calculations
+- Administrative state changes that don't fully reset system constraints
+- Time-based restrictions that persist after triggering events
+### Typical Code:
+
+```solidity
+function closeMarket() external {
+    // Vulnerable implementation
+    marketState = CLOSED;
+    // Missing: 
+    // - Clear time locks
+    // - Update withdrawal rates
+    // - Synchronize all dependent states
+}
+
+function executeWithdrawal() external {
+    // Potential synchronization issue
+    require(marketState == OPEN, "Market closed");
+    // Missing context of how closed state affects withdrawal
+    calculateWithdrawalRate(); // May use stale calculations
+}
+```
+
+### Real Cases
+- [[2024-08-wildact#[M-06] No lender is able to exit even after the market is closed]]
+- [[2024-08-wildact#[H-01] User could withdraw more than supposed to, forcing last user withdraw to fail]]]
+### Audit Key Points:
+
+1. Identification Points
+	- Identify administrative status change mechanisms
+	- Locate time-based or conditional state variables
+	- Find complex interactions between system components
+1. Check Points
+	- Verify all state variables are updated during status changes
+	- Ensure time-locks are properly cleared or adjusted
+	- Check calculation methods for rate-sensitive operations
+	- Validate that user actions are consistently handled across all states
+	- Confirm no residual constraints exist after state transition
+	- Test edge cases of status changes with partial user interactions
+
+---

@@ -20,3 +20,8 @@
     - Search for duplicated code with slight variations
     - Check for similar state mutations across different functions
     - Review functions that interact with the same state variables
+- Multi-Step Bypass vie OR logic
+	- Find all `OR` (`||`) condition in access controls
+	- Can satisfying one condition affect other conditions?
+	- Map out the relationship between each condition: `Condition A -> Changes State -> Enables Condition B?`
+	- Try two-step attack

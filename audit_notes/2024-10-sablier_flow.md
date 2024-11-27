@@ -15,6 +15,7 @@
 ----
 - **Tags**:  [[report_tags]]
 - Number of finders: 2
+- Difficulty: Medium
 ---
 ### Detail
 
@@ -91,6 +92,7 @@ Use a `uint256` for `scaledOngoingDebt`, and carry this type through all functio
 ----
 - **Tags**: refer from [[report_tags]]
 - Number of finders: 2
+- Difficulty: Easy
 ---
 ### Detail
 

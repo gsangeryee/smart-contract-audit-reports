@@ -4,6 +4,7 @@
 ----
 - **Tags**: refer from [[report_tags]]
 - Number of finders: nnn
+- Difficulty: Degree of Difficulty in Discovering Problems (High: 1, Medium: 2~3, Low: > 6 )
 ---
 ### Detail
 

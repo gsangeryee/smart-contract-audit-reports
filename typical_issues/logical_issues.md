@@ -176,3 +176,160 @@ contract ConsistentImplementation {
     - Assess impact on user experience and expectations
     - Consider exploitability of inconsistencies
     - Review impact on protocol's economic model
+---
+## [04] Time-based Logic & Business Flow
+
+### Problem Pattern: 
+- Mismatches between parameter usage and business logic in time-sensitive operations
+- Time control mechanisms that may not align with user expectations
+- Configuration parameters affecting time-based behaviors
+- Implicit dependencies between different time-related components
+
+### Common Scenarios:
+- Time-locked withdrawals or deposits
+- Fixed-term financial products with withdrawal cycles
+- Vesting schedules with multiple time checkpoints
+- Multi-step operations with time dependencies
+- Systems involving both request time and execution time
+
+### Typical Code:
+```solidity
+// Time-sensitive function with multiple time parameters
+function onTimeBasedOperation(
+    address user,
+    uint32 executionTime,    // Often passed but unused
+    uint256 amount,
+    bytes calldata data
+) external {
+    // Single time check that might miss business requirements
+    if (config.endTime > block.timestamp) {
+        revert TooEarly();
+    }
+    
+    // Time-sensitive operation
+    // Risk: May not consider executionTime parameter
+    performOperation(user, amount);
+    
+    // Configuration that affects timing
+    // Risk: Poor configuration could lead to unexpected behavior
+    config.nextExecutionTime = block.timestamp + config.operationCycle;
+}
+
+// Configuration setting that impacts time behavior
+function setTimeConfig(uint256 endTime, uint256 operationCycle) external {
+    config.endTime = endTime;
+    config.operationCycle = operationCycle;
+    // Risk: No validation of relationship between endTime and operationCycle
+}
+```
+### Real Cases
+
+- [[2024-08-wildact#[M-04] `FixedTermLoanHook` looks at `block.timestamp` instead of `expiry`]]
+### Audit Key Points:
+1. Identification Points
+   - Functions with multiple time-related parameters
+   - Unused time parameters in function signatures
+   - Time-based configuration settings
+   - Block timestamp usage
+   - Time-dependent state transitions
+   - Cycles or periodic operations
+   - Multi-step processes with time constraints
+
+2. Code Review Focus
+   - Time parameter usage and relationships
+   - Time check logic completeness
+   - Configuration parameter validation
+   - Time calculation accuracy
+   - Edge cases in time-based transitions
+
+3. Business Logic Analysis
+   - Understand the full timeline of operations
+   - Map user expectations to actual behavior
+   - Verify time constraint appropriateness
+   - Check configurability impact
+   - Validate multi-step process timing
+
+4. Testing Scenarios
+   - Normal operation flow
+   - Boundary conditions
+   - Configuration edge cases
+   - Time manipulation scenarios
+   - Multi-step process sequences
+
+5. Risk Assessment
+   - User experience impact
+   - System state consistency
+   - Configuration risk
+   - Time manipulation vulnerability
+   - Process deadlock potential
+
+6. Check Points
+   - Are all time parameters properly utilized?
+   - Is time check logic complete and correct?
+   - Do configurations match business requirements?
+   - Are time calculations safe from manipulation?
+   - Is documentation clear about time behavior?
+   - Are there adequate safeguards against misconfiguration?
+   - Is the relationship between different time parameters clearly defined?
+   - Are edge cases properly handled?
+
+7. Documentation Review
+   - Time-related parameter documentation
+   - Configuration guidelines
+   - Time constraint explanations
+   - User expectations management
+   - System behavior descriptions
+
+8. Mitigation Strategies
+   - Add parameter validation
+   - Implement configuration checks
+   - Enhance time logic completeness
+   - Add safety checks
+   - Improve documentation clarity
+   - Consider adding time-based invariants
+---
+## [05] Multi-Step Bypass via OR Logic in Access Controls
+
+### Problem Pattern:
+- Multiple conditions connected by `OR` logic in access control or state changes
+- One condition can be used to gain position to satisfy another condition
+- Step-by-step privilege escalation through legitimate operations
+
+### Common Scenarios:
+- Role/permission management systems
+- Time-based access controls
+- State-dependent operations
+- Provider/authority changes
+
+### Typical Code:
+```solidity
+function sensitiveOperation() {
+    if (
+        !previousProviderValid ||    // Condition 1
+        msg.sender == prevProvider || // Condition 2
+        newValue > currentValue      // Condition 3: Can be used first to satisfy Condition 2
+    ) {
+        // Update critical state/permission
+        prevProvider = msg.sender;  // State change that enables second step
+        value = newValue;
+    }
+}
+```
+
+### Real Cases:
+- [[2024-08-wildact#[M-05] Role provide can bypass intended restrictions and lower expiry set by other providers]]
+
+### Audit Key Points:
+
+1. Identification Points
+    - Look for OR (`||`) operators in permission checks
+    - Multiple conditions controlling same critical operation
+    - State changes that affect who can meet conditions
+    - Functions that modify credentials/permissions/roles
+
+2. Check Points
+    - Can satisfying one condition help meet others later?
+    - Does meeting a condition change who's authorized?
+    - Can legitimate operations be chained into attack?
+    - Test multi-step sequences through different conditions
+    - Map out state changes from each condition

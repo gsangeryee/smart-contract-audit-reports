@@ -10,8 +10,12 @@
 ### High Severity Findings
 1. [[2024-08-wildact#H-01] User could withdraw more than supposed to, forcing last user withdraw to fail](https //github.com/code-423n4/2024-08-wildcat-findings/issues/64)|[H-01]User could withdraw more than supposed to, forcing last user withdraw to fail]]
 ### Medium Severity Findings
-1. [[Medium Findings]](link to details)
-2. [[Medium Findings]](link to details)
+1. [[2024-08-wildact#[M-01] Users are incentivized to not withdraw immediately after the market is closed|[M-01] Users are incentivized to not withdraw immediately after the market is closed]]
+2. [[2024-08-wildact#[M-02] `FixedTermLoanHooks` allow Borrower to update Annual Interest before end of the "Fixed Term Period"|[M-02] `FixedTermLoanHooks` allow Borrower to update Annual Interest before end of the "Fixed Term Period"]]
+3. [[2024-08-wildact#[M-03] Inconsistency across multiple repaying functions causing lender to pay extra fees|[M-03] Inconsistency across multiple repaying functions causing lender to pay extra fees]]
+4. [[2024-08-wildact#[M-04] `FixedTermLoanHook` looks at `block.timestamp` instead of `expiry`|[M-04] `FixedTermLoanHook` looks at `block.timestamp` instead of `expiry`]]
+5. [[2024-08-wildact#[M-05] Role provide can bypass intended restrictions and lower expiry set by other providers|[M-05] Role provide can bypass intended restrictions and lower expiry set by other providers]]
+6. [[2024-08-wildact#[M-06] No lender is able to exit even after the market is closed|[M-06] No lender is able to exit even after the market is closed]]
 
 ---
 # High Risk Findings (1)
@@ -21,6 +25,7 @@
 ----
 - **Tags**:  #state-transition #atithmetic #funds-locked #withdraw #loss_of_precision #withdraw_batch 
 - Number of finders: 1
+- Difficulty: Hard
 ---
 ### Detail
 
@@ -153,6 +158,7 @@ Although it's not a clean fix, consider adding a `addNormalizedUnclaimedRewards
 ----
 - **Tags**:  #business_logic_design #withdraw_batch
 - Number of finders: 1
+- Difficulty: Hard
 ---
 ### Detail
 
@@ -200,6 +206,7 @@ The key:
 ----
 - **Tags**: refer from #PCPvsSCP 
 - Number of finders: 3
+- Difficulty: Medium
 ---
 ### Summary
 
@@ -330,6 +337,7 @@ When `FixedTermLoanHooks::onSetAnnualInterestAndReserveRatioBips` is called, rev
 ----
 - **Tags**: refer from #consistency
 - Number of finders: 6
+- Difficulty: Easy
 ---
 Within functions such as `repay` and `repayAndProcessUnpaidWithdrawalBatches`, funds are first pulled from the user in order to use them towards the currently expired, but not yet unpaid batch, and then the updated state is fetched.
 
@@ -446,26 +454,6 @@ Always pull the funds first and refund later if needed.
 ***
 ### Notes & Impressions
 
-核心问题：
-1. 合约中存在多个具有还款功能的函数：
-2. 但是这些函数的处理顺序不一致：有的是“先更改状态，再转账”，有的是“先转账，再更改状态”
-3. 这些不一致最终导致相同的还款，最终金额不一致。
-4. 为什么不同的处理顺序会导致金额不一致：因为状态更新时会计算累积的利息和费用
-5. 项目方设计初衷：不同的函数，使用者是不同的。但是又没有做角色控制。
-
-感想：
-这是一个典型的 Consisitency（一致性）的问题。
-- **一致性原则**: 相同的业务操作应该有统一的处理模式
-- **最小惊讶原则**: 用户不应该因为调用不同函数而得到意外的结果
-- **代码复用**: 应该将共同的业务逻辑抽象成统一的函数来处理
-Checklist：
-1. 检查合约中是否存在多个相同业务的函数（还款，存款）。
-2. 如果存在，检查这些函数的业务操作是否一致。
-3. 如果不一致，判断这种不一致的结果是否严重。
-4. 如果发现多个相同业务的函数，检查是否有角色控制的需求
-5. 检查相关函数的文档说明是否清晰指出了预期的使用者
-6. 考察是否可以通过统一的内部函数来处理共同逻辑
-
 **Key Points:**
 1. There are multiple functions with repayment capabilities in the contract. 
 2. However, the processing order of these functions is inconsistent: some are "change the status first, then transfer funds", while others are "transfer funds first, then change the status". 
@@ -488,6 +476,883 @@ Checklist:
 6. Examine whether the common logic can be processed by a unified internal function.
 ### Refine
 - [[logical_issues#[03] Consistency Issues]]
+---
+## [M-04] `FixedTermLoanHook` looks at `block.timestamp` instead of `expiry`
+
+----
+- **Tags**: refer from #Time-based-logic
+- Number of finders: 1
+- Difficulty: Hard
+---
+The idea of `FixedTermLoanHook` is to only allow for withdrawals after a certain term end time. However, the problem is that the current implementation does not look at the expiry, but instead at the `block.timestamp`.
+
+```solidity
+  function onQueueWithdrawal(
+    address lender,
+    uint32 /* expiry */,
+    uint /* scaledAmount */,
+    MarketState calldata /* state */,
+    bytes calldata hooksData
+  ) external override {
+    HookedMarket memory market = _hookedMarkets[msg.sender];
+    if (!market.isHooked) revert NotHookedMarket();
+    if (market.fixedTermEndTime > block.timestamp) {
+      revert WithdrawBeforeTermEnd();
+    }
+```
+
+### Recommended Mitigation Steps
+
+Check the `expiry` instead of `block.timestamp`.
+
+**[d1ll0n (Wildcat) confirmed](https://github.com/code-423n4/2024-08-wildcat-findings/issues/60#event-14486191444)**
+
+**[laurenceday (Wildcat) acknowledged and commented](https://github.com/code-423n4/2024-08-wildcat-findings/issues/60#issuecomment-2403650325):**
+ > We've reflected on this a little bit, and decided that we want to turn this from a confirmed into an acknowledge.
+> 
+> The reasoning goes as follows:
+> 
+> Imagine that a fixed market has an expiry of December 30th, but there's a withdrawal cycle of 7 days.
+> 
+> Presumably the borrower is anticipating [and may have structured things] such that they are expecting to be able to make full use of any credit extended to them until then, and not a day sooner.
+> 
+> Fixing this in the way suggested would permit people to place withdrawal requests on December 23rd, with the potential to tip a market into delinquent status (depending on grace period configuration) before the fixed duration has actually met.
+> 
+> Net-net we think it makes more sense to allow the market to revert back to a perpetual after that expiry and allow withdrawal requests to be processed per the conditions. The expectation here would be that the withdrawal cycle would actually be quite short.
+
+**[Infect3d (warden) commented](https://github.com/code-423n4/2024-08-wildcat-findings/issues/60#issuecomment-2405458024):**
+ > May I comment on this issue: can we really consider this a bug rather than a feature and a design improvement, also considering sponsor comment?<br>
+> Expiry mechanism is known by borrower and lender, so if borrower wants lenders to be able to withdraw on time, he can simply configure `fixedTermEndTime = value - withdrawalBatchDuration`.
+
+**[3docSec (judge) commented](https://github.com/code-423n4/2024-08-wildcat-findings/issues/60#issuecomment-2411378025):**
+ > Hi @Infect3d - I agree we are close to an accepted trade-off territory. Here I lean on the sponsor who very transparently made it clear this trade-off is not something they had deliberately thought of.
+> 
+> Therefore, because the impact is compatible with Medium severity, "satisfactory Medium" plus "sponsor acknowledged" is a fair way of categorizing this finding.
+
+
+***
+### Notes & Impressions
+
+This type of issue belongs to "Time-based Logic & Business Flow" audit category, involving the following aspects:
+
+1. Audit Strategy:
+```solidity
+// When seeing code like this
+function onQueueWithdrawal(
+    address lender,
+    uint32 expiry,        // 👈 Note unused parameter
+    uint scaledAmount,
+    MarketState calldata state,
+    bytes calldata hooksData
+) {
+    // 👇 Note time-related check
+    if (market.fixedTermEndTime > block.timestamp) {
+        revert WithdrawBeforeTermEnd();
+    }
+}
+```
+
+During audit, focus on:
+1. Parameter Usage Analysis
+   - Check if all function parameters are properly utilized
+   - Pay special attention to unused parameters (like expiry here)
+   - Consider: Why is this parameter present but unused? Is important logic missing?
+
+2. Time Logic Analysis
+   - Identify all time-related checks (block.timestamp, expiry, etc.)
+   - Draw timelines to verify if logic at each time point is reasonable
+   - For example:
+     ```
+     Request Time -> fixedTermEndTime -> expiry -> Actual Withdrawal Time
+     ```
+
+3. Business Flow Analysis
+   - Understand the complete business flow (from request submission to actual withdrawal)
+   - Check if time controls at each step are reasonable
+   - Verify if user expectations match actual behavior
+
+4. Configuration Risk Analysis
+   - Check configurable parameters (like fixedTermEndTime)
+   - Consider potential issues from misconfiguration
+   - Evaluate if additional protection mechanisms are needed
+
+5. Documentation Consistency Check
+   - Compare code implementation with documentation
+   - Check for potentially misleading design or instructions
+
+Steps to identify such issues:
+
+```
+1. Establish Checklist:
+   □ Identify all time-related parameters
+   □ Check unused parameters
+   □ Verify time check logic
+   □ Analyze configuration parameter impacts
+   □ Test edge cases
+
+2. Scenario Testing:
+   □ Normal withdrawal scenarios
+   □ Early withdrawal attempts
+   □ Boundary time point tests
+   □ Different configuration combinations
+
+3. Risk Assessment:
+   □ User experience impact
+   □ Fund security impact
+   □ Contract interaction impact
+```
+
+Summary:
+- This type of issue belongs to "Time-based Logic & Business Flow" audit category
+- Requires combination of code review, business understanding, and scenario testing
+- Pay special attention to:
+  1. Unused parameters (may indicate design issues)
+  2. Time control logic (whether it meets business expectations)
+  3. Configuration parameter impacts (potential unexpected behaviors)
+  4. Documentation and implementation consistency
+
+This explains why it's a valid audit finding even if the code itself isn't buggy, as it involves user experience and potential configuration risks.
+
+### Refine
+
+- [[[logical_issues#[04] Time-based Logic & Business Flow]]
+---
+
+## [M-05] Role provide can bypass intended restrictions and lower expiry set by other providers
+
+----
+- **Tags**: refer from #access_control #two-step_attack #multi_OR
+- Number of finders: 3
+- Difficulty: Medium
+---
+If we look at the code comments, we'll see that role providers can update a user's credential only if at least one of the 3 is true:
+
+- the previous credential's provider is no longer supported, OR
+- the caller is the previous role provider, OR
+- the new expiry is later than the current expiry
+
+```solidity
+  /**
+   * @dev Grants a role to an account by updating the account's status.
+   *      Can only be called by an approved role provider.
+   *
+   *      If the account has an existing credential, it can only be updated if:
+   *      - the previous credential's provider is no longer supported, OR
+   *      - the caller is the previous role provider, OR
+   *      - the new expiry is later than the current expiry
+   */
+  function grantRole(address account, uint32 roleGrantedTimestamp) external {
+    RoleProvider callingProvider = _roleProviders[msg.sender];
+
+    if (callingProvider.isNull()) revert ProviderNotFound();
+
+    _grantRole(callingProvider, account, roleGrantedTimestamp);
+  }
+```
+
+This means that a role provider should not be able to reduce a credential set by another role provider.
+
+However, this could easily be bypassed by simply splitting the call into 2 separate ones:
+
+1. First one to set the expiry slightly later than the currently set one. This would set the role provider to the new one.
+2. Second call to reduce the expiry as much as they'd like. Since they're the previous provider they can do that.
+
+### Recommended Mitigation Steps
+
+Fix is non-trivial.
+
+**[d1ll0n (Wildcat) disputed and commented](https://github.com/code-423n4/2024-08-wildcat-findings/issues/57#issuecomment-2384066409):**
+
+> This is a useful note to be aware of, but I'd categorize it low/informational as role providers are inherently trusted entities. The likelihood and impact of this kind of attack are pretty minimal.
+
+**[3docSec (judge) commented](https://github.com/code-423n4/2024-08-wildcat-findings/issues/57#issuecomment-2393602205):**
+
+> There are a few factors to be considered:
+> 
+> - it is a valid privilege escalation vector
+> - the attacker has to be privileged already
+> - the attack can have a direct impact on a lender
+> 
+> While the first two have me on the fence when choosing between Medium and Low severity, the third point is a tiebreaker towards Medium.
+> 
+> If we stick to the [C4 severity categorization](https://docs.code4rena.com/awarding/judging-criteria/severity-categorization), I see a good fit with the Medium definition:
+> 
+> > "the function of the protocol or its availability could be impacted [...] with a hypothetical attack path with stated assumptions"
+### Notes & Impressions
+
+Let me break down this smart contract security vulnerability:
+
+
+
+The vulnerability relates to role management in a smart contract, specifically around how role providers can modify user credentials. Here's the issue explained:
+
+1. **Intended Behavior**:
+The contract aims to prevent role providers from reducing the expiry time of credentials that were set by other providers. According to the comments, a role provider should only be able to update a credential if:
+- The previous provider is no longer supported
+- They are the same provider who set the previous credential
+- They're extending the expiry time (making it later)
+
+2. **The Vulnerability**:
+A malicious role provider can bypass these restrictions using a two-step attack:
+
+Step 1: First Call
+- Set a new expiry that's slightly later than the current one
+- This is allowed because it meets the condition "new expiry is later than the current expiry"
+- This call changes the credential's provider to the attacker
+
+Step 2: Second Call
+- Now that they're registered as the credential's provider, they can make a second call
+- In this call, they can set any expiry they want (even a much earlier one)
+- This works because they now meet the condition "caller is the previous role provider"
+
+3. **Impact**:
+- This allows any role provider to effectively override and reduce the expiry times set by other providers
+- It breaks the intended access control mechanism
+- Could lead to premature revocation of user permissions
+
+4. **Root Cause**:
+The vulnerability exists because the contract doesn't maintain any history or checks about the original provider once a credential is updated. It only looks at the most recent provider.
+
+To fix this, the contract would need to either:
+- Prevent provider changes unless absolutely necessary
+- Maintain and check the original provider's settings
+- Add additional checks to prevent expiry reduction by different providers
+- Implement a timelock or cool-down period between credential updates
+
+*So the key point of this issue is that "the connection of these three conditions is an ‘OR’ rel "*
+### Refine
+
+[[logical_issues#Multi-Step Bypass via OR Logic in Access Controls]]
+
+---
+
+## [M-06] No lender is able to exit even after the market is closed
+
+----
+- **Tags**: refer from #state-transition 
+- Number of finders: 3
+- Difficulty: Medium
+---
+When a borrower creates a market hooked by a [fixed-term hook](https://github.com/code-423n4/2024-08-wildcat/blob/main/src/access/FixedTermLoanHooks.sol), all lenders are prohibited from withdrawing their assets from the market before the fixed-term time has elapsed.
+
+The borrower can close the market at any time. However, `fixedTermEndTime` of the market is not updated, preventing lenders from withdrawing their assets if `fixedTermEndTime` has not yet elapsed.
+
+Copy below codes to [WildcatMarket.t.sol](https://github.com/code-423n4/2024-08-wildcat/blob/main/test/market/WildcatMarket.t.sol) and run forge test --match-test test_closeMarket_BeforeFixedTermExpired:
+
+```solidity
+  function test_closeMarket_BeforeFixedTermExpired() external {
+    //@audit-info deploy a FixedTermLoanHooks template
+    address fixedTermHookTemplate = LibStoredInitCode.deployInitCode(type(FixedTermLoanHooks).creationCode);
+    hooksFactory.addHooksTemplate(
+      fixedTermHookTemplate,
+      'FixedTermLoanHooks',
+      address(0),
+      address(0),
+      0,
+      0
+    );
+    
+    vm.startPrank(borrower);
+    //@audit-info borrower deploy a FixedTermLoanHooks hookInstance
+    address hooksInstance = hooksFactory.deployHooksInstance(fixedTermHookTemplate, '');
+    DeployMarketInputs memory parameters = DeployMarketInputs({
+      asset: address(asset),
+      namePrefix: 'name',
+      symbolPrefix: 'symbol',
+      maxTotalSupply: type(uint128).max,
+      annualInterestBips: 1000,
+      delinquencyFeeBips: 1000,
+      withdrawalBatchDuration: 10000,
+      reserveRatioBips: 10000,
+      delinquencyGracePeriod: 10000,
+      hooks: EmptyHooksConfig.setHooksAddress(address(hooksInstance))
+    });
+    //@audit-info borrower deploy a market hooked by a FixedTermLoanHooks hookInstance
+    address market = hooksFactory.deployMarket(
+      parameters,
+      abi.encode(block.timestamp + (365 days)),
+      bytes32(uint(1)),
+      address(0),
+      0
+    );
+    vm.stopPrank();
+    //@audit-info lenders can only withdraw their asset one year later
+    assertEq(FixedTermLoanHooks(hooksInstance).getHookedMarket(market).fixedTermEndTime, block.timestamp + (365 days));
+    //@audit-info alice deposit 50K asset into market
+    vm.startPrank(alice);
+    asset.approve(market, type(uint).max);
+    WildcatMarket(market).depositUpTo(50_000e18);
+    vm.stopPrank();
+    //@audit-info borrower close market in advance
+    vm.prank(borrower);
+    WildcatMarket(market).closeMarket();
+    //@audit-info the market is closed
+    assertTrue(WildcatMarket(market).isClosed());
+    //@audit-info however, alice can not withdraw her asset due to the unexpired fixed term.
+    vm.expectRevert(FixedTermLoanHooks.WithdrawBeforeTermEnd.selector);
+    vm.prank(alice);
+    WildcatMarket(market).queueFullWithdrawal();
+  }
+```
+
+### Recommended Mitigation
+
+When a market hooked by a fixed-term hook is closed, `fixedTermEndTime` should be set to `block.timestamp` if it has not yet elapsed:
+
+```solidity
+  constructor(address _deployer, bytes memory /* args */) IHooks() {
+    borrower = _deployer;
+    // Allow deployer to grant roles with no expiry
+    _roleProviders[_deployer] = encodeRoleProvider(
+      type(uint32).max,
+      _deployer,
+      NotPullProviderIndex
+    );
+    HooksConfig optionalFlags = encodeHooksConfig({
+      hooksAddress: address(0),
+      useOnDeposit: true,
+      useOnQueueWithdrawal: false,
+      useOnExecuteWithdrawal: false,
+      useOnTransfer: true,
+      useOnBorrow: false,
+      useOnRepay: false,
+      useOnCloseMarket: false,
+      useOnNukeFromOrbit: false,
+      useOnSetMaxTotalSupply: false,
+      useOnSetAnnualInterestAndReserveRatioBips: false,
+      useOnSetProtocolFeeBips: false
+    });
+    HooksConfig requiredFlags = EmptyHooksConfig
+      .setFlag(Bit_Enabled_SetAnnualInterestAndReserveRatioBips)
++     .setFlag(Bit_Enabled_CloseMarket);
+      .setFlag(Bit_Enabled_QueueWithdrawal);
+    config = encodeHooksDeploymentConfig(optionalFlags, requiredFlags);
+  }
+```
+
+```solidity
+  function onCloseMarket(
+    MarketState calldata /* state */,
+    bytes calldata /* hooksData */
+- ) external override {}
++ ) external override {
++   HookedMarket memory market = _hookedMarkets[msg.sender];
++   if (!market.isHooked) revert NotHookedMarket();
++   if (market.fixedTermEndTime > block.timestamp) {
++     _hookedMarkets[msg.sender].fixedTermEndTime = uint32(block.timestamp);
++   }
++ }
+```
+
+**[laurenceday (Wildcat) confirmed and commented](https://github.com/code-423n4/2024-08-wildcat-findings/issues/52#issuecomment-2364042816):**
+
+> This is a great catch.
+
+**[laurenceday (Wildcat) commented](https://github.com/code-423n4/2024-08-wildcat-findings/issues/52#issuecomment-2403731338):**
+
+> Fixed by [wildcat-finance/v2-protocol@05958e3](https://github.com/wildcat-finance/v2-protocol/commit/05958e35995093bcf6941c82fc14f9b9acc7cea0).
+### Notes & Impressions
+
+It is very similar to the following high-risk finding. 
+[[2024-08-wildact#[H-01] User could withdraw more than supposed to, forcing last user withdraw to fail|[H-01] User could withdraw more than supposed to, forcing last user withdraw to fail]]
+
+Common Pattern Analysis between the two issues:
+
+1. Core Similarity: Inconsistent State Transitions
+```
+Fixed-Term Issue:
+- Market State: Closed
+- Time Lock State: Still active
+- Result: Deadlock
+
+Withdrawal Issue:
+- Batch State: Partially executed
+- Rate State: Changes during execution
+- Result: Under-collateralization
+```
+
+2. Shared Root Cause: Race Conditions in Market Closure
+```solidity
+Market Closure Scenarios:
+
+Scenario 1 (Fixed-Term):
+- Time Lock: t + 365 days
+- Market Closes: t + 30 days
+- States become unsynchronized
+
+Scenario 2 (Withdrawals):
+- Withdrawal Batch: Expected uniform rate
+- Market Closes: Mid-batch execution
+- Rates become unsynchronized
+```
+
+3. Pattern Recognition Framework:
+```
+Category: State Synchronization in Market Closure
+
+Key Identifiers:
+1. Multiple dependent states
+2. Administrative override capability
+3. Time-based or sequential operations
+4. Batch processing with shared resources
+
+Risk Amplifiers:
+- Rate calculations
+- Time locks
+- Multi-user interactions
+- Partial execution paths
+```
+
+4. Audit Strategy:
+```
+Critical Checkpoints:
+1. Market Closure Effects
+   - What states should be updated?
+   - What constraints should be lifted?
+   - What rates should be locked?
+
+2. Sequence Dependencies
+   - Can operations be split?
+   - Are rates consistent?
+   - Are locks properly cleared?
+
+3. Resource Distribution
+   - Is total withdrawal amount preserved?
+   - Are time locks properly handled?
+   - Are all users able to exit?
+```
+
+5. Combined Defense Pattern:
+```solidity
+function closeMarket() external {
+    // 1. Lock new operations
+    marketState = CLOSED;
+    
+    // 2. Clear all time-based restrictions
+    fixedTermEndTime = block.timestamp;
+    
+    // 3. Freeze rates/calculations
+    finalizedRate = getCurrentRate();
+    
+    // 4. Enable immediate withdrawals
+    clearWithdrawalQueue();
+    
+    // 5. Verify invariants
+    require(totalAssets >= totalLiabilities, "Invalid closure state");
+}
+```
+
+This analysis shows why these issues are related - they both stem from incomplete market closure handling and demonstrate how administrative actions can break protocol invariants if state synchronization isn't properly managed.
+
+For auditors, this suggests:
+1. Always trace market closure effects across all state variables
+2. Look for time-based or sequential operations that could be disrupted
+3. Verify that emergency actions properly handle all constraints
+4. Check for rate calculations that could be manipulated during state changes
+### Refine
+
+[[common_issues#[04] State Transition Synchronization]]
+
+---
+
+## [M-07] Role providers cannot be EOAs as stated in the documentation
+
+----
+- **Tags**: refer from #PCPvsSCP 
+- Number of finders: 2
+- Difficulty: Degree of Difficulty in Discovering Problems (High: 1, Medium: 2~3, Low: > 6 )
+---
+```solidity
+220:      bool isPullProvider = IRoleProvider(providerAddress).isPullProvider();
+```
+
+```solidity
+254  function addRoleProvider(address providerAddress, uint32 timeToLive) external onlyBorrower {
+```
+
+### Impact
+
+The [Documentation](https://docs.wildcat.finance/technical-overview/security-developer-dives/hooks/access-control-hooks#role-providers) suggests that a role provider can be a "push" provider (one that "pushes" credentials into the hooks contract by calling `grantRole`) and a "pull" provider (one that the hook calls via `getCredential` or `validateCredential`).
+
+The documentation also states that:
+
+> Role providers do not have to implement any of these functions - a role provider can be an EOA.
+
+But in fact, only the initial deployer can be an EOA provider, since it is coded in the constructor. Any other EOA provider that the borrower tries to add via `addRoleProvider` will fail because it does not implement the interface.
+### Proof of Concept
+
+PoC will revert because EOA does not implement interface obviously:
+
+```
+  [118781] AuditMarket::test_PoC_EOA_provider()
+    ├─ [0] VM::startPrank(BORROWER1: [0xB193AC639A896a0B7a0B334a97f0095cD87427f2])
+    │   └─ ← [Return]
+    ├─ [29883] AccessControlHooks::addRoleProvider(RoleProvider: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], 2592000 [2.592e6])
+    │   ├─ [2275] RoleProvider::isPullProvider() [staticcall]
+    │   │   └─ ← [Return] false
+    │   ├─ emit RoleProviderAdded(providerAddress: RoleProvider: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], timeToLive: 2592000 [2.592e6], pullProviderIndex: 16777215 [1.677e7])
+    │   └─ ← [Stop]
+    ├─ [74243] AccessControlHooks::addRoleProvider(RoleProvider: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a], 2592000 [2.592e6])
+    │   ├─ [2275] RoleProvider::isPullProvider() [staticcall]
+    │   │   └─ ← [Return] true
+    │   ├─ emit RoleProviderAdded(providerAddress: RoleProvider: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a], timeToLive: 2592000 [2.592e6], pullProviderIndex: 0)
+    │   └─ ← [Stop]
+    ├─ [5547] AccessControlHooks::addRoleProvider(EOA_PROVIDER1: [0x6aAfF89c996cAa2BD28408f735Ba7A441276B03F], 2592000 [2.592e6])
+    │   ├─ [0] EOA_PROVIDER1::isPullProvider() [staticcall]
+    │   │   └─ ← [Stop]
+    │   └─ ← [Revert] EvmError: Revert
+    └─ ← [Revert] EvmError: Revert
+```
+
+**PoC**:
+```solidity
+// SPDX-License-Identifier: UNLICENSED
+pragma solidity ^0.8.20;
+
+import "forge-std/Test.sol";
+import "forge-std/console2.sol";
+
+import {WildcatArchController} from "../src/WildcatArchController.sol";
+import {HooksFactory} from "../src/HooksFactory.sol";
+import {LibStoredInitCode} from "src/libraries/LibStoredInitCode.sol";
+import {WildcatMarket} from "src/market/WildcatMarket.sol";
+import {AccessControlHooks} from "../src/access/AccessControlHooks.sol";
+import {DeployMarketInputs} from "../src/interfaces/WildcatStructsAndEnums.sol";
+import {HooksConfig, encodeHooksConfig} from "../src/types/HooksConfig.sol";
+
+import {MockERC20} from "../test/shared/mocks/MockERC20.sol";
+import {MockSanctionsSentinel} from "./shared/mocks/MockSanctionsSentinel.sol";
+import {deployMockChainalysis} from "./shared/mocks/MockChainalysis.sol";
+import {IRoleProvider} from "../src/access/IRoleProvider.sol";
+
+contract AuditMarket is Test {
+    WildcatArchController wildcatArchController;
+    MockSanctionsSentinel internal sanctionsSentinel;
+    HooksFactory hooksFactory;
+
+    MockERC20 ERC0 = new MockERC20();
+
+    address immutable ARCH_DEPLOYER = makeAddr("ARCH_DEPLOYER");
+    address immutable FEE_RECIPIENT = makeAddr("FEE_RECIPIENT");
+    address immutable BORROWER1 = makeAddr("BORROWER1");
+
+    address immutable EOA_PROVIDER1 = makeAddr("EOA_PROVIDER1");
+    address immutable PROVIDER1 = address(new RoleProvider(false));
+    address immutable PROVIDER2 = address(new RoleProvider(true));
+
+    address accessControlHooksTemplate = LibStoredInitCode.deployInitCode(type(AccessControlHooks).creationCode);
+
+    AccessControlHooks accessControlHooksInstance;
+
+    function _storeMarketInitCode() internal virtual returns (address initCodeStorage, uint256 initCodeHash) {
+        bytes memory marketInitCode = type(WildcatMarket).creationCode;
+        initCodeHash = uint256(keccak256(marketInitCode));
+        initCodeStorage = LibStoredInitCode.deployInitCode(marketInitCode);
+    }
+
+    function setUp() public {
+        deployMockChainalysis();
+        vm.startPrank(ARCH_DEPLOYER);
+        wildcatArchController = new WildcatArchController();
+        sanctionsSentinel = new MockSanctionsSentinel(address(wildcatArchController));
+        (address initCodeStorage, uint256 initCodeHash) = _storeMarketInitCode();
+        hooksFactory =
+            new HooksFactory(address(wildcatArchController), address(sanctionsSentinel), initCodeStorage, initCodeHash);
+
+        wildcatArchController.registerControllerFactory(address(hooksFactory));
+        hooksFactory.registerWithArchController();
+        wildcatArchController.registerBorrower(BORROWER1);
+
+        hooksFactory.addHooksTemplate(
+            accessControlHooksTemplate, "accessControlHooksTemplate", FEE_RECIPIENT, address(ERC0), 1 ether, 500
+        );
+        vm.startPrank(BORROWER1);
+
+        DeployMarketInputs memory marketInput = DeployMarketInputs({
+            asset: address(ERC0),
+            namePrefix: "Test",
+            symbolPrefix: "TT",
+            maxTotalSupply: uint128(100_000e27),
+            annualInterestBips: uint16(500),
+            delinquencyFeeBips: uint16(500),
+            withdrawalBatchDuration: uint32(5 days),
+            reserveRatioBips: uint16(500),
+            delinquencyGracePeriod: uint32(5 days),
+            hooks: encodeHooksConfig(address(0), true, true, false, true, false, false, false, false, false, true, false)
+        });
+        bytes memory hooksData = abi.encode(uint32(block.timestamp + 30 days), uint128(1e27));
+        deal(address(ERC0), BORROWER1, 1 ether);
+        ERC0.approve(address(hooksFactory), 1 ether);
+        (address market, address hooksInstance) = hooksFactory.deployMarketAndHooks(
+            accessControlHooksTemplate,
+            abi.encode(BORROWER1),
+            marketInput,
+            hooksData,
+            bytes32(bytes20(BORROWER1)),
+            address(ERC0),
+            1 ether
+        );
+        accessControlHooksInstance = AccessControlHooks(hooksInstance);
+        vm.stopPrank();
+    }
+
+    function test_PoC_EOA_provider() public {
+        vm.startPrank(BORROWER1);
+
+        accessControlHooksInstance.addRoleProvider(PROVIDER1, uint32(30 days));
+        accessControlHooksInstance.addRoleProvider(PROVIDER2, uint32(30 days));
+        accessControlHooksInstance.addRoleProvider(EOA_PROVIDER1, uint32(30 days));
+    }
+}
+
+contract RoleProvider is IRoleProvider {
+    bool public isPullProvider;
+    mapping(address account => uint32 timestamp) public getCredential;
+
+    constructor(bool _isPullProvider) {
+        isPullProvider = _isPullProvider;
+    }
+
+    function setCred(address account, uint32 timestamp) external {
+        getCredential[account] = timestamp;
+    }
+
+    function validateCredential(address account, bytes calldata data) external returns (uint32 timestamp) {
+        if (data.length != 0) {
+            return uint32(block.timestamp);
+        } else {
+            revert("Wrong creds");
+        }
+    }
+}
+```
+
+### Recommended Mitigation
+
+Replace the interface call with a low-level call and check if the user implements the interface in order to be a pull provider:
+
+```solidity
+(bool succes, bytes memory data) =
+    providerAddress.call(abi.encodeWithSelector(IRoleProvider.isPullProvider.selector));
+bool isPullProvider;
+if (succes && data.length == 0x20) {
+    isPullProvider = abi.decode(data, (bool));
+} else {
+    isPullProvider = false;
+}
+```
+
+With this code all logic works as expected, for EOA providers `pullProviderIndex` is set to `type(uint24).max`, for contracts - depending on the result of calling `isPullProvider`:
+
+```
+Traces:
+  [141487] AuditMarket::test_PoC_EOA_provider()
+    ├─ [0] VM::startPrank(BORROWER1: [0xB193AC639A896a0B7a0B334a97f0095cD87427f2])
+    │   └─ ← [Return]
+    ├─ [30181] AccessControlHooks::addRoleProvider(RoleProvider: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], 2592000 [2.592e6])
+    │   ├─ [2275] RoleProvider::isPullProvider()
+    │   │   └─ ← [Return] false
+    │   ├─ emit RoleProviderAdded(providerAddress: RoleProvider: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], timeToLive: 2592000 [2.592e6], pullProviderIndex: 16777215 [1.677e7])
+    │   └─ ← [Stop]
+    ├─ [74541] AccessControlHooks::addRoleProvider(RoleProvider: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a], 2592000 [2.592e6])
+    │   ├─ [2275] RoleProvider::isPullProvider()
+    │   │   └─ ← [Return] true
+    │   ├─ emit RoleProviderAdded(providerAddress: RoleProvider: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a], timeToLive: 2592000 [2.592e6], pullProviderIndex: 0)
+    │   └─ ← [Stop]
+    ├─ [27653] AccessControlHooks::addRoleProvider(EOA_PROVIDER1: [0x6aAfF89c996cAa2BD28408f735Ba7A441276B03F], 2592000 [2.592e6])
+    │   ├─ [0] EOA_PROVIDER1::isPullProvider()
+    │   │   └─ ← [Stop]
+    │   ├─ emit RoleProviderAdded(providerAddress: EOA_PROVIDER1: [0x6aAfF89c996cAa2BD28408f735Ba7A441276B03F], timeToLive: 2592000 [2.592e6], pullProviderIndex: 16777215 [1.677e7])
+    │   └─ ← [Stop]
+    └─ ← [Stop]
+```
+
+**[laurenceday (Wildcat) commented](https://github.com/code-423n4/2024-08-wildcat-findings/issues/49#issuecomment-2387986619):**
+
+> Not really a medium in that it doesn't 'matter' for the most part: this is sort of a documentation issue in that we'd never really expect an EOA that _wasn't_ the borrower (which is an EOA provider) to be a role provider.
+> 
+> It's vanishingly unlikely that a borrower is going to add some random arbiter that they don't control - possible that they add another address that THEY control but in that case they might as well use the one that's known to us.
+> 
+> Disputing, but with a light touch: we consider this a useful QA.
+
+**[3docSec (judge) commented](https://github.com/code-423n4/2024-08-wildcat-findings/issues/49#issuecomment-2391862173):**
+
+> Thanks for the context. If we ignore the documentation, the fact that the initial role provider is the borrower, and the `NotPullProviderIndex` value that is used in this case makes it clear that the intention is allowing for EOAs to be there.
+> 
+> While not the most requested feature, it's something a borrower may want to do, and given the above, may reasonably expect to see working. For this reason, I think a Medium is reasonable because we have marginal I admit, but still tangible, availability impact.
+### Notes & Impressions
+
+**Impressions**
+
+>*Overall, this is still an issue that the PCP doesn't match up with the SCP.*
+
+**Notes**
+In Solidity, an EOA can only:
+- Send transactions
+- Transfer funds
+- Call other contracts
+An EOA cannot:
+- Have contract-specific functions
+- Implement interface methods
+- Return view/pure function results
+When you do `IRoleProvider(providerAddress).isPullProvider()`, it's attempting to:
+1. Cast the address to an interface
+2. Call a specific method `isPullProvider()`
+For a contract, this works normally:
+```solidity
+interface IRoleProvider {
+    function isPullProvider() external view returns (bool);
+}
+
+// Contract can implement this
+contract ValidRoleProvider is IRoleProvider {
+    function isPullProvider() external view returns (bool) {
+        return true; // or some logic
+    }
+}
+```
+
+But for an EOA:
+- It has no code
+- No function implementations
+- No way to return `true/false` for `isPullProvider()`
+So when you try to call `isPullProvider()` on an EOA, it will:
+- Fail the interface cast
+- Throw a runtime error
+- Prevent the transaction
+
+Low-level Call
+```solidity
+(bool success, bytes memory data) = 
+    providerAddress.call(abi.encodeWithSelector(IRoleProvider.isPullProvider.selector));
+bool isPullProvider;
+if (success && data.length == 0x20) {
+    isPullProvider = abi.decode(data, (bool));
+} else {
+    isPullProvider = false;
+}
+```
+
+How this works:
+- `call()` attempts to execute the function selector
+- For an EOA:
+	- `success` will be `false`
+	- `data.length` will not be `0x20`
+	- Defaults to `isPullProvider = false`
+- For a contract:
+	- If method exists: returns the actual boolean
+	- If method doesn't exist: `success` is `false`
+### Refine
+
+[[logical_issues#[01] PCP vs SCP]]
+
+---
+
+## [M-08] `AccessControlHooks` `onQueueWithdrawal()` does not check if market is hooked which could lead to unexpected errors such as temporary DoS
+
+----
+- **Tags**: refer from [[report_tags]]
+- Number of finders: 4
+- Difficulty: Degree of Difficulty in Discovering Problems (High: 1, Medium: 2~3, Low: > 6 )
+---
+### Impact
+
+The `onQueueWithdrawal()` function does not check if the caller is a hooked market, meaning anyone can call the function and attempt to verify credentials on a lender. This results in calls to registered pull providers with arbitrary hookData, which could lead to potential issues such as abuse of credentials that are valid for a short term, e.g. 1 block.
+
+### Proof of Concept
+
+The `onQueueWithdrawal()` function does not check if the msg.sender is a hooked market, which is standart in virtually all other hooks:
+
+```solidity
+  /**
+   * @dev Called when a lender attempts to queue a withdrawal.
+   *      Passes the check if the lender has previously deposited or received
+   *      market tokens while having the ability to deposit, or currently has a
+   *      valid credential from an approved role provider.
+   */
+  function onQueueWithdrawal(
+    address lender,
+    uint32 /* expiry */,
+    uint /* scaledAmount */,
+    MarketState calldata /* state */,
+    bytes calldata hooksData
+  ) external override {
+    LenderStatus memory status = _lenderStatus[lender];
+    if (
+      !isKnownLenderOnMarket[lender][msg.sender] && !_tryValidateAccess(status, lender, hooksData)
+    ) {
+      revert NotApprovedLender();
+    }
+  }
+```
+
+If the caller is not a hooked market, the statement `!isKnownLenderOnMarket[lender][msg.sender]`, will return true, because the lender will be unknown. As a result the `_tryValidateAccess()` function will be executed for any `lender` and any `hooksData` passed. The call to `_tryValidateAccess()` will forward the call to `_tryValidateAccessInner()`. Choosing a lender of arbitrary address, say `address(1)` will cause the function to attempt to retrieve the credential via the call to `_handleHooksData()`, since the lender will have no previous provider or credentials.
+
+As a result, the `_handleHooksData` function will forward the call to the encoded provider in the hooksData and will forward the extra hooks data as well, say merkle proof, or any arbitrary malicious data.
+
+```solidity
+  function _handleHooksData(
+    LenderStatus memory status,
+    address accountAddress,
+    bytes calldata hooksData
+  ) internal returns (bool validCredential) {
+    // Check if the hooks data only contains a provider address
+    if (hooksData.length == 20) {
+      // If the data contains only an address, attempt to query a credential from that provider
+      // if it exists and is a pull provider.
+      address providerAddress = _readAddress(hooksData);
+      RoleProvider provider = _roleProviders[providerAddress];
+      if (!provider.isNull() && provider.isPullProvider()) {
+        return _tryGetCredential(status, provider, accountAddress);
+      }
+    } else if (hooksData.length > 20) {
+      // If the data contains both an address and additional bytes, attempt to
+      // validate a credential from that provider
+      return _tryValidateCredential(status, accountAddress, hooksData);
+    }
+  }
+```
+
+The function call will be executed in [tryValidateCredential()](https://github.com/code-423n4/2024-08-wildcat/blob/main/src/access/AccessControlHooks.sol#L525), where the extra hookData will be forwarded. As described in the function comments, it will execute a call to `provider.(address account, bytes calldata data)`.
+
+This means that anyone can call the function and pass arbitrary calldata. This can lead to serious vulnerabilities as the calldata is passed to the provider.
+
+Consider the following scenario:
+
+- The pull provider is implemented to provide a short-term(say one block) approval timestamp.
+- A user of the protocol provides a merkle-proof which would grant the one-time approval to withdraw in a transaction.
+- A malicious miner frontruns the transaction submitting the same proof, but does not include the honest transaction in the mined block. Instead it is left for the next block.
+- In the next block, the credential is no longer valid and as a result the honest user has their transaction revert.
+- The miner does this continuosly essentially DoSing the entire market that uses this provider until it is removed and a new one added.
+
+By following this scenario, a malicious user can essentially DoS a specific type pull provider.
+
+Depending on implemenation of the pull provider, this can lead to other issues, as the malicious user can supply any arbitrary hookData in the function call.
+
+### Recommended Mitigation
+
+Require the caller to be a registered hooked market, same as [onQueueWithdrawal()](https://github.com/code-423n4/2024-08-wildcat/blob/main/src/access/FixedTermLoanHooks.sol#L848) in `FixedTermloanHooks`
+
+**[3docSec (judge) commented via duplicate issue #83](https://github.com/code-423n4/2024-08-wildcat-findings/issues/83#issuecomment-2404270998):**
+
+> I find this group compatible with the Medium severity for the following reasons:
+> 
+> - access to a lender's signature is very feasible in the frontrunning scenario depicted in this finding
+> - the hypothesis on `validateCredential` isn't really a speculation but rather a very reasonable implementation, one that was also assumed in the [previous audit (finding number 2)](https://hackmd.io/@geistermeister/BJk4Ekt90).
+
+**[laurenceday (Wildcat) acknowledged and commented](https://github.com/code-423n4/2024-08-wildcat-findings/issues/11#issuecomment-2431829302):**
+
+> We don't consider this a real issue, in that we’ve always wanted it to be possible for anyone to call the validate function to poke a credential update. This finding assumes that you have the signature someone else would be using as a credential and generally relies on a specific implementation of the provider that doesn’t actually exist, so there's no need to check `isHooked`.
+> 
+> It's been upgraded to a Medium, and we're not going to argue with this at this stage. As such, we're acknowledging rather than confirming or disputing simply to put a cap on the report.
+### Notes & Impressions
+
+{{Some key points that need to be noted. }}
+{{Your feelings about uncovering this finding.}}
+
+### Refine
+
+{{ Refine to typical issues}}
 
 ---
 ## Audit Summary Notes

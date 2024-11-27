@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "checklist.md",
+                "file": "audit_notes/2024-08-wildact.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "checklist"
+              "title": "2024-08-wildact"
             }
           },
           {
@@ -27,12 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "typical_issues/logical_issues.md",
+                "file": "audit_notes/2024-08-wildact.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "logical_issues"
+              "title": "2024-08-wildact"
             }
           }
         ]
@@ -66,7 +66,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "tag:#business_logic_design",
+                "query": "tag:#state-transition",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -87,11 +87,13 @@
               "title": "Bookmarks"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "horizontal",
-    "width": 266.5
+    "width": 266.5,
+    "collapsed": true
   },
   "right": {
     "id": "0e99fb6992220435",
@@ -179,22 +181,22 @@
   },
   "active": "eac56537009acf77",
   "lastOpenFiles": [
-    "templates/medium_risk_finding_item.md",
+    "typical_issues/common_issues.md",
+    "templates/typical_logical_issues_item.md",
     "typical_issues/logical_issues.md",
     "checklist.md",
     "audit_notes/2024-08-wildact.md",
+    "audit_notes/2024-10-sablier_flow.md",
+    "audit_notes/2024-01-canto.md",
+    "templates/medium_risk_finding_item.md",
+    "templates/high_risk_finding_item.md",
+    "templates/audit_projects.md",
     "Medium Findings.md",
     "M-01] Users are incentivized to not withdraw immediately after the market is closed.md",
     "[M-03]  Inconsistency across multiple repaying functions causing lender to pay extra fees.md",
     "utils/protocol_categories.md",
     "utils/report_tags.md",
-    "audit_notes/2024-01-canto.md",
     "templates/global_index.md",
-    "templates/typical_logical_issues_item.md",
-    "typical_issues/common_issues.md",
-    "templates/high_risk_finding_item.md",
-    "templates/audit_projects.md",
-    "audit_notes/2024-10-sablier_flow.md",
     "Untitled.md",
     "utils",
     "Typical Issues/Logical_Issues.md.md",

@@ -8,7 +8,15 @@
 	- Pay special attention to all calculation logics involving division during auditing.
 	- Hidden "division before a multiplication"
 		- Track the **complete** calculation process of variables
-
+- Compare similar functions
+	1. **Cross-contract Comparisons**: Compare related contracts for inconsistencies in key functionalities.
+	2. **Key Functions**: Focus on critical operations such as `withdraw`, `deposit`, or similar sensitive actions.
+	3. **Validation Checks**: Look for missing or inconsistent validations, especially regarding access control or permissions.
+-  Data Validation 
+	- Verifying input parameter constraints
+	- Checking for proper data range and type validations
+- edge cases
+	- full-byte parameters
 # Typical Logical Issues
 
 - Process Control Points vs. System Control Points
@@ -25,7 +33,4 @@
 	- Can satisfying one condition affect other conditions?
 	- Map out the relationship between each condition: `Condition A -> Changes State -> Enables Condition B?`
 	- Try two-step attack
-- Compare similar functions
-	1. **Cross-contract Comparisons**: Compare related contracts for inconsistencies in key functionalities.
-	2. **Key Functions**: Focus on critical operations such as `withdraw`, `deposit`, or similar sensitive actions.
-	3. **Validation Checks**: Look for missing or inconsistent validations, especially regarding access control or permissions.
+

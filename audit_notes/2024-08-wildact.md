@@ -1,9 +1,9 @@
-# [2024-08-wildact](https://github.com/code-423n4/2024-08-wildcat-findings/blob/main/report.md)
+# 2024-08-wildact
 ---
-- Category: Lending, Hooks
+- Category: #Lending, #Hooks
 - Note Create 2024-10-28
 - Platform: code4rena
-- Report Url
+- [Report Url](https://github.com/code-423n4/2024-08-wildcat-findings/blob/main/report.md)
 ---
 ## Findings Summary
 
@@ -16,6 +16,8 @@
 4. [[2024-08-wildact#[M-04] `FixedTermLoanHook` looks at `block.timestamp` instead of `expiry`|[M-04] `FixedTermLoanHook` looks at `block.timestamp` instead of `expiry`]]
 5. [[2024-08-wildact#[M-05] Role provide can bypass intended restrictions and lower expiry set by other providers|[M-05] Role provide can bypass intended restrictions and lower expiry set by other providers]]
 6. [[2024-08-wildact#[M-06] No lender is able to exit even after the market is closed|[M-06] No lender is able to exit even after the market is closed]]
+7. [[2024-08-wildact#[M-07] Role providers cannot be EOAs as stated in the documentation|[M-07] Role providers cannot be EOAs as stated in the documentation]]
+8. [[2024-08-wildact#[M-08] `AccessControlHooks` `onQueueWithdrawal()` does not check if market is hooked which could lead to unexpected errors such as temporary DoS|[M-08] `AccessControlHooks` `onQueueWithdrawal()` does not check if market is hooked which could lead to unexpected errors such as temporary DoS]]
 
 ---
 # High Risk Findings (1)
@@ -1251,9 +1253,9 @@ How this works:
 ## [M-08] `AccessControlHooks` `onQueueWithdrawal()` does not check if market is hooked which could lead to unexpected errors such as temporary DoS
 
 ----
-- **Tags**: refer from [[report_tags]]
+- **Tags**: #compare_similar_funs_cross_cotract
 - Number of finders: 4
-- Difficulty: Degree of Difficulty in Discovering Problems (High: 1, Medium: 2~3, Low: > 6 )
+- Difficulty: Easy
 ---
 ### Impact
 
@@ -1287,7 +1289,7 @@ The `onQueueWithdrawal()` function does not check if the msg.sender is a hooke
 ```
 
 If the caller is not a hooked market, the statement `!isKnownLenderOnMarket[lender][msg.sender]`, will return true, because the lender will be unknown. As a result the `_tryValidateAccess()` function will be executed for any `lender` and any `hooksData` passed. The call to `_tryValidateAccess()` will forward the call to `_tryValidateAccessInner()`. Choosing a lender of arbitrary address, say `address(1)` will cause the function to attempt to retrieve the credential via the call to `_handleHooksData()`, since the lender will have no previous provider or credentials.
-
+t
 As a result, the `_handleHooksData` function will forward the call to the encoded provider in the hooksData and will forward the extra hooks data as well, say merkle proof, or any arbitrary malicious data.
 
 ```solidity
@@ -1347,12 +1349,54 @@ Require the caller to be a registered hooked market, same as [onQueueWithdrawal
 > It's been upgraded to a Medium, and we're not going to argue with this at this stage. As such, we're acknowledging rather than confirming or disputing simply to put a cap on the report.
 ### Notes & Impressions
 
-{{Some key points that need to be noted. }}
-{{Your feelings about uncovering this finding.}}
+I presume it could be the following scenario. The auditors read the code and identified the `onQueueWithdrawal` function in the FixedTermLoanHooks and AccessControlHooks contracts. Upon careful examination, they noticed that one of them contained a judgement of hook market while the other did not. Subsequently, they further investigated whether this judgement would constitute a problem for the other contract. code: AccessControlHooks.sol
+
+```
+function onQueueWithdrawal(
+    address lender,
+    uint32 /* expiry */,
+    uint /* scaledAmount */,
+    MarketState calldata /* state */,
+    bytes calldata hooksData
+  ) external override {
+    LenderStatus memory status = _lenderStatus[lender];
+    if (
+      !isKnownLenderOnMarket[lender][msg.sender] && !_tryValidateAccess(status, lender, hooksData)
+    ) {
+      revert NotApprovedLender();
+    }
+  }
+```
+
+FixedTermLoanHooks.sol
+
+```
+function onQueueWithdrawal(
+    address lender,
+    uint32 /* expiry */,
+    uint /* scaledAmount */,
+    MarketState calldata /* state */,
+    bytes calldata hooksData
+  ) external override {
+    HookedMarket memory market = _hookedMarkets[msg.sender];
+    if (!market.isHooked) revert NotHookedMarket();
+    if (market.fixedTermEndTime > block.timestamp) {
+      revert WithdrawBeforeTermEnd();
+    }
+    LenderStatus memory status = _lenderStatus[lender];
+    if (market.withdrawalRequiresAccess) {
+      if (
+        !isKnownLenderOnMarket[lender][msg.sender] && !_tryValidateAccess(status, lender, hooksData)
+      ) {
+        revert NotApprovedLender();
+      }
+    }
+  }
+```
 
 ### Refine
 
-{{ Refine to typical issues}}
+[[common_issues#[05] Inconsistent Validation in Critical Functionality]]
 
 ---
 ## Audit Summary Notes

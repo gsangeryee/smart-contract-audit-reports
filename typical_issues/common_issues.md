@@ -201,3 +201,58 @@ function executeWithdrawal() external {
 	- Test edge cases of status changes with partial user interactions
 
 ---
+## [05] Inconsistent Validation in Critical Functionality
+
+### Problem pattern:
+
+- Inconsistent implementation of critical validation checks across similar functions in related contracts.
+
+### Common scenarios:
+
+- A function in one contract includes an essential validation (e.g., verifying caller permissions), while a similar function in another contract omits it.
+- This inconsistency allows unauthorized access or unintended behavior when interacting with the unprotected function.
+
+### Typical Code:
+
+```solidity
+// Function with validation
+function onQueueWithdrawal(
+  address lender,
+  uint32 /* expiry */,
+  uint /* scaledAmount */,
+  MarketState calldata /* state */,
+  bytes calldata hooksData
+) external override {
+  HookedMarket memory market = _hookedMarkets[msg.sender];
+  if (!market.isHooked) revert NotHookedMarket();
+  // Additional logic
+}
+
+// Function without validation
+function onQueueWithdrawal(
+  address lender,
+  uint32 /* expiry */,
+  uint /* scaledAmount */,
+  MarketState calldata /* state */,
+  bytes calldata hooksData
+) external override {
+  LenderStatus memory status = _lenderStatus[lender];
+  if (!isKnownLenderOnMarket[lender][msg.sender] && !_tryValidateAccess(status, lender, hooksData)) {
+    revert NotApprovedLender();
+  }
+}
+```
+
+### Real Cases
+
+- [[2024-08-wildact#[M-08] `AccessControlHooks` `onQueueWithdrawal()` does not check if market is hooked which could lead to unexpected errors such as temporary DoS]]
+
+### Audit Key Points:
+
+1. **Identification Points**:
+    - Compare similar functions across related contracts to spot missing or inconsistent validations.
+    - Identify roles or permissions (e.g., "hooked market") that should consistently be enforced.
+    
+2. **Check Points**:
+    - Verify if all critical functions validate the caller's role or permissions as expected.
+    - Test the impact of omitting the validation, especially for scenarios involving external input or credential verification.

@@ -25,3 +25,7 @@
 	- Can satisfying one condition affect other conditions?
 	- Map out the relationship between each condition: `Condition A -> Changes State -> Enables Condition B?`
 	- Try two-step attack
+- Compare similar functions
+	1. **Cross-contract Comparisons**: Compare related contracts for inconsistencies in key functionalities.
+	2. **Key Functions**: Focus on critical operations such as `withdraw`, `deposit`, or similar sensitive actions.
+	3. **Validation Checks**: Look for missing or inconsistent validations, especially regarding access control or permissions.

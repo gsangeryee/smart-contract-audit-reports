@@ -35,7 +35,8 @@
               "title": "2024-08-wildact"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -87,13 +88,11 @@
               "title": "Bookmarks"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "horizontal",
-    "width": 266.5,
-    "collapsed": true
+    "width": 266.5
   },
   "right": {
     "id": "0e99fb6992220435",
@@ -179,12 +178,12 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "eac56537009acf77",
+  "active": "b7a61fc9888db6c6",
   "lastOpenFiles": [
-    "typical_issues/common_issues.md",
-    "templates/typical_logical_issues_item.md",
     "typical_issues/logical_issues.md",
+    "typical_issues/common_issues.md",
     "checklist.md",
+    "templates/typical_logical_issues_item.md",
     "audit_notes/2024-08-wildact.md",
     "audit_notes/2024-10-sablier_flow.md",
     "audit_notes/2024-01-canto.md",

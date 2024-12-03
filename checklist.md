@@ -17,6 +17,7 @@
 	- Checking for proper data range and type validations
 - edge cases
 	- full-byte parameters
+	- `new ExpirationPeriod window < current time < new ExpirationPeriod window`  - [[2024-10-kleidi#[M-03] `UpdateExpirationPeriod()` cannot be executed when the `newExpirationPeriod` is less than `currentExpirationPeriod`| `UpdateExpirationPeriod()` cannot be executed when the `newExpirationPeriod` is less than `currentExpirationPeriod`]]
 # Typical Logical Issues
 
 - Process Control Points vs. System Control Points

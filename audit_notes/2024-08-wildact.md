@@ -158,7 +158,7 @@ Although it's not a clean fix, consider adding a `addNormalizedUnclaimedRewards
 ##  [M-01] Users are incentivized to not withdraw immediately after the market is closed
 
 ----
-- **Tags**:  #business_logic_design #withdraw_batch
+- **Tags**:  #withdraw_batch #business_logic 
 - Number of finders: 1
 - Difficulty: Hard
 ---

@@ -10,3 +10,7 @@
 
 - [[2023-08-immutable-securityreview#[M-05] Withdrawal queue can be forcibly activated to hinder bridge operation|Withdrawal queue can be forcibly activated to hinder bridge operation]]
 	- Withdraw queue mechanism -> Denial-of-Service
+- [[2023-07-Primitive-Spearbit-Security-Review#[M-01] `getSpotPrice, approximateReservesGivenPrice, getStartegyData` ignore time to maturity|[M-01] `getSpotPrice, approximateReservesGivenPrice, getStartegyData` ignore time to maturity]]
+	- time-based-logic
+- [[2023-08-Moonwell_Finance-Compound_Vault_Security_Assessment#[M-02] Incorrect Use of Borrow Cap Instead of Supply Cap In `maxmint` function|[M-02] Incorrect Use of Borrow Cap Instead of Supply Cap In `maxmint` function]]
+	- `max mint <= supply cap - totalSupply < borrowCap - totalBorrow`

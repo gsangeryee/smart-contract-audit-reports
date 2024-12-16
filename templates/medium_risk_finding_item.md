@@ -4,7 +4,7 @@
 ----
 - **Tags**: refer from [[report_tags]]
 - Number of finders: nnn
-- Difficulty: Degree of Difficulty in Discovering Problems (High: 1, Medium: 2~3, Low: > 6 )
+- Difficulty: Degree of Difficulty in Discovering Problems (Hard: 1, Medium: 2~3, Easy: > 6 )
 ---
 ### Detail
 
@@ -20,7 +20,10 @@
 {{Copy from solodit}}
 ### Notes & Impressions
 
+#### Notes 
 {{Some key points that need to be noted. }}
+
+#### Impressions
 {{Your feelings about uncovering this finding.}}
 
 ### Refine

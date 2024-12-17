@@ -1,7 +1,8 @@
 
 225 findings till 2024-12-13
 
-*Logic vulnerabilities involve flaws in the business logic or protocols of a smart contract, where the implementation matches the developer's intention, but the underlying logic is inherently flawed.*
+*Business Logic - Logic vulnerabilities involve flaws in the business logic or protocols of a smart contract, where the implementation matches the developer's intention, but the underlying logic is inherently flawed.*
+
 - The technical implementation matches the developer's intent
 - The underlying logic can be strategically manipulated.
 - The code does exactly what it was programmed to do.
@@ -21,3 +22,7 @@
 		- close market
 		- close draw
 	- State Variables Mapping before and after critical operation.
+- [[2023-08-Smoothly#[H-02] Operator can still claim rewards after being removed from governance|[H-02] Operator can still claim rewards after being removed from governance]]
+	- `delte-` or `close` --> **right** and **money**
+- [[2023-07-Meta#[M-01] `MetaManager.unclaimedRewards` should work with shares instead of asset amounts.|[M-01] `MetaManager.unclaimedRewards` should work with shares instead of asset amounts.]]
+	- amount ≠ share 

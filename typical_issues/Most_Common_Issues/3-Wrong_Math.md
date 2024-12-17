@@ -5,3 +5,8 @@
 ## List of cases
 - [[2023-08-Moonwell_Finance-Compound_Vault_Security_Assessment#[M-02] Incorrect Use of Borrow Cap Instead of Supply Cap In `maxmint` function|[M-02] Incorrect Use of Borrow Cap Instead of Supply Cap In `maxmint` function]]
 	- `max mint <= supply cap - totalSupply < borrowCap - totalBorrow`
+- [[2023-09-PoolTogether#[H-01] Too many rewards are distributed when a draw is closed|[H-01] Too many rewards are distributed when a draw is closed]]
+	- Critical operation
+		- close market
+		- close draw
+	- State Variables Mapping before and after critical operation.

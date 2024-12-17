@@ -47,7 +47,7 @@ Neither is the `curve.timeRemainingSeconds` value overridden with the correct va
 
 ### Recommendation: 
 
-Initialize the `timeRemainingSeconds` value in `transform` to the current time remainings value or set it to the correct value afterwards for functions where it is needed. It should use a value similar to what `computeTau(..., block.timestamp)` returns. Consider adding additional tests for the affected functions for pools that have been active for a while.
+Initialize the `timeRemainingSeconds` value in `transform` to the current time remaining value or set it to the correct value afterwards for functions where it is needed. It should use a value similar to what `computeTau(..., block.timestamp)` returns. Consider adding additional tests for the affected functions for pools that have been active for a while.
 ### Notes & Impressions
 
 **Notes**

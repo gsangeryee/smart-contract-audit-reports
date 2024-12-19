@@ -174,9 +174,9 @@ This means ONLY the DAO contract address can call `returnTokensToOwner()`, preve
 ## [M-03] `NounsDAOV3Proposals.cancel()` should allow to cancel the proposal of the Expired state
 
 ----
-- **Tags**: #business_logic 
+- **Tags**: #business_logic #edge-case 
 - Number of finders: 1
-- Difficulty: Degree of Difficulty in Discovering Problems (Hard: 1, Medium: 2~3, Easy: > 6 )
+- Difficulty: Medium
 ---
 ### Detail
 

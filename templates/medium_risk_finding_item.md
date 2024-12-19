@@ -18,6 +18,10 @@
 ### Recommended Mitigation
 
 {{Copy from solodit}}
+
+### Discussion
+
+
 ### Notes & Impressions
 
 #### Notes 
@@ -26,6 +30,7 @@
 #### Impressions
 {{Your feelings about uncovering this finding.}}
 
+### Tools
 ### Refine
 
 {{ Refine to typical issues}}

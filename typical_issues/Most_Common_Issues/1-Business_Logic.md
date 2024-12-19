@@ -21,8 +21,15 @@
 	- Critical operation
 		- close market
 		- close draw
-	- State Variables Mapping before and after critical operation.
+	- [[State_Transition_Maps]]
 - [[2023-08-Smoothly#[H-02] Operator can still claim rewards after being removed from governance|[H-02] Operator can still claim rewards after being removed from governance]]
 	- `delte-` or `close` --> **right** and **money**
 - [[2023-07-Meta#[M-01] `MetaManager.unclaimedRewards` should work with shares instead of asset amounts.|[M-01] `MetaManager.unclaimedRewards` should work with shares instead of asset amounts.]]
 	- amount ≠ share 
+- [[2023-06-Dinari#[M-01] In case of stock split and reverse split, the Dshare token holder will gain or loss his Dshare token value|[M-01] In case of stock split and reverse split, the Dshare token holder will gain or loss his Dshare token value]]
+	- When smart contracts are associated with the real economy (stock, reserve, futures), it is necessary to consider the features and risks of the real economy.
+- [[2023-07-nounsdao#[M-02] If DAO updates `forkEscrow` before `forkThreshold` is reached, the user's escrowed Nounns will be lost]]
+	- Hard
+	- Contract Change, Where is tokens?, who can withdraw?
+- [[2023-07-nounsdao#[M-03] `NounsDAOV3Proposals.cancel()` should allow to cancel the proposal of the Expired state|[M-03] `NounsDAOV3Proposals.cancel()` should allow to cancel the proposal of the Expired state]]
+	- Using [[State_Transition_Maps]]

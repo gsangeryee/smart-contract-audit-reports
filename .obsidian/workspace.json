@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "typical_issues/Most_Common_Issues/1-Business_Logic.md",
+                "file": "Tools/State_Transition_Maps.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "1-Business_Logic"
+              "title": "State_Transition_Maps"
             }
           },
           {
@@ -27,16 +27,15 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "audit_notes/2023-07-Meta.md",
+                "file": "audit_notes/2023-07-nounsdao.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "2023-07-Meta"
+              "title": "2023-07-nounsdao"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -178,44 +177,43 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "03a39ce15f834eb0",
+  "active": "4371e3198fc1c03e",
   "lastOpenFiles": [
+    "templates/high_risk_finding_item.md",
+    "templates/medium_risk_finding_item.md",
+    "templates/typical_logical_issues_item.md",
+    "Tools/State_Transition_Maps.md",
     "typical_issues/Most_Common_Issues/1-Business_Logic.md",
-    "audit_notes/2023-07-Meta.md",
-    "audit_notes/2023-08-Smoothly.md",
+    "audit_notes/2023-07-nounsdao.md",
+    "audit_notes/2023-09-PoolTogether.md",
+    "typical_issues/logical_issues.md",
+    "Tools",
+    "audit_notes/2023-08-Blueberry_Update.md",
     "audit_notes/2023-07-Primitive-Spearbit-Security-Review.md",
+    "audit_notes/2023-07-Meta.md",
+    "audit_notes/2023-06-Dinari.md",
+    "audit_notes/2024-10-kleidi.md",
+    "audit_notes/2024-10-sablier_flow.md",
+    "Untitled.canvas",
+    "audit_notes/2023-08-Smoothly.md",
     "typical_issues/Most_Common_Issues/3-Wrong_Math.md",
     "audit_notes/2023-08-Moonwell_Finance-Compound_Vault_Security_Assessment.md",
-    "audit_notes/2023-08-Blueberry_Update.md",
     "audit_notes/2023-08-immutable-securityreview.md",
-    "audit_notes/2023-09-PoolTogether.md",
     "link.md",
     "utils/report_tags.md",
-    "templates/typical_logical_issues_item.md",
-    "templates/medium_risk_finding_item.md",
-    "templates/high_risk_finding_item.md",
     "templates/audit_notes.md",
     "templates/global_index.md",
     "typical_issues/Most_Common_Issues/9-Overflow_Underflow.md",
-    "typical_issues/logical_issues.md",
     "typical_issues/common_issues.md",
     "utils/protocol_categories.md",
-    "audit_notes/!TODO-2024-10-ramses-exchange.md",
-    "typical_issues/Most_Common_Issues/2-Validation.md",
-    "typical_issues/Most_Common_Issues/0-README.md",
-    "typical_issues/Most_Common_Issues/8-Oracle.md",
-    "typical_issues/Most_Common_Issues/7-Reentrancy.md",
-    "typical_issues/Most_Common_Issues/6-Fee_On_Transfer.md",
     "typical_issues/Most_Common_Issues",
     "utils",
     "typical_issues",
     "templates",
     "Typical Issues",
-    "Untitled.canvas",
     "audit_notes",
     "ReportNotes",
     "scripts/auto_global_index.py",
-    "scripts",
-    "templates"
+    "scripts"
   ]
 }

@@ -33,3 +33,7 @@
 	- Contract Change, Where is tokens?, who can withdraw?
 - [[2023-07-nounsdao#[M-03] `NounsDAOV3Proposals.cancel()` should allow to cancel the proposal of the Expired state|[M-03] `NounsDAOV3Proposals.cancel()` should allow to cancel the proposal of the Expired state]]
 	- Using [[State_Transition_Maps]]
+- [[2023-07-Baton_Launchpad#[H-01] Protocol fees from NFT mints can't be claimed in `BatonLaunchpad`|[H-01] Protocol fees from NFT mints can't be claimed in `BatonLaunchpad`]]
+	- can `receive` fee, can not `withdraw` fee
+	- similar a piggy bank
+	- simply and serious problem

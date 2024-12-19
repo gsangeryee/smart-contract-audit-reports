@@ -18,6 +18,8 @@
 - edge cases
 	- full-byte parameters
 	- `new ExpirationPeriod window < current time < new ExpirationPeriod window`  - [[2024-10-kleidi#[M-03] `UpdateExpirationPeriod()` cannot be executed when the `newExpirationPeriod` is less than `currentExpirationPeriod`| `UpdateExpirationPeriod()` cannot be executed when the `newExpirationPeriod` is less than `currentExpirationPeriod`]]
+- Check basic functions
+	- `receive` and `withraw` - [[2023-07-Baton_Launchpad#[H-01] Protocol fees from NFT mints can't be claimed in `BatonLaunchpad`|[H-01] Protocol fees from NFT mints can't be claimed in `BatonLaunchpad`]]
 # Typical Logical Issues
 
 - Process Control Points vs. System Control Points

@@ -6,4 +6,4 @@ Denial-of-Service 34
 
 
 ## List of cases
-- [[2023-08-immutable-securityreview#[M-05] Withdrawal queue can be forcibly activated to hinder bridge operation|Withdrawal queue can be forcibly activated to hinder bridge operation]]
+- [[2023-08-immutable-security_review#[M-05] Withdrawal queue can be forcibly activated to hinder bridge operation|Withdrawal queue can be forcibly activated to hinder bridge operation]]

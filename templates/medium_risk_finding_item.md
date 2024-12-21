@@ -1,6 +1,4 @@
-
 ## [M-XX] Medium Risk Finding Title
-
 ----
 - **Tags**: refer from [[report_tags]]
 - Number of finders: nnn

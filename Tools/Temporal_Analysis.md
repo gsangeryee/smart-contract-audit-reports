@@ -7,4 +7,4 @@ Since many DeFi contracts involve time-based operations, analyze all time-depend
 
 
 ## Example
-- [[2023-06-Angle#[H-03] Poor detection of disputed trees allows claiming tokens from a disputed tree]]
+- [[2023-06-angle#[H-03] Poor detection of disputed trees allows claiming tokens from a disputed tree]]

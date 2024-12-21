@@ -225,7 +225,7 @@ function setTimeConfig(uint256 endTime, uint256 operationCycle) external {
 ### Real Cases
 
 - [[2024-08-wildact#[M-04] `FixedTermLoanHook` looks at `block.timestamp` instead of `expiry`]]
-- [[2023-07-Primitive-Spearbit-Security-Review#[M-01] `getSpotPrice, approximateReservesGivenPrice, getStartegyData` ignore time to maturity]]
+- [[2023-07-primitive-spearbit-security-review#[M-01] `getSpotPrice, approximateReservesGivenPrice, getStartegyData` ignore time to maturity]]
 ### Audit Key Points:
 1. Identification Points
    - Functions with multiple time-related parameters

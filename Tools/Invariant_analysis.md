@@ -60,7 +60,7 @@ contract DisputeSystem {
 }
 ```
 
-ref: [[2023-06-Angle#[H-03] Poor detection of disputed trees allows claiming tokens from a disputed tree]]
+ref: [[2023-06-angle#[H-03] Poor detection of disputed trees allows claiming tokens from a disputed tree]]
 
 2. Lending protocol example:
 ```solidity

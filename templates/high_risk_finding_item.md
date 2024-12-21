@@ -1,6 +1,4 @@
-
 ## [H-XX] High Risk Finding Title
-
 ----
 - **Tags**:  [[report_tags]]
 - Number of finders: nnn

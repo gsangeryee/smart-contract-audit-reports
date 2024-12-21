@@ -1,4 +1,3 @@
-
 # 2023-08-Moonwell_Finance-Compound_Vault_Security_Assessment
 ---
 - Category: chose from [[protocol_categories]]

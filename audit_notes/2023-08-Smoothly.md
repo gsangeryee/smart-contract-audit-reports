@@ -1,4 +1,3 @@
-
 # 2023-08-Smoothly
 ---
 - Category: #staking_pool

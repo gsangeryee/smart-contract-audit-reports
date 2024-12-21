@@ -83,4 +83,4 @@ stateDiagram-v2
 
 ## Examples
 - [[2023-07-nounsdao#[M-03] `NounsDAOV3Proposals.cancel()` should allow to cancel the proposal of the Expired state]]
-- [[2023-09-PoolTogether#[H-01] Too many rewards are distributed when a draw is closed]]
+- [[2023-09-pooltogether#[H-01] Too many rewards are distributed when a draw is closed]]

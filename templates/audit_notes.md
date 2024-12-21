@@ -1,4 +1,3 @@
-
 # {{title}}
 ---
 - Category: chose from [[protocol_categories]]

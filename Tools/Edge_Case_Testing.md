@@ -30,4 +30,4 @@ The key to effective edge case testing is to think like an attacker:
 - What assumptions are the developers making that might not always hold true? 
 - When could multiple edge cases interact to create unexpected behavior?
 ## Example
-- [[2023-06-Angle#[H-03] Poor detection of disputed trees allows claiming tokens from a disputed tree]]
+- [[2023-06-angle#[H-03] Poor detection of disputed trees allows claiming tokens from a disputed tree]]

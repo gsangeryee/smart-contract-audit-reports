@@ -46,6 +46,10 @@
 - [[2023-05-stella#[H-01] Incorrect implementation of `getProfitSharingE18()` greatly reduces Lender's yield|[H-01] Incorrect implementation of `getProfitSharingE18()` greatly reduces Lender's yield]]
 	- When APR is low: Lenders should get a larger share of profits (to incentivize lending)
 	- When APR is high: Lenders should get a smaller share (as they're already earning well from interest)
+- [[2023-05-stella#[H-06] An attacker can increase liquidity to the position's UniswapNFT to prevent the position from being closed|[H-06] An attacker can increase liquidity to the position's UniswapNFT to prevent the position from being closed]]
+	- *A combination of factors (logics) contributed to this issue*
+	- Uniswap V3 Pay attention:
+		- remove liquidity
 - [[2023-05-stella#[H-07] Pending position fees miscalculation may result in increased PnL|[H-07] Pending position fees miscalculation may result in increased PnL]]
 	- Uniswap V3
 - [[2023-05-stella#[H-08] “Exact output” swaps cannot be executed, blocking repayment of debt|[H-08] “Exact output” swaps cannot be executed, blocking repayment of debt]]

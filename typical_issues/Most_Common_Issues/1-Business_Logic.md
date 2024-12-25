@@ -46,6 +46,8 @@
 - [[2023-05-stella#[H-01] Incorrect implementation of `getProfitSharingE18()` greatly reduces Lender's yield|[H-01] Incorrect implementation of `getProfitSharingE18()` greatly reduces Lender's yield]]
 	- When APR is low: Lenders should get a larger share of profits (to incentivize lending)
 	- When APR is high: Lenders should get a smaller share (as they're already earning well from interest)
+- [[2023-05-stella#[H-02] On liquidation, if netPnLE36 <= 0, the premium paid by the liquidator is locked in the contract.|[H-02] On liquidation, if netPnLE36 <= 0, the premium paid by the liquidator is locked in the contract.]]
+	- premium ≠ profit
 - [[2023-05-stella#[H-06] An attacker can increase liquidity to the position's UniswapNFT to prevent the position from being closed|[H-06] An attacker can increase liquidity to the position's UniswapNFT to prevent the position from being closed]]
 	- *A combination of factors (logics) contributed to this issue*
 	- Uniswap V3 Pay attention:
@@ -54,4 +56,6 @@
 	- Uniswap V3
 - [[2023-05-stella#[H-08] “Exact output” swaps cannot be executed, blocking repayment of debt|[H-08] “Exact output” swaps cannot be executed, blocking repayment of debt]]
 	- Uniswap V3
-	- 
+- [[2023-05-liquid_collective#[H-01] `_pickNextValidatorsToExitFromActiveOperators` uses the wrong index to query stopped validator|[H-01] `_pickNextValidatorsToExitFromActiveOperators` uses the wrong index to query stopped validator]]
+	- Array Index
+	- Track data flow across function calls

@@ -63,3 +63,8 @@
 	- Pay Attention to special boolean parameter: `_margin`
 22. [[2023-05-blueberry#[M-03] Updating the `feeManager` on config will cause `desync` between bank and vaults|[M-03] Updating the `feeManager` on config will cause `desync` between bank and vaults]]
 	- desynchronization -> pre-cache state variable (eg.address)
+23. [[2023-04-blueberry#[H-01] Attackers will keep stealing the `rewards` from Convex SPELL|[H-01] Attackers will keep stealing the `rewards` from Convex SPELL]]
+	- Coding bug
+	- Pcp Vs Scp
+24. [[2023-04-blueberry#[M-05] `getPositionRisk()` will return a wrong value of risk]]
+	- Simple issue, hard to detect #simple_issue_hard_to_detect

@@ -102,6 +102,155 @@ Zero fees on extra incentive tokens (SNX, etc)
 - [[1-Business_Logic]]
 
 ---
+## [H-11] `ShortLongSpell#openPosition` can cause user unexpected liquidation when increasing position size
+----
+- **Tags**:  #liquidation #configuration #business_logic 
+- Number of finders: 2
+- Difficulty: Medium
+---
+### Summary
+
+When increasing a position, all collateral is sent to the user rather than being kept in the position. This can cause serious issues because this collateral keeps the user from being liquidated. It may unexpectedly leave the user on the brink of liquidation where a small change in price leads to their liquidation.
+### Detail
+
+[ShortLongSpell.sol#L111-L151](https://github.com/sherlock-audit/2023-04-blueberry/blob/main/blueberry-core/contracts/spell/ShortLongSpell.sol#L111-L151)
+```solidity
+function openPosition(
+        OpenPosParam calldata param,
+        Utils.MegaSwapSellData calldata swapData
+    )
+        external
+        existingStrategy(param.strategyId)
+        existingCollateral(param.strategyId, param.collToken)
+    {
+        Strategy memory strategy = strategies[param.strategyId];
+        if (
+            address(ISoftVault(strategy.vault).uToken()) != param.borrowToken ||
+            swapData.fromToken != param.borrowToken
+        ) revert Errors.INCORRECT_LP(param.borrowToken);
+
+
+        // 1-3 Swap to strategy underlying token, deposit to softvault
+        _deposit(param, swapData);
+
+
+        // 4. Put collateral -
+        {
+            IBank.Position memory pos = bank.getCurrentPositionInfo();
+            address posCollToken = pos.collToken;
+            uint256 collSize = pos.collateralSize;
+            address burnToken = address(ISoftVault(strategy.vault).uToken());
+            if (collSize > 0) {
+                if (posCollToken != address(wrapper))
+                    revert Errors.INCORRECT_COLTOKEN(posCollToken);
+                bank.takeCollateral(collSize); //@audit-info Removes All existing collateral
+                wrapper.burn(burnToken, collSize); //@audit-info Burns it
+                _doRefund(burnToken); //Sends it back to user
+            }
+        }
+
+
+        // 5. Put collateral - strategy token
+        address vault = strategies[param.strategyId].vault;
+        _doPutCollateral(
+            vault,
+            IERC20Upgradeable(ISoftVault(vault).uToken()).balanceOf(
+                address(this)
+            )
+        );
+    }
+```
+
+In the above lines we can see that all collateral is burned and the user is sent the underlying tokens. This is problematic as it sends all the collateral to the user, leaving the position collateralized by only the isolated collateral.
+
+Best case the user's transaction reverts but worst case they will be liquidated almost immediately.
+### Impact
+
+Unfair liquidation for users
+### Recommended Mitigation
+
+Don't burn the collateral
+
+```solidity
+function openPosition(
+        OpenPosParam calldata param,
+        Utils.MegaSwapSellData calldata swapData
+    )
+        external
+        existingStrategy(param.strategyId)
+        existingCollateral(param.strategyId, param.collToken)
+    {
+        Strategy memory strategy = strategies[param.strategyId];
+        if (
+            address(ISoftVault(strategy.vault).uToken()) != param.borrowToken ||
+            swapData.fromToken != param.borrowToken
+        ) revert Errors.INCORRECT_LP(param.borrowToken);
+
+
+        // 1-3 Swap to strategy underlying token, deposit to softvault
+        _deposit(param, swapData);
+
+
+        // Remove 4. Put collateral -
+        
+        // 4. Put collateral - strategy token
+        address vault = strategies[param.strategyId].vault;
+        _doPutCollateral(
+            vault,
+            IERC20Upgradeable(ISoftVault(vault).uToken()).balanceOf(
+                address(this)
+            )
+        );
+    }
+```
+
+### Discussion
+
+### Notes
+
+#### Notes 
+When you open a leveraged position, you typically have two key components:
+
+1. Your initial collateral (let's say 100 USDC)
+2. The borrowed amount (let's say 400 USDC)
+
+These combine to create your total position size of 500 USDC. The collateral acts as a safety buffer - if the value of your position drops, your collateral helps prevent liquidation. The more collateral you have relative to your borrowed amount, the safer your position is from liquidation.
+
+The issue is in the sequence of operations:
+
+1. The code takes ALL existing collateral out of the position
+2. Burns the wrapped version of it
+3. Sends the original tokens back to the user's wallet
+4. Only puts the new collateral in
+
+Here's why this is dangerous. Let's say a user has:
+
+- Initial position: 100 USDC collateral, 400 USDC borrowed
+- They want to add another 50 USDC of collateral
+
+What should happen:
+
+- New position: 150 USDC collateral, 400 USDC borrowed
+- Position is even safer than before
+
+What actually happens:
+
+1. Takes out the original 100 USDC collateral
+2. Sends it to the user
+3. Only puts in the new 50 USDC collateral
+4. Final position: 50 USDC collateral, 400 USDC borrowed
+#### Impressions
+
+**Dangerous Pattern**
+1. Complete collateral removal: Takes out ALL collateral first.
+2. Position replacement: Close existing position entirely, opens new larger position
+
+### Tools
+### Refine
+
+- [[1-Business_Logic]]
+
+---
 # Medium Risk Findings (xx)
 
 ---
@@ -247,7 +396,110 @@ This kind of issue is especially challenging because it requires understanding b
 - [[1-Business_Logic]]
 
 ---
+## [M-12] `rewardTokens` removed from `WAuraPool/WConvexPools` will be lost forever
+----
+- **Tags**: #lending_pool #Deposit_or_Reward_tokens #configuration #business_logic 
+- Number of finders: 1
+- Difficulty: Medium
+---
+### Summary
 
+`pendingRewards` pulls a fresh count of reward tokens each time it is called. This is problematic if reward tokens are ever removed from the the underlying Aura/Convex pools because it means that they will no longer be distributed and will be locked in the contract forever.
+### Detail
+
+[WAuraPools.sol#L152-L190](https://github.com/sherlock-audit/2023-04-blueberry/blob/96eb1829571dc46e1a387985bd56989702c5e1dc/blueberry-core/contracts/wrapper/WAuraPools.sol#L152-L190)
+```solidity
+    function pendingRewards(
+        uint256 tokenId,
+        uint256 amount
+    )
+        public
+        view
+        override
+        returns (address[] memory tokens, uint256[] memory rewards)
+    {
+        (uint256 pid, uint256 stCrvPerShare) = decodeId(tokenId);
+        (address lpToken, , , address crvRewarder, , ) = getPoolInfoFromPoolId(
+            pid
+        );
+        uint256 lpDecimals = IERC20MetadataUpgradeable(lpToken).decimals();
+        uint extraRewardsCount = IAuraRewarder(crvRewarder)
+            .extraRewardsLength(); // @audit-info, current number of reward tokens in the pool
+        tokens = new address[](extraRewardsCount + 1);
+        rewards = new uint256[](extraRewardsCount + 1);
+
+
+        tokens[0] = IAuraRewarder(crvRewarder).rewardToken();
+        rewards[0] = _getPendingReward(
+            stCrvPerShare,
+            crvRewarder,
+            amount,
+            lpDecimals
+        );
+
+
+        for (uint i = 0; i < extraRewardsCount; i++) {
+            address rewarder = IAuraRewarder(crvRewarder).extraRewards(i);
+            uint256 stRewardPerShare = accExtPerShare[tokenId][i];
+            tokens[i + 1] = IAuraRewarder(rewarder).rewardToken();
+            rewards[i + 1] = _getPendingReward(
+                stRewardPerShare,
+                rewarder,
+                amount,
+                lpDecimals
+            );
+        }
+    }
+```
+
+In the lines above we can see that only tokens that are currently available on the pool. This means that if tokens are removed then they are no longer claimable and will be lost to those entitled to shares.
+### Impact
+
+Users will lose reward tokens if they are removed
+### Recommended Mitigation
+
+Reward tokens should be stored with the `tokenID` so that it can still be paid out even if it the extra `rewardToken` is removed.
+
+### Discussion
+
+### Notes & Impressions
+
+#### Notes 
+
+```
+Day 1: Pool offers AURA, USDC, and DAI as rewards
+- User deposits tokens and starts accruing rewards
+- They earn: 10 AURA, 5 USDC, 3 DAI (unclaimed)
+
+Day 30: Pool removes DAI as a reward token
+- User's earned but unclaimed rewards: 10 AURA, 5 USDC, 3 DAI
+- When they call pendingRewards(), it only shows AURA and USDC
+- The 3 DAI they earned is now inaccessible
+```
+
+#### Impressions
+This is a relatively common issue in DeFi protocols, particularly in:
+
+1. Lending protocols with reward tokens
+2. Leveraged farming protocols using Convex/Aura/Curve
+3. Yield aggregators managing multiple reward tokens
+
+When auditing these types of contracts, you should specifically check:
+- How reward tokens are stored/tracked over time
+- Whether the protocol maintains historical records of reward tokens
+- If reward calculations would break when tokens are removed
+- Whether accumulated rewards can be stranded if token lists change
+
+This is especially important for protocols building on top of Curve/Convex/Aura since these frequently modify their reward token structures.
+
+A good audit checklist item would be: "Verify that reward accounting remains accurate if reward tokens are added/removed from underlying protocols."
+
+### Tools
+### Refine
+
+- [[1-Business_Logic]]
+
+---
 ---
 
 ## Audit Summary Notes

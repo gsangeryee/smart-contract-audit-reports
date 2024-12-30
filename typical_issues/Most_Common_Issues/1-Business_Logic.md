@@ -66,5 +66,15 @@
 23. [[2023-04-blueberry#[H-01] Attackers will keep stealing the `rewards` from Convex SPELL|[H-01] Attackers will keep stealing the `rewards` from Convex SPELL]]
 	- Coding bug
 	- Pcp Vs Scp
-24. [[2023-04-blueberry#[M-05] `getPositionRisk()` will return a wrong value of risk]]
+24. [[2023-04-blueberry#[M-05] `getPositionRisk()` will return a wrong value of risk|[M-05] `getPositionRisk()` will return a wrong value of risk]]
 	- Simple issue, hard to detect #simple_issue_hard_to_detect
+25. [[2023-04-blueberry#[M-12] `rewardTokens` removed from `WAuraPool/WConvexPools` will be lost forever|[M-12] `rewardTokens` removed from `WAuraPool/WConvexPools` will be lost forever]]
+	- Verify that reward accounting remains accurate if reward tokens are added/removed from underlying protocols.
+26. [[2023-04-blueberry#[H-11] `ShortLongSpell openPosition` can cause user unexpected liquidation when increasing position size|[H-11] `ShortLongSpell openPosition` can cause user unexpected liquidation when increasing position size]]
+	- **Dangerous Pattern**
+		1. Complete collateral removal: Takes out ALL collateral first.
+		2. Position replacement: Close existing position entirely, opens new larger position
+27. [[2023-04-11-lifi#[M-02] The optional version `_depositAndSwap()` isn't always uded|[M-02] The optional version `_depositAndSwap()` isn't always uded]]
+	- Watch out for native tokens, such as ETH.
+	- Be mindful of unused functions.
+

@@ -77,4 +77,22 @@
 27. [[2023-04-11-lifi#[M-02] The optional version `_depositAndSwap()` isn't always uded|[M-02] The optional version `_depositAndSwap()` isn't always uded]]
 	- Watch out for native tokens, such as ETH.
 	- Be mindful of unused functions.
-
+28. [[2023-03-Morpho#[M-3] User `withdrawals` can fail if Morpho position is close to liquidation|[M-3] User `withdrawals` can fail if Morpho position is close to liquidation]]
+	- Pay attention to withdraw operations,
+	- Monitor the maximum LTV ratio,
+	- Be mindful of the liquidation threshold.
+29. [[2023-03-Morpho#[M-01] A market could be deprecated but still prevent liquidators to liquidate borrowers if `isLiquidateBorrowPaused` is `true`|[M-01] A market could be deprecated but still prevent liquidators to liquidate borrowers if `isLiquidateBorrowPaused` is `true`]]
+	- Market Status (Deprecated/Closed)
+	    - Interaction restrictions
+	    - Order of operations during deprecation
+	    - Proper cleanup mechanisms
+	- Liquidation Status
+	    - Pause/unpause conditions
+	    - Emergency controls
+	    - Impact on protocol solvency
+30. [[2023-03-Morpho#[M-13] `claimToTreasury`(COMP) steals users' COMP rewards|[M-13] `claimToTreasury`(COMP) steals users' COMP rewards]]
+	- COMP has two special characteristics that make this situation unique:
+		1. COMP tokens are distributed as rewards to users of Compound protocol
+		2. COMP itself can be used as a market asset (cCOMP) within Compound
+	- Compound's reward claiming mechanism
+		- Anyone can trigger reward claims on behalf of others.

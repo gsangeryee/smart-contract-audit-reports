@@ -96,3 +96,20 @@
 		2. COMP itself can be used as a market asset (cCOMP) within Compound
 	- Compound's reward claiming mechanism
 		- Anyone can trigger reward claims on behalf of others.
+31. [[2023-03-Morpho#[M-11] In Compound implementation, P2P indexes can be stale|[M-11] In Compound implementation, P2P indexes can be stale]]
+	  - a subtle issue 
+32. [[2023-03-Morpho#[M-04] P2P borrower's rate can be reduced|[M-04] P2P borrower's rate can be reduced]]
+	- the special rate calculations
+	- Issues caused by the special mechanism
+33. [[2023-03-Morpho#[M-12] Turning off an asset as collateral on Morpho-Aave still allows seizing of that collateral on Morpho|[M-12] Turning off an asset as collateral on Morpho-Aave still allows seizing of that collateral on Morpho]] 
+	- Position Aggregation: The aggregation contract combines all user positions into one large position on underlying protocols(Aave, compound).
+		- The underlying protocols see one large pool of collateral owned by the aggregation contract
+		- The aggregation contract internally tracks individual user positions
+	- Multi-Protocol Integration
+		- interact
+		- collateral 
+		- liquidation
+	- Liquidation Mechanics
+		- How: How can liquidation happen?
+		- When: When can liquidation occur?
+		- What: What prevents liquidation?

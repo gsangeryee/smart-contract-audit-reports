@@ -113,3 +113,12 @@
 		- How: How can liquidation happen?
 		- When: When can liquidation occur?
 		- What: What prevents liquidation?
+34. [[2023-03-Morpho#[M-14] Compound liquidity computation uses outdated cached borrowIndex|[M-14] Compound liquidity computation uses outdated cached borrowIndex]]
+	- In this case, using Compound's live borrowIndex instead of Morpho's cached version would ensure accurate liquidation calculations.
+35. [[2023-03-Morpho#[M-07] Users can continue to borrow from a deprecated market|[M-07] Users can continue to borrow from a deprecated market]]
+	- Before critical operations (such as closing the market, deprecating the market), you should check wether the conditions for closing or deprecating are fulfilled (such as wether there are any pending loans).
+36. [[2023-03-Morpho#[M-06] Differences between Morpho and Compound `borrow` validation logic|[M-06] Differences between Morpho and Compound `borrow` validation logic]]
+	- Three Key difference between Morpho and Compound:
+		1. borrowing caps
+		2. deprecated markets
+		3. `borrowGuardianPaused` feature

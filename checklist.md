@@ -22,6 +22,10 @@
 	- `receive` and `withraw` - [[2023-07-baton_launchpad#[H-01] Protocol fees from NFT mints can't be claimed in `BatonLaunchpad`|[H-01] Protocol fees from NFT mints can't be claimed in `BatonLaunchpad`]]
 - Verify that reward accounting remains accurate if reward tokens are added/removed from underlying protocols.
 	- [[2023-04-blueberry#[M-12] `rewardTokens` removed from `WAuraPool/WConvexPools` will be lost forever|[M-12] `rewardTokens` removed from `WAuraPool/WConvexPools` will be lost forever]]
+- Cached Value
+	- Identify it
+	- Check it
+	- [[2023-03-Morpho#[M-14] Compound liquidity computation uses outdated cached borrowIndex]]
 # Typical Logical Issues
 
 - Process Control Points vs. System Control Points

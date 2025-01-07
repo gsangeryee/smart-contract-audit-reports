@@ -122,3 +122,10 @@
 		1. borrowing caps
 		2. deprecated markets
 		3. `borrowGuardianPaused` feature
+37. [[2023-02-23-seaport#[M-01] The spent offer amounts provided to `OrderFulfilled` for collection of (advanced) orders is not the actual amount spent in general|[M-01] The spent offer amounts provided to `OrderFulfilled` for collection of (advanced) orders is not the actual amount spent in general]]
+	- *event emission issues*
+	- all unspent offer amounts
+38. [[2023-02-23-seaport#[M-02] The spent offer item amounts shared with a `zone` for restricted (advanced) orders or with a contract `offerer` for orders of `CONTRACT` order type is not the actual spent amount in general|[M-02] The spent offer item amounts shared with a `zone` for restricted (advanced) orders or with a contract `offerer` for orders of `CONTRACT` order type is not the actual spent amount in general]] 
+	- same as above
+39. [[2023-02-23-seaport#[M-03] Empty `criteriaResolvers` for criteria-based contract orders[M-03] Empty `criteriaResolvers` for criteria-based contract orders]]
+	- #bait_and_switch scenario

@@ -141,7 +141,7 @@ When the protocol emits the `OrderFulfilled` event for collection orders, it rep
 ---
 ### Detail
 
-same as [[2023-02-23-seaport#[M-01] The spent offer amounts provided to `OrderFulfilled` for collection of (advanced) orders is not the actual amount spent in general|[M-01] The spent offer amounts provided to `OrderFulfilled` for collection of (advanced) orders is not the actual amount spent in general]]
+same as [[2023-02-seaport#[M-01] The spent offer amounts provided to `OrderFulfilled` for collection of (advanced) orders is not the actual amount spent in general|[M-01] The spent offer amounts provided to `OrderFulfilled` for collection of (advanced) orders is not the actual amount spent in general]]
 
 #### Impressions
 
@@ -251,6 +251,94 @@ Spearbit: Verified
 ### Refine
 
 - [[1-Business_Logic]]
+
+---
+## [M-04] Advance orders of CONTRACT order types can generate orders with less consideration items that would break the aggregation routine
+----
+- **Tags**: #business_logic 
+- Number of finders: 4
+- Difficulty: Medium
+---
+### Description: 
+
+When `Seaport` gets a collection of advanced orders to fulfill or match, if one of the orders has a CONTRACT order type, Seaport calls the `generateOrder(...)` endpoint of that order's `offerer. generateOrder(...)` can provide fewer consideration items for this order. So the total number of consideration items might be less than the ones provided by the `caller`. 
+[OrderValidator.sol#L444-L447](https://github.com/ProjectOpenSea/seaport/blob/8d95af1a952ac0ebf784e323e5e1a2b5d687cc4f/contracts/lib/OrderValidator.sol#L444-L447)
+```solidity
+    function _getGeneratedOrder(
+        OrderParameters memory orderParameters,
+        bytes memory context,
+        bool revertOnInvalid
+    )
+    ... ...
+            // New consideration items cannot be created.
+            if (newConsiderationLength > originalConsiderationArray.length) {
+                return _revertOrReturnEmpty(revertOnInvalid, orderHash);
+            }
+```
+
+But since the `caller` would need to provide the fulfillment data beforehand to `Seaport`, they might use indices that would turn to be out of range for the consideration in question after the modification applied for the contract `offerer` above. If this happens, the whole call will be reverted. 
+
+[FulfillmentApplier.sol#L561-L569](https://github.com/ProjectOpenSea/seaport/blob/8d95af1a952ac0ebf784e323e5e1a2b5d687cc4f/contracts/lib/FulfillmentApplier.sol#L561-L569)
+```solidity
+    function _aggregateValidFulfillmentConsiderationItems(
+        AdvancedOrder[] memory advancedOrders,
+        FulfillmentComponent[] memory considerationComponents,
+        Execution memory execution
+    ) internal pure {
+    ... ...
+            // Retrieve item index using an offset of the fulfillment pointer.
+            let itemIndex := mload(
+                add(mload(fulfillmentHeadPtr), Fulfillment_itemIndex_offset)
+            )
+
+
+            // Ensure that the order index is not out of range.
+            if iszero(lt(itemIndex, mload(considerationArrPtr))) {
+                throwInvalidFulfillmentComponentData()
+            }
+```
+
+This issue is in the same category as *Advance orders of CONTRACT order types can generate orders with different consideration recipients that would break the aggregation routine.*
+### Recommendation: 
+
+In order for the `caller` to be able to `fulfill/match` orders by figuring out how to aggregate and match different consideration and offer items, they would need to be able to have access to all the data before calling into `Seaport`. Contract `offerers` are supposed to (it is not enforced currently) implement previewOrder which the caller can use before making a call to Seaport. But there is no guarantee that the data returned by `previewOrder` and `generateOrder` for the same shared inputs would be the same. 
+
+We can enforce that the contract offerer does not return fewer consideration items. If it needed to return less it can either revert or provide a `0` amount. If the current conditions are going to stay the same, it is recommended to document this scenario and also provide more comments/documentation for `ContractOffererInterface`. 
+
+### Discussion
+Seaport: Addressed in PR 842. 
+Spearbit: Verified.
+### Notes & Impressions
+
+#### Notes 
+Real-World Analogy: Imagine you're running a trading card marketplace where people can make complex trades. Let's say Alice wants to trade with Bob through your marketplace.
+
+Alice says: "I'll give my rare Charizard card, and in return, I want:
+
+1. Two Pikachu cards
+2. One Mewtwo card
+3. Three energy cards"
+
+Now, Bob is a special kind of trader (like a CONTRACT order type) who can modify what he gives in return after Alice makes her offer. The marketplace (Seaport) allows this.
+
+Alice creates instructions for how to handle the trade: "Take the third item (energy cards) and give them to my friend Charlie" "Take the second item (Mewtwo) and give it to my sister Diana" "Take the first item (Pikachu cards) and keep them for myself"
+
+But when Bob actually processes the trade, he decides to only give:
+
+1. Two Pikachu cards
+2. One Mewtwo card
+
+The problem: Alice's instructions mentioned the third item (energy cards), but they no longer exist in Bob's final offer! The trade would fail because the instructions reference something that's no longer there.
+
+#### Impressions
+Focus on:
+1. State Changes Between Preview and Execution
+2. Array Index Validation
+
+### Tools
+### Refine
+
+{{ Refine to typical issues}}
 
 ---
 ## Audit Summary Notes

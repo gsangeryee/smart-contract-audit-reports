@@ -2,6 +2,10 @@
 # Typical Common Issues
 
 - Check all code related to funds
+- Check the updates of states  
+	- Correctness of the update.
+	- Whether all updates have been made.
+	- [[2023-02-Astaria#[H-03] `VaultImplementation.buyoutLien` does not update the new public vault's parameters and does not transfer assets between the vault and the borrower|[H-03] `VaultImplementation.buyoutLien` does not update the new public vault's parameters and does not transfer assets between the vault and the borrower]]
 - Check multiplications calculations are stored in limited-size integers
 - Precision Loss and  Insufficient Precision
 	- Always be aware of the potential loss of precision caused by division operations.
@@ -26,6 +30,8 @@
 	- Identify it
 	- Check it
 	- [[2023-03-Morpho#[M-14] Compound liquidity computation uses outdated cached borrowIndex]]
+- When auditing transactions within a `for-loop`
+	- [[2023-02-clober#[M-01] Group claim clashing condition|[M-01] Group claim clashing condition]]
 # Typical Logical Issues
 
 - Process Control Points vs. System Control Points

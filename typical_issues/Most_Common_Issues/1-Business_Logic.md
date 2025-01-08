@@ -122,10 +122,23 @@
 		1. borrowing caps
 		2. deprecated markets
 		3. `borrowGuardianPaused` feature
-37. [[2023-02-23-seaport#[M-01] The spent offer amounts provided to `OrderFulfilled` for collection of (advanced) orders is not the actual amount spent in general|[M-01] The spent offer amounts provided to `OrderFulfilled` for collection of (advanced) orders is not the actual amount spent in general]]
+37. [[2023-02-seaport#[M-01] The spent offer amounts provided to `OrderFulfilled` for collection of (advanced) orders is not the actual amount spent in general|[M-01] The spent offer amounts provided to `OrderFulfilled` for collection of (advanced) orders is not the actual amount spent in general]]
 	- *event emission issues*
 	- all unspent offer amounts
-38. [[2023-02-23-seaport#[M-02] The spent offer item amounts shared with a `zone` for restricted (advanced) orders or with a contract `offerer` for orders of `CONTRACT` order type is not the actual spent amount in general|[M-02] The spent offer item amounts shared with a `zone` for restricted (advanced) orders or with a contract `offerer` for orders of `CONTRACT` order type is not the actual spent amount in general]] 
+38. [[2023-02-seaport#[M-02] The spent offer item amounts shared with a `zone` for restricted (advanced) orders or with a contract `offerer` for orders of `CONTRACT` order type is not the actual spent amount in general|[M-02] The spent offer item amounts shared with a `zone` for restricted (advanced) orders or with a contract `offerer` for orders of `CONTRACT` order type is not the actual spent amount in general]] 
 	- same as above
-39. [[2023-02-23-seaport#[M-03] Empty `criteriaResolvers` for criteria-based contract orders[M-03] Empty `criteriaResolvers` for criteria-based contract orders]]
+39. [[2023-02-seaport#[M-03] Empty `criteriaResolvers` for criteria-based contract orders[M-03] Empty `criteriaResolvers` for criteria-based contract orders|[M-03] Empty `criteriaResolvers` for criteria-based contract orders[M-03] Empty `criteriaResolvers` for criteria-based contract orders]]
 	- #bait_and_switch scenario
+40. [[2023-02-seaport#[M-04] Advance orders of CONTRACT order types can generate orders with less consideration items that would break the aggregation routine|[M-04] Advance orders of CONTRACT order types can generate orders with less consideration items that would break the aggregation routine]]
+	1. State Changes Between Preview and Execution
+	2. Array Index Validation
+41. [[2023-02-blueberry#[H-07] Users can be liquidated prematurely because calculation understates value of underlying position|[H-07] Users can be liquidated prematurely because calculation understates value of underlying position]]
+	- When calculating, check the variables involved in the calculations: 
+	* Check if the definitions are correct. 
+	* Check for any changes.
+42. [[2023-02-clober#[M-01] Group claim clashing condition|[M-01] Group claim clashing condition]]
+	- *This is a typical issue, and we need to pay attention to it, especially when auditing transactions within a for-loop.*
+43. [[2023-02-Astaria#[H-03] `VaultImplementation.buyoutLien` does not update the new public vault's parameters and does not transfer assets between the vault and the borrower|[H-03] `VaultImplementation.buyoutLien` does not update the new public vault's parameters and does not transfer assets between the vault and the borrower]]
+	- Check the updates of states  
+		- Correctness of the update.
+		- Whether all updates have been made.

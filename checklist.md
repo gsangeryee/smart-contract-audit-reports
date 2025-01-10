@@ -32,6 +32,11 @@
 	- [[2023-03-Morpho#[M-14] Compound liquidity computation uses outdated cached borrowIndex]]
 - When auditing transactions within a `for-loop`
 	- [[2023-02-clober#[M-01] Group claim clashing condition|[M-01] Group claim clashing condition]]
+- Check whether time-based epochs increase as expected
+	- Epoch/period increments
+	- Required sequential processing
+	- Blocking conditions
+	- [[2023-02-Astaria#[H-11] `processEpoch()` needs to be called regularly[H-11] `processEpoch()` needs to be called regularly]]
 # Typical Logical Issues
 
 - Process Control Points vs. System Control Points

@@ -141,4 +141,17 @@
 43. [[2023-02-Astaria#[H-03] `VaultImplementation.buyoutLien` does not update the new public vault's parameters and does not transfer assets between the vault and the borrower|[H-03] `VaultImplementation.buyoutLien` does not update the new public vault's parameters and does not transfer assets between the vault and the borrower]]
 	- Check the updates of states  
 		- Correctness of the update.
-		- Whether all updates have been made.
+		- Whether all updates have been made
+44. [[2023-02-Astaria#[H-05] A borrower can list their collateral on Seaport and receive almost all the listing price without paying back their liens|[H-05] A borrower can list their collateral on Seaport and receive almost all the listing price without paying back their liens]]
+	- Subtlety: The vulnerability is complex because it involves:
+	    - Interaction between multiple contracts (CollateralToken, ClearingHouse, Seaport)
+	    - Lack of state updates (auctionData not being populated)
+	    - A non-obvious control flow where the fallback function fails silently
+	    - Different execution paths for self-listing vs liquidator auctions
+45. [[2023-02-Astaria#[H-11] `processEpoch()` needs to be called regularly|[H-11] `processEpoch()` needs to be called regularly]]
+	- Check whether time-based epochs increase as expected
+		- Epoch/period increments
+		- Required sequential processing
+		- Blocking conditions
+46. [[2023-02-Astaria#[H-01] Collateral owner can steal funds by taking liens while asset is listed for sale on Seaport|[H-01] Collateral owner can steal funds by taking liens while asset is listed for sale on Seaport]]
+	- same as [[2023-02-Astaria#[H-05] A borrower can list their collateral on Seaport and receive almost all the listing price without paying back their liens|[H-05] A borrower can list their collateral on Seaport and receive almost all the listing price without paying back their liens]]

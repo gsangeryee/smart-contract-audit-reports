@@ -1,3 +1,4 @@
+
 Start by mapping out all the important state variables and their relationships. In this case, we had several critical state variables:
 
 - `tree.merkleRoot`: The current Merkle root

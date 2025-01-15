@@ -155,3 +155,29 @@
 		- Blocking conditions
 46. [[2023-02-Astaria#[H-01] Collateral owner can steal funds by taking liens while asset is listed for sale on Seaport|[H-01] Collateral owner can steal funds by taking liens while asset is listed for sale on Seaport]]
 	- same as [[2023-02-Astaria#[H-05] A borrower can list their collateral on Seaport and receive almost all the listing price without paying back their liens|[H-05] A borrower can list their collateral on Seaport and receive almost all the listing price without paying back their liens]]
+47. [[2023-02-Astaria#[M-07] Call to Royalty Engine can block NFT auction|[M-07] Call to Royalty Engine can block NFT auction]]
+	- The same function was called twice with different parameters
+	- One instance had error handling while the other didn't
+49. [[2023-02-Astaria#[H-20] `commitToLiens` transfers extra assets to the borrower when protocol fee is present|[H-20] `commitToLiens` transfers extra assets to the borrower when protocol fee is present]]
+	- we should repeatedly verify whether the financial calculations(such as interest and fees) are correctly implemented in the code during future audit tasks.
+50. [[2023-02-Astaria#[H-02] Inequalities involving `liquidationInitialAsk` and `potentialDebt` can be broken when `buyoutLien` is called|[H-02] Inequalities involving `liquidationInitialAsk` and `potentialDebt` can be broken when `buyoutLien` is called]]
+51. [[2023-02-Astaria#[H-21] `WithdrawProxy` allows redemptions before `PublicVault` calls `transferWithdrawReserve`|[H-21] `WithdrawProxy` allows redemptions before `PublicVault` calls `transferWithdrawReserve`]]
+	1. Pay attention to `withdraw` operation.
+	2. ERC4626 withdrawal system, shares and underlying assets
+	3. Fixed Share Price 
+52. [[2023-02-Astaria#[H-06] Incorrect auction end validation in `liquidatorNFTClaim()`|[H-06] Incorrect auction end validation in `liquidatorNFTClaim()`]]
+	1. *In smart contracts, time is not reliable; it can be altered.*
+53. [[2023-02-Astaria#[M-05] If auction time is reduced, `withdrawProxy` can lock funds from final auctions|[M-05] If auction time is reduced, `withdrawProxy` can lock funds from final auctions]]
+	- Check how duration changes affect existing process
+54. [[2023-02-Astaria#[H-10] Refactor `_paymentAH()`|[H-10] Refactor `_paymentAH()`]]
+	1. Check array parameter types (memory vs storage)
+	2. Look for redundant state updates before deletions 
+	3. Trace parameter values after state changes
+	4. Review function call requirements and permissions
+	5. Look for overly complex conditional logic
+55. [[2023-02-Astaria#[M-04] UniV3 tokens with fees can bypass strategist checks|[M-04] UniV3 tokens with fees can bypass strategist checks]]
+	1. Special attention should be given to situations where multiple conditions are connected with 'and' during the audit. We can use a truth table to analyze whether all conditions match the expected results.
+56. [[2023-02-Astaria#[H-22] Withdraw proxy's `claim()` endpoint updates public vault's `yIntercept` incorrectly||[H-22] Withdraw proxy's `claim()` endpoint updates public vault's `yIntercept` incorrectly]]
+	The current code only handles the case when `balance < s.expected`, but it should handle both cases:
+	1. When `balance < s.expected`: The vault received less than expected
+	2. When `balance > s.expected`: The vault received more than expected (e.g., from high-value auction sales)

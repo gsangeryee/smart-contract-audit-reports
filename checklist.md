@@ -37,6 +37,8 @@
 	- Required sequential processing
 	- Blocking conditions
 	- [[2023-02-Astaria#[H-11] `processEpoch()` needs to be called regularly[H-11] `processEpoch()` needs to be called regularly]]
+- Check array parameter types (memory vs storage)
+	- [[2023-02-Astaria#[H-10] Refactor `_paymentAH()`]]
 # Typical Logical Issues
 
 - Process Control Points vs. System Control Points

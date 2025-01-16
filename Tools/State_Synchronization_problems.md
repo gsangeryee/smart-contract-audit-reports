@@ -57,5 +57,5 @@ Auditors should specifically test:
 
 This pattern is fundamental to smart contract security because it sits at the intersection of technical architecture and economic incentives. Understanding and properly handling state synchronization is crucial for building reliable decentralized systems.
 ## Examples
-- [[2023-02-Astaria#[H-11] `processEpoch()` needs to be called regularly|[H-11] `processEpoch()` needs to be called regularly]]
-- [[2023-02-Astaria#[M-08] Expired liens taken from public vaults need to be liquidated otherwise processing an epoch `halts/reverts`|[M-08] Expired liens taken from public vaults need to be liquidated otherwise processing an epoch `halts/reverts`]]
+- [[2023-02-astaria#[H-11] `processEpoch()` needs to be called regularly|[H-11] `processEpoch()` needs to be called regularly]]
+- [[2023-02-astaria#[M-08] Expired liens taken from public vaults need to be liquidated otherwise processing an epoch `halts/reverts`|[M-08] Expired liens taken from public vaults need to be liquidated otherwise processing an epoch `halts/reverts`]]

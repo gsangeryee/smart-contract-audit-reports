@@ -10,5 +10,5 @@
 		- close market
 		- close draw
 	- State Variables Mapping before and after critical operation.
-3. [[2023-02-Astaria#[H-20] `commitToLiens` transfers extra assets to the borrower when protocol fee is present|[H-20] `commitToLiens` transfers extra assets to the borrower when protocol fee is present]]
+3. [[2023-02-astaria#[H-20] `commitToLiens` transfers extra assets to the borrower when protocol fee is present|[H-20] `commitToLiens` transfers extra assets to the borrower when protocol fee is present]]
 	- We should repeatedly verify whether the financial calculations(such as interest and fees) are correctly implemented in the code during future audit tasks.

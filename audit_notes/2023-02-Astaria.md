@@ -244,7 +244,7 @@ Spearbit: Verified.
 ### Notes
 
 #### Notes 
-See: [[2023-02-Astaria#[H-05] A borrower can list their collateral on Seaport and receive almost all the listing price without paying back their liens|[H-05] A borrower can list their collateral on Seaport and receive almost all the listing price without paying back their liens]]
+See: [[2023-02-astaria#[H-05] A borrower can list their collateral on Seaport and receive almost all the listing price without paying back their liens|[H-05] A borrower can list their collateral on Seaport and receive almost all the listing price without paying back their liens]]
 The Attack Sequence:
 
 1. A user deposits a valuable NFT worth 100 ETH
@@ -1420,14 +1420,64 @@ Here's where the problem comes in: If a lien expires but nobody calls the `liqui
 
 The need to update critical state variables in a timely manner
 
-same as [[2023-02-Astaria#[H-11] `processEpoch()` needs to be called regularly|[H-11] `processEpoch()` needs to be called regularly]]
+same as [[2023-02-astaria#[H-11] `processEpoch()` needs to be called regularly|[H-11] `processEpoch()` needs to be called regularly]]
 ### Tools
 ### Refine
 
 - [[1-Business_Logic]]
 
 ---
+## [M-10] `redeemFutureEpoch` transfers the shares from the `msg.sender` to the vault instead of from the `owner`
+----
+- **Tags**: #business_logic #mgs_sender_vs_owner
+- Number of finders: 4
+- Difficulty: Medium
+---
+### Description: 
+`redeemFutureEpoch` transfers the vault shares from the `msg.sender` to the vault instead of from the owner. 
+```solidity
+  function redeemFutureEpoch(
+    uint256 shares,
+    address receiver,
+    address owner,
+    uint64 epoch
+  ) public virtual returns (uint256 assets) {
+... ...
+    // check for rounding error since we round down in previewRedeem.
 
+
+    ERC20(address(this)).safeTransferFrom(msg.sender, address(this), shares);
+... ...
+```
+### Recommendation: 
+The 1st parameter passed to the `ERC20(address(this)).safeTransferFrom` needs to be the owner:
+
+```solidity
+- ERC20(address(this)).safeTransferFrom(msg.sender, address(this), shares); 
++ ERC20(address(this)).safeTransferFrom(owner, address(this), shares);
+```
+### Discussion
+
+### Notes & Impressions
+
+#### Notes 
+To understand why this is problematic, consider this scenario:
+
+1. Alice owns 100 shares in the vault
+2. Alice authorizes Bob to manage her shares
+3. Bob tries to help Alice redeem her shares by calling `redeemFutureEpoch`
+4. The function attempts to take the shares from Bob's account (`msg.sender`) instead of Alice's account (`owner`)
+5. The transaction fails if Bob doesn't have the required shares, even though Alice has given permission
+#### Impressions
+
+`owner ≠ msg.sender`
+
+### Tools
+### Refine
+
+- [[1-Business_Logic]]
+
+---
 ## Audit Summary Notes
 - {{summary_notes}}
 

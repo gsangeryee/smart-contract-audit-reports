@@ -5,7 +5,7 @@
 - Check the updates of states  
 	- Correctness of the update.
 	- Whether all updates have been made.
-	- [[2023-02-Astaria#[H-03] `VaultImplementation.buyoutLien` does not update the new public vault's parameters and does not transfer assets between the vault and the borrower|[H-03] `VaultImplementation.buyoutLien` does not update the new public vault's parameters and does not transfer assets between the vault and the borrower]]
+	- [[2023-02-astaria#[H-03] `VaultImplementation.buyoutLien` does not update the new public vault's parameters and does not transfer assets between the vault and the borrower|[H-03] `VaultImplementation.buyoutLien` does not update the new public vault's parameters and does not transfer assets between the vault and the borrower]]
 - Check multiplications calculations are stored in limited-size integers
 - Precision Loss and  Insufficient Precision
 	- Always be aware of the potential loss of precision caused by division operations.
@@ -36,9 +36,11 @@
 	- Epoch/period increments
 	- Required sequential processing
 	- Blocking conditions
-	- [[2023-02-Astaria#[H-11] `processEpoch()` needs to be called regularly[H-11] `processEpoch()` needs to be called regularly]]
+	- [[2023-02-astaria#[H-11] `processEpoch()` needs to be called regularly[H-11] `processEpoch()` needs to be called regularly]]
 - Check array parameter types (memory vs storage)
-	- [[2023-02-Astaria#[H-10] Refactor `_paymentAH()`]]
+	- [[2023-02-astaria#[H-10] Refactor `_paymentAH()`]]
+- Check  `owner ≠ msg.sender`
+	- [[2023-02-astaria#[M-10] `redeemFutureEpoch` transfers the shares from the `msg.sender` to the vault instead of from the `owner`||[M-10] `redeemFutureEpoch` transfers the shares from the `msg.sender` to the vault instead of from the `owner`]]
 # Typical Logical Issues
 
 - Process Control Points vs. System Control Points

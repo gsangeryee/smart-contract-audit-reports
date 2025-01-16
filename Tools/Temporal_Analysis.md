@@ -9,5 +9,5 @@ Since many DeFi contracts involve time-based operations, analyze all time-depend
 
 ## Example
 - [[2023-06-angle#[H-03] Poor detection of disputed trees allows claiming tokens from a disputed tree]]
-- [[2023-02-Astaria#[M-05] If auction time is reduced, `withdrawProxy` can lock funds from final auctions|[M-05] If auction time is reduced, `withdrawProxy` can lock funds from final auctions]]
+- [[2023-02-astaria#[M-05] If auction time is reduced, `withdrawProxy` can lock funds from final auctions|[M-05] If auction time is reduced, `withdrawProxy` can lock funds from final auctions]]
 	- Check how duration changes affect existing process

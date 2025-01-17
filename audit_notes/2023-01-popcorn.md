@@ -10,7 +10,7 @@
 ---
 ## [H-09] Attacker can steal 99% of total balance from any reward token in any Staking contract
 ----
-- **Tags**:  #Deposit_or_Reward_tokens #business_logic 
+- **Tags**:  #Deposit_or_Reward_tokens #business_logic #access_control 
 - Number of finders: 1
 - Difficulty: Hard
 ---
@@ -205,6 +205,7 @@ I think the core of this finding is that we should check whether crucial paramet
 ### Refine
 
 - [[1-Business_Logic]]
+- [[14-Accrss_Control]]
 
 ---
 

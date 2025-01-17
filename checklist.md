@@ -49,6 +49,11 @@
 	- Fee percentages
 	- Time periods
 	- Withdrawal limits
+- Check financial calculation 
+	- we should repeatedly verify whether the financial calculations(such as interest and fees) are correctly implemented in the code during future audit tasks.
+		- [[2023-02-astaria#[H-20] `commitToLiens` transfers extra assets to the borrower when protocol fee is present|[H-20] `commitToLiens` transfers extra assets to the borrower when protocol fee is present]]
+	- Error Type: Part for Whole
+		- [[2023-01-Ajna#[M-04] Incorrect MOMP calculation in neutral price calculation|[M-04] Incorrect MOMP calculation in neutral price calculation]]
 # Typical Logical Issues
 
 - Process Control Points vs. System Control Points

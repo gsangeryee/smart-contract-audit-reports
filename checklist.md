@@ -41,6 +41,14 @@
 	- [[2023-02-astaria#[H-10] Refactor `_paymentAH()`]]
 - Check  `owner ≠ msg.sender`
 	- [[2023-02-astaria#[M-10] `redeemFutureEpoch` transfers the shares from the `msg.sender` to the vault instead of from the `owner`||[M-10] `redeemFutureEpoch` transfers the shares from the `msg.sender` to the vault instead of from the `owner`]]
+- Check whether crucial parameters have limits.
+	- Reward rates/speeds
+		- [[2023-01-popcorn#[H-09] Attacker can steal 99% of total balance from any reward token in any Staking contract|[H-09] Attacker can steal 99% of total balance from any reward token in any Staking contract]]
+	- Interest rates
+	- Exchange rates
+	- Fee percentages
+	- Time periods
+	- Withdrawal limits
 # Typical Logical Issues
 
 - Process Control Points vs. System Control Points

@@ -183,3 +183,5 @@
 	2. When `balance > s.expected`: The vault received more than expected (e.g., from high-value auction sales)
 57. [[2023-02-astaria#[M-10] `redeemFutureEpoch` transfers the shares from the `msg.sender` to the vault instead of from the `owner`|[M-10] `redeemFutureEpoch` transfers the shares from the `msg.sender` to the vault instead of from the `owner`]]
 	1. `owner ≠ msg.sender`
+58. [[2023-01-popcorn#[H-09] Attacker can steal 99% of total balance from any reward token in any Staking contract|[H-09] Attacker can steal 99% of total balance from any reward token in any Staking contract]]
+	1. I think the core of this finding is that we should check whether crucial parameters have limits(such as rate, speed, ratio,)

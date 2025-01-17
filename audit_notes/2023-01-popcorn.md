@@ -98,7 +98,7 @@ This attack is made possible by the following issues:
     return (block.timestamp + (amount / uint256(rewardsPerSecond))).safeCastTo32();
   }
 ```
-Below is the PoC using a Foundry test:
+Below is the PoC using a Foundry test: [/Users/saneryee/3.3_AuditReportsPoC/2023-01-popcorn/test/vault/VaultController.t.sol](/Users/saneryee/3.3_AuditReportsPoC/2023-01-popcorn/test/vault/VaultController.t.sol)
 ```solidity
   function test__steal_rewards_from_any_staking_contract() public {
     addTemplate("Adapter", templateId, adapterImpl, true, true);
@@ -181,6 +181,8 @@ Note that the attacker can tweak the amount they stake in the contract, the rewa
 
 The test can be run with:  
 `forge test --no-match-contract 'Abstract' --match-test test__steal_rewards_from_any_staking_contract`
+
+*run test `/Users/saneryee/3.3_AuditReportsPoC/2023-01-popcorn/test/vault/VaultController.t.sol`*
 ### Recommended Mitigation
 
 1. Don't allow any Vault creator to use and modify just ANY Staking contract - [vault/VaultController.sol#L106-L108](https://github.com/code-423n4/2023-01-popcorn/blob/main/src/vault/VaultController.sol#L106-L108)
@@ -192,14 +194,17 @@ The test can be run with:
 ### Notes
 
 #### Notes 
-{{Some key points that need to be noted. }}
+1. anyone can create a new Vault - there's no verification
+2. The creator of any connected Vault can modify reward speeds, even for Staking contracts they don't own.
+3. no limits on how high the reward speed can be set
+4. Calculation error in how the contract determines when rewards should end.
 #### Impressions
-{{Your feelings about uncovering this finding.}}
+I think the core of this finding is that we should check whether crucial parameters have limits(such as rate, speed, ratio,)
 
 ### Tools
 ### Refine
 
-{{ Refine to typical issues}}
+- [[1-Business_Logic]]
 
 ---
 

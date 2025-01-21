@@ -185,3 +185,13 @@
 	1. `owner ≠ msg.sender`
 58. [[2023-01-popcorn#[H-09] Attacker can steal 99% of total balance from any reward token in any Staking contract|[H-09] Attacker can steal 99% of total balance from any reward token in any Staking contract]]
 	1. I think the core of this finding is that we should check whether crucial parameters have limits(such as rate, speed, ratio,)
+59.  [[2023-01-Ajna#[M-04] Incorrect MOMP calculation in neutral price calculation|[M-04] Incorrect MOMP calculation in neutral price calculation]]
+	- Error Type: Part Vs Whole
+60. [[2023-01-Ajna#[M-16] Auction timers following liquidity can fall through the floor price causing pool insolvency|[M-16] Auction timers following liquidity can fall through the floor price causing pool insolvency]]
+	1. The lack of a minimum price floor in the liquidation auction mechanism
+61. [[2023-01-Ajna#[H-07] ERC721Pool's `mergeOrRemoveCollateral` allows to remove collateral while auction is clearable|[H-07] ERC721Pool's `mergeOrRemoveCollateral` allows to remove collateral while auction is clearable]]
+	1. The key point of this findings is that we should ensure that all necessary requirements are met before any critical process, especially those involving finance.
+62. [[2023-01-Ajna#[M-08] Claiming accumulated rewards while the contract is underfunded can lead to a loss of rewards]]
+	1. *Unfairly capped rewards*
+63. [[2023-01-Ajna#[M-22] Memorializing an NFT position on the same bucket of a previously memorialized NFT locks redemption]]
+	1. Error Type: Part Vs Whole

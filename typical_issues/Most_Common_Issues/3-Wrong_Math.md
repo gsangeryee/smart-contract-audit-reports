@@ -12,5 +12,5 @@
 	- State Variables Mapping before and after critical operation.
 3. [[2023-02-astaria#[H-20] `commitToLiens` transfers extra assets to the borrower when protocol fee is present|[H-20] `commitToLiens` transfers extra assets to the borrower when protocol fee is present]]
 	- We should repeatedly verify whether the financial calculations(such as interest and fees) are correctly implemented in the code during future audit tasks.
-4. [[2023-01-Ajna#[M-04] Incorrect MOMP calculation in neutral price calculation|[M-04] Incorrect MOMP calculation in neutral price calculation]]
+4. [[2023-01-ajna#[M-04] Incorrect MOMP calculation in neutral price calculation|[M-04] Incorrect MOMP calculation in neutral price calculation]]
 	- Error Type: Part for Whole

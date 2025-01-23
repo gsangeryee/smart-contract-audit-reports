@@ -201,5 +201,17 @@
 		- Asset transfers without corresponding state updates
 		- Functions that handle partial operations without proper cleanup
 		- Discrepancies between accounting systems (e.g., user balances vs. pool balances)
-65. [[2023-01-ajna#[M-12] Deposits are eliminated before currently unclaimed reserves when there is no reserve auction]]
+65. [[2023-01-ajna#[M-12] Deposits are eliminated before currently unclaimed reserves when there is no reserve auction|[M-12] Deposits are eliminated before currently unclaimed reserves when there is no reserve auction]]
 	1. pay attention to edge cases (unclaimed)
+66. [[2023-01-liquid-collective#[M-01] Coverage funds might be pulled not only for the purpose of covering slashing losses|[M-01] Coverage funds might be pulled not only for the purpose of covering slashing losses]]
+	1. #PCPvsSCP 
+	2. *A critical misalignment between the code's logic and the Coverage Fund's intended purpose.*
+67. [[2023-01-cooler#[H-03] Fully repaying a loan will result in debt payment being lost]]
+	1. Danger of `delete` on Structs
+		- In Solidity, when you delete a struct from storage, all its fields are reset to their default values. So loan.lender becomes address(0) because that's the default for address types.
+	2. Funds First, Delete Last
+		- **Always finalize financial transactions** _before_ modifying or deleting state variables they depend on.
+68. [[2023-01-cooler#[M-02] Loan is rollable by default|[M-02] Loan is rollable by default]]
+	1. *Is Loan rollable by default？*
+69. [[2023-01-cooler#[M-04] Dust amounts can cause payments to fail, leading to default|[M-04] Dust amounts can cause payments to fail, leading to default]]
+	- Repayments **cannot exceed the remaining loan balance**

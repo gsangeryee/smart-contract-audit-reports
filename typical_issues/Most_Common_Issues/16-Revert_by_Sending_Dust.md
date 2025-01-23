@@ -1,5 +1,6 @@
+# Revert By Sending Dust
 
-103 findings util 2024-12-13
+Revert By Sending Dust refers to a technique where an attacker tries to invoke a function in a smart contract, deliberately sending a negligible amount of Ether (dust) along with the transaction.
 
 ## Example
 

@@ -30,6 +30,7 @@
 - [[2024-01-canto#[ [H-02 ] update_market() nextEpoch calculation incorrect](https //github.com/code-423n4/2024-01-canto-findings/issues/10)|2024-01-canto#[ [H-02 ] update_market() nextEpoch calculation incorrect]]
 - [[2024-10-sablier_flow#[H-01] Sender can brick stream by forcing overflow in debt calculation]]
 - [[2024-08-wildact#[M-02] [`FixedTermLoanHooks` allow Borrower to update Annual Interest before end of the "Fixed Term Period"]|FixedTermLoanHooks` allow Borrower to update Annual Interest before end of the "Fixed Term Period"]]
+- [[2023-01-liquid-collective#[M-01] Coverage funds might be pulled not only for the purpose of covering slashing losses|[M-01] Coverage funds might be pulled not only for the purpose of covering slashing losses]]
 
 ### Audit Key Points:
 

@@ -53,3 +53,66 @@ Example Flow:
    - If there's still unpaid debt, use reserves
    - Only if reserves are exhausted, use deposits
 ```
+
+
+## Dust Attack
+
+The **dust attack** exploits the precision requirements in loan repayments by manipulating the remaining loan balance through tiny ("dust") payments. Here's a step-by-step breakdown:
+
+---
+
+### **How the Dust Attack Works**
+
+1. **Initial State**:
+   - A borrower has a loan of **100 ETH** (`loan.amount = 100 ETH`).
+   - The borrower intends to repay the full amount before expiry.
+
+2. **Attacker Front-Runs**:
+   - The attacker monitors the blockchain for the borrower's repayment transaction.
+   - Before the borrower's transaction is processed, the attacker sends a **dust amount** (e.g., **1 wei**, the smallest ETH unit) to `repay()`:
+     ```solidity
+     repay(loanID, 1 wei); // Reduces loan.amount to 99.999999999999999999 ETH
+     ```
+   - This reduces `loan.amount` to **99.999... ETH** (100 ETH - 1 wei).
+
+3. **Borrower's Transaction Fails**:
+   - The borrower’s transaction attempts to repay the original **100 ETH**:
+     ```solidity
+     repay(loanID, 100 ETH); // Now, loan.amount is only 99.999... ETH
+     ```
+   - The contract calculates:
+     ```solidity
+     loan.amount -= 100 ETH; // Underflows (99.999... ETH - 100 ETH < 0)
+     ```
+   - The transaction **reverts** due to an underflow error.
+
+4. **Loan Defaults**:
+   - If this happens near the loan’s expiry time, the borrower cannot repay in time.
+   - The loan defaults, and the lender seizes the collateral (e.g., NFTs, tokens worth more than the loan).
+
+---
+
+### **Why This Matters**
+- **Unfair Defaults**: Borrowers lose collateral despite intending to repay.
+- **Profit for Attackers**: Attackers may profit by acquiring collateral cheaply post-default.
+- **Front-Running Vulnerability**: Miners/attackers can prioritize transactions to exploit timing.
+
+---
+
+### **Solution: Capping Repayments**
+Modify the `repay` function to use the **minimum** of `repaid` and `loan.amount`:
+```solidity
+function repay(uint256 loanID, uint256 repaid) external {
+    Loan storage loan = loans[loanID];
+    // ...
+    uint256 actualRepaid = Math.min(repaid, loan.amount); // Cap repayment
+    loan.amount -= actualRepaid; // No underflow
+    // ...
+}
+```
+- **Result**: Borrowers can repay **up to** the remaining balance, preventing overpayment failures.
+
+---
+
+### **Key Takeaway**
+By capping repayments to the remaining loan balance, the contract becomes resilient to dust attacks, ensuring borrowers can always repay without risking unintended defaults.

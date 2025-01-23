@@ -54,6 +54,12 @@
 		- [[2023-02-astaria#[H-20] `commitToLiens` transfers extra assets to the borrower when protocol fee is present|[H-20] `commitToLiens` transfers extra assets to the borrower when protocol fee is present]]
 	- Error Type: Part for Whole
 		- [[2023-01-ajna#[M-04] Incorrect MOMP calculation in neutral price calculation|[M-04] Incorrect MOMP calculation in neutral price calculation]]
+- Danger of `delete` on Structs
+	- In Solidity, when you delete a struct from storage, all its fields are reset to their default values. So loan.lender becomes address(0) because that's the default for address types.
+	- [[2023-01-cooler#[H-03] Fully repaying a loan will result in debt payment being lost|[H-03] Fully repaying a loan will result in debt payment being lost]]
+- Funds First, Delete Last
+	- **Always finalize financial transactions** _before_ modifying or deleting state variables they depend on.
+	- [[2023-01-cooler#[H-03] Fully repaying a loan will result in debt payment being lost|[H-03] Fully repaying a loan will result in debt payment being lost]]
 # Typical Logical Issues
 
 - Process Control Points vs. System Control Points

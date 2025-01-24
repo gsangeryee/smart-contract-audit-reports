@@ -60,6 +60,8 @@
 - Funds First, Delete Last
 	- **Always finalize financial transactions** _before_ modifying or deleting state variables they depend on.
 	- [[2023-01-cooler#[H-03] Fully repaying a loan will result in debt payment being lost|[H-03] Fully repaying a loan will result in debt payment being lost]]
+- *Double-check the complex calculation*
+	- [[2023-01-UXD#[M-06] Inaccurate Perp debt calculation|[M-06] Inaccurate Perp debt calculation]]
 # Typical Logical Issues
 
 - Process Control Points vs. System Control Points
@@ -77,3 +79,7 @@
 	- Map out the relationship between each condition: `Condition A -> Changes State -> Enables Condition B?`
 	- Try two-step attack
 
+## Uniswap V3
+
+- Different pool have different `sqrtPriceLimitX96` (**maximum/minimum price** a swap will accept)
+	- [[2023-01-UXD#[M-02] `PerpDepository._rebalanceNegativePnlWithSwap()` shouldn't use a `sqrtPriceLimitX96` twice.]]

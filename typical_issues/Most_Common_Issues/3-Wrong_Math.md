@@ -14,3 +14,5 @@
 	- We should repeatedly verify whether the financial calculations(such as interest and fees) are correctly implemented in the code during future audit tasks.
 4. [[2023-01-ajna#[M-04] Incorrect MOMP calculation in neutral price calculation|[M-04] Incorrect MOMP calculation in neutral price calculation]]
 	- Error Type: Part for Whole
+5. [[2023-01-UXD#[M-06] Inaccurate Perp debt calculation|[M-06] Inaccurate Perp debt calculation]]
+	1. *Double-check the complex calculation*

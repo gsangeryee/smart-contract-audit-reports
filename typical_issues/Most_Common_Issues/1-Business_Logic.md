@@ -9,6 +9,7 @@
 - The vulnerability emerges from how the rules interact, not from a coding mistake.
 ## List of cases
 
+### 1-50
 1. [[2023-08-immutable-security_review#[M-05] Withdrawal queue can be forcibly activated to hinder bridge operation|Withdrawal queue can be forcibly activated to hinder bridge operation]]
 	- Withdraw queue mechanism -> Denial-of-Service
 2. [[2023-07-primitive-spearbit-security-review#[M-01] `getSpotPrice, approximateReservesGivenPrice, getStartegyData` ignore time to maturity|[M-01] `getSpotPrice, approximateReservesGivenPrice, getStartegyData` ignore time to maturity]]
@@ -161,6 +162,7 @@
 49. [[2023-02-astaria#[H-20] `commitToLiens` transfers extra assets to the borrower when protocol fee is present|[H-20] `commitToLiens` transfers extra assets to the borrower when protocol fee is present]]
 	- we should repeatedly verify whether the financial calculations(such as interest and fees) are correctly implemented in the code during future audit tasks.
 50. [[2023-02-astaria#[H-02] Inequalities involving `liquidationInitialAsk` and `potentialDebt` can be broken when `buyoutLien` is called|[H-02] Inequalities involving `liquidationInitialAsk` and `potentialDebt` can be broken when `buyoutLien` is called]]
+### 51-100
 51. [[2023-02-astaria#[H-21] `WithdrawProxy` allows redemptions before `PublicVault` calls `transferWithdrawReserve`|[H-21] `WithdrawProxy` allows redemptions before `PublicVault` calls `transferWithdrawReserve`]]
 	1. Pay attention to `withdraw` operation.
 	2. ERC4626 withdrawal system, shares and underlying assets
@@ -215,3 +217,17 @@
 	1. *Is Loan rollable by default？*
 69. [[2023-01-cooler#[M-04] Dust amounts can cause payments to fail, leading to default|[M-04] Dust amounts can cause payments to fail, leading to default]]
 	- Repayments **cannot exceed the remaining loan balance**
+70. [[2023-01-cooler#[H-02] Loans can be rolled an unlimited number of times|[H-02] Loans can be rolled an unlimited number of times]]
+	1. Even if a lender allows rolling, there's no cap on the number of times a borrower can roll the loan. This could lead to indefinite extensions, especially problematic with depreciating collateral.
+71. [[2023-01-UXD#[M-06] Inaccurate Perp debt calculation|[M-06] Inaccurate Perp debt calculation]]
+	1. *Double-check the complex calculation*
+73. [[2023-01-UXD#[H-01] `PerpDespository reblance` and `rebalanceLite` can be called to drain funds from anyone who has approved `PerpDepository`|[H-01] `PerpDespository reblance` and `rebalanceLite` can be called to drain funds from anyone who has approved `PerpDepository`]]
+	1. **The victim pays the shortfall**: 
+	2. **The victim’s allowance is drained**:  
+74. [[2023-01-UXD#[H-03] RageTrade senior vault USDC deposits are subject to utilization caps which can lock deposits for long periods of time leading to UXD instability|[H-03] RageTrade senior vault USDC deposits are subject to utilization caps which can lock deposits for long periods of time leading to UXD instability]]
+	1. *The core issue revolves around the **utilization cap** (max cap) implemented in the RageTrade senior vault, which is designed to ensure solvency but inadvertently introduces a liquidity risk by potentially blocking withdrawals during periods of **high demand**.*
+75. [[2023-01-UXD#[H-05] USDC deposited to `PerpDepository.sol` are irretrievable and effectively causes UDX to become `undercollateralized`|[H-05] USDC deposited to `PerpDepository.sol` are irretrievable and effectively causes UDX to become `undercollateralized`]]
+	1. *Untracked USDC in Rebalancing*
+76. [[2023-01-UXD#[M-02] `PerpDepository._rebalanceNegativePnlWithSwap()` shouldn't use a `sqrtPriceLimitX96` twice.|[M-02] `PerpDepository._rebalanceNegativePnlWithSwap()` shouldn't use a `sqrtPriceLimitX96` twice.]]
+	1. Different pool have different `sqrtPriceLimitX96` (**maximum/minimum price** a swap will accept) in Uniswap V3
+    

@@ -116,3 +116,124 @@ function repay(uint256 loanID, uint256 repaid) external {
 
 ### **Key Takeaway**
 By capping repayments to the remaining loan balance, the contract becomes resilient to dust attacks, ensuring borrowers can always repay without risking unintended defaults.
+
+
+## Shortfall
+
+In the context of this smart contract vulnerability, a **shortfall** refers to a **deficit** or **insufficient amount** of funds that occurs when the value of assets required to balance the system exceeds what's available from a swap. Here's a breakdown:
+
+---
+
+### **What is a "Shortfall"?**
+1. **Mechanism**:
+   - When the `rebalance` function is called, the contract attempts to swap one token (e.g., `assetToken`) for another (e.g., `quoteToken`) to balance the system’s liabilities.
+   - The `shortfall` is the **difference** between:
+     - The expected amount of `quoteToken` needed (`quoteAmount`), and
+     - The actual amount received from the swap (`quoteAmountOut`).
+
+   ```solidity
+   int256 shortFall = expectedQuoteAmount - actualQuoteAmountReceived;
+   ```
+
+2. **Example**:
+   - If the contract expects to receive **100 USDC** from a swap but only gets **80 USDC**, the shortfall is **20 USDC**.
+   - This 20 USDC deficit must be covered externally to ensure the system remains solvent.
+
+---
+
+### **How is the Shortfall Exploited?**
+1. **Malicious Manipulation**:
+   - Attackers intentionally create a large shortfall by manipulating swap parameters (e.g., setting a very low `amountOutMinimum` or unfavorable `sqrtPriceLimitX96`).
+   - This forces the swap to return minimal tokens, maximizing the shortfall.
+
+2. **Victim Pays the Shortfall**:
+   - The attacker specifies a victim’s address as the `account` parameter.
+   - The contract uses `transferFrom` to pull the shortfall amount (e.g., 20 USDC) from the victim’s account, **draining their allowance**.
+
+---
+
+### **Why is This Dangerous?**
+- **Arbitrary `account` Parameter**: The `rebalance` function allows anyone to specify which account covers the shortfall.
+- **No Validation**: The contract doesn’t check if the `account` is the same as the caller (`msg.sender`), enabling attackers to abuse others’ allowances.
+
+---
+
+### **Key Takeaway**
+The shortfall is a **deficit created during rebalancing**, and the vulnerability allows attackers to **force unsuspecting users to pay for it**, draining their approved funds. Fixing this requires ensuring only the transaction caller (`msg.sender`) can be charged for shortfalls.
+
+- [[2023-01-UXD#[H-01] `PerpDespository reblance` and `rebalanceLite` can be called to drain funds from anyone who has approved `PerpDepository`|[H-01] `PerpDespository reblance` and `rebalanceLite` can be called to drain funds from anyone who has approved `PerpDepository`]]
+
+
+## Delta Neutrality
+
+**Delta-Neutral Explained**  
+Delta-neutrality is a risk management strategy used in finance (and crypto) to **eliminate exposure to price movements** of an underlying asset. It’s critical for protocols aiming to maintain stable value (like UDX) while holding volatile collateral (e.g., ETH).
+
+---
+
+### **1. What is "Delta"?**
+- **Delta (Δ)** measures how much an asset’s price changes relative to another asset.  
+  - Example: If ETH has a delta of 1.0, a $1 ETH price increase raises its value by $1.  
+  - For derivatives (e.g., futures), delta represents how much the derivative’s value changes with the underlying asset.
+
+---
+
+### **2. Delta-Neutral Strategy**  
+A portfolio is **delta-neutral** if its total delta is **zero**, meaning its value doesn’t change with small price swings.  
+
+#### **How It Works**:
+- **Hedge volatile assets with derivatives** (e.g., futures, options).  
+- Example:  
+  - You hold **$100 ETH** (delta = +1.0).  
+  - Short **$100 ETH futures** (delta = -1.0).  
+  - Total delta: (+100) + (-100) = **0**.  
+  - ETH price changes → Gains in ETH offset losses in futures (and vice versa).  
+
+---
+
+### **3. Delta-Neutrality in UDX**  
+UDX aims to be a **stablecoin collateralized 1:1 by assets**, but it uses volatile assets (e.g., ETH) as collateral. To maintain stability:  
+1. **Mint UDX**: Users deposit ETH as collateral.  
+2. **Hedge ETH Exposure**: Protocol shorts ETH derivatives (e.g., Perpetual futures) to offset ETH price risk.  
+   - If ETH price ↓: Loss on ETH collateral is offset by gains on the short position.  
+   - If ETH price ↑: Gains on ETH collateral offset losses on the short position.  
+
+---
+
+### **4. Why Rebalancing Matters**  
+The protocol must constantly **rebalance** to stay delta-neutral:  
+- **Negative PNL**: If ETH price drops, the system loses collateral value.  
+  - Protocol sells ETH (or derivatives) to buy USDC, restoring collateralization.  
+- **Positive PNL**: If ETH price rises, the system gains excess collateral.  
+  - Protocol buys back ETH (or derivatives) to maintain the hedge.  
+
+---
+
+### **5. Failure in UDX’s Implementation**  
+The audit finding reveals a critical flaw:  
+- **USDC from rebalancing is trapped** (due to improper accounting).  
+- **Result**:  
+  - The system can’t access USDC needed to back UDX redemptions.  
+  - Over time, UDX becomes **undercollateralized** (not enough accessible USDC to match UDX supply).  
+  - Delta-neutrality breaks → UDX loses its peg.  
+
+---
+
+### **6. Example**  
+- **Initial State**:  
+  - Collateral: 1 ETH ($1,000) + Short ETH futures ($1,000).  
+  - UDX Supply: $1,000 (delta-neutral).  
+- **ETH Price Drops to $900**:  
+  - Collateral value: $900 ETH.  
+  - Protocol rebalances: Sells ETH for $900 USDC.  
+  - **Expected**: UDX now backed by $900 USDC (still 1:1).  
+  **Bug**:  
+  - $900 USDC is locked in the vault (can’t be withdrawn).  
+  - UDX remains $1,000 supply → Backed by only $900 USDC (**undercollateralized**).  
+
+---
+
+### **Key Takeaway**  
+Delta-neutrality requires **active rebalancing** and **access to collateral**. If rebalancing locks funds (as in UDX), the system collapses. This is why proper accounting and withdrawal mechanisms are critical.
+
+- [[2023-01-UXD#[H-05] USDC deposited to `PerpDepository.sol` are irretrievable and effectively causes UDX to become `undercollateralized`]]

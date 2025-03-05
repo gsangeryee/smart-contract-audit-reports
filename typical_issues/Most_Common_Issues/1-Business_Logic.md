@@ -1,5 +1,5 @@
 
-13/225 findings till 2024-12-13
+13/226 findings till 2025-2-24
 
 *Business Logic - Logic vulnerabilities involve flaws in the business logic or protocols of a smart contract, where the implementation matches the developer's intention, but the underlying logic is inherently flawed.*
 
@@ -220,14 +220,91 @@
 70. [[2023-01-cooler#[H-02] Loans can be rolled an unlimited number of times|[H-02] Loans can be rolled an unlimited number of times]]
 	1. Even if a lender allows rolling, there's no cap on the number of times a borrower can roll the loan. This could lead to indefinite extensions, especially problematic with depreciating collateral.
 71. [[2023-01-UXD#[M-06] Inaccurate Perp debt calculation|[M-06] Inaccurate Perp debt calculation]]
-	1. *Double-check the complex calculation*
-73. [[2023-01-UXD#[H-01] `PerpDespository reblance` and `rebalanceLite` can be called to drain funds from anyone who has approved `PerpDepository`|[H-01] `PerpDespository reblance` and `rebalanceLite` can be called to drain funds from anyone who has approved `PerpDepository`]]
+	1. #Double-check_the_complex_calculation 
+72. [[2023-01-UXD#[H-01] `PerpDespository reblance` and `rebalanceLite` can be called to drain funds from anyone who has approved `PerpDepository`|[H-01] `PerpDespository reblance` and `rebalanceLite` can be called to drain funds from anyone who has approved `PerpDepository`]]
 	1. **The victim pays the shortfall**: 
 	2. **The victim’s allowance is drained**:  
-74. [[2023-01-UXD#[H-03] RageTrade senior vault USDC deposits are subject to utilization caps which can lock deposits for long periods of time leading to UXD instability|[H-03] RageTrade senior vault USDC deposits are subject to utilization caps which can lock deposits for long periods of time leading to UXD instability]]
+73. [[2023-01-UXD#[H-03] RageTrade senior vault USDC deposits are subject to utilization caps which can lock deposits for long periods of time leading to UXD instability|[H-03] RageTrade senior vault USDC deposits are subject to utilization caps which can lock deposits for long periods of time leading to UXD instability]]
 	1. *The core issue revolves around the **utilization cap** (max cap) implemented in the RageTrade senior vault, which is designed to ensure solvency but inadvertently introduces a liquidity risk by potentially blocking withdrawals during periods of **high demand**.*
-75. [[2023-01-UXD#[H-05] USDC deposited to `PerpDepository.sol` are irretrievable and effectively causes UDX to become `undercollateralized`|[H-05] USDC deposited to `PerpDepository.sol` are irretrievable and effectively causes UDX to become `undercollateralized`]]
+74. [[2023-01-UXD#[H-05] USDC deposited to `PerpDepository.sol` are irretrievable and effectively causes UDX to become `undercollateralized`|[H-05] USDC deposited to `PerpDepository.sol` are irretrievable and effectively causes UDX to become `undercollateralized`]]
 	1. *Untracked USDC in Rebalancing*
-76. [[2023-01-UXD#[M-02] `PerpDepository._rebalanceNegativePnlWithSwap()` shouldn't use a `sqrtPriceLimitX96` twice.|[M-02] `PerpDepository._rebalanceNegativePnlWithSwap()` shouldn't use a `sqrtPriceLimitX96` twice.]]
+75. [[2023-01-UXD#[M-02] `PerpDepository._rebalanceNegativePnlWithSwap()` shouldn't use a `sqrtPriceLimitX96` twice.|[M-02] `PerpDepository._rebalanceNegativePnlWithSwap()` shouldn't use a `sqrtPriceLimitX96` twice.]]
 	1. Different pool have different `sqrtPriceLimitX96` (**maximum/minimum price** a swap will accept) in Uniswap V3
-    
+76. [[2024-10-Primodium#[C-02] The portion of the pot corresponding to locked points is not distributed to the players|[C-02] The portion of the pot corresponding to locked points is not distributed to the players]]
+	1. calculating portions or shares using fractions
+77. [[2022-12-liquid-collective#[H-2] Order of calls to `removeValidators` can affect the resulting validator keys set|[H-2] Order of calls to `removeValidators` can affect the resulting validator keys set]]
+	1. Functions that modify shared state (like arrays/sets) where transaction ordering matters:
+		- Multiple parties can call the same function
+		- State changes affect subsequent operations
+		- No mechanism to handle concurrent modifications
+78. [[2022-12-liquid-collective#[C-3] `OperatorsRegistry._getNextValidatorsFromActiveOperators` can DOS Alluvial staking if there's an operator with `funded==stopped` and `funded == min(limit, keys)`|[C-3] `OperatorsRegistry._getNextValidatorsFromActiveOperators` can DOS Alluvial staking if there's an operator with `funded==stopped` and `funded == min(limit, keys)`]]
+	1. *Mathematical equivalence doesn't mean functional equivalence.*
+79. [[2022-12-liquid-collective#[M-2] `_getNextValidatorsFromActiveOperators` can be tweaked to find an operator with a better validator pool|[M-2] `_getNextValidatorsFromActiveOperators` can be tweaked to find an operator with a better validator pool]]
+	1. same as 79
+80. [[2022-12-liquid-collective#[M-8] `OperatorsRegistry._getNextValidatorsFromActiveOperators`should not consider `stopped` when picking a validator|[M-8] `OperatorsRegistry._getNextValidatorsFromActiveOperators`should not consider `stopped` when picking a validator]]
+	1. same as 79
+81. [[2022-12-liquid-collective#[M-11] `OracleV1.getMemberReportStatus` returns true for non existing oracles]]
+82. [[2022-11-backed#[H-01] Borrowers may earn auction proceeds without filling the debt shortfall|[H-01] Borrowers may earn auction proceeds without filling the debt shortfall]]
+	1. Ensure all potential contributions to a final outcome are fully accounted for before making irreversible decisions.
+83. [[2022-11-backed#[M-02] Disabled NFT collateral should not be used to mint debt|[M-02] Disabled NFT collateral should not be used to mint debt]]
+	1. Checks when adding but missing checks when updating (increasing)
+84. [[2022-11-backed#[M-05] `PaprController.buyAndReduceDebt msg.sender` can lose paper by paying the debt twice|[M-05] `PaprController.buyAndReduceDebt msg.sender` can lose paper by paying the debt twice]]
+	- In debt process: `msg.sender` and `account` can be different addresses such that one can repay anyone's debt.
+	- Pay attention `msg.sender` and `account`
+	- Who provides the funds (`pay` or `burns from`)?
+	- Who receives the benefit (`recipoent`,`to`)?
+85. [[2022-11-backed#[M-06] `PaprController` pays swap fee in `buyAndReduceDebt`, not user|[M-06] `PaprController` pays swap fee in `buyAndReduceDebt`, not user]]
+	1. *Always verify which entity (contract or user) should be the source of funds in any token transfer operation.*
+		- **Transfer Method Mismatch**: Using `transfer()` when `transferFrom()` is needed, or vice versa
+		    - `transfer()` = contract's own funds
+		    - `transferFrom()` = user's pre-approved funds
+		- **Fee Payment Responsibility**: When implementing fee mechanisms, be explicit about who pays:
+		    - User pays fee → use `transferFrom(msg.sender, recipient, amount)`
+		    - Protocol pays fee → use `transfer(recipient, amount)` with proper accounting
+86. [[2022-12-connext#[H-01] `swapInternal()` shouldn't use `msg.sender`|[H-01] `swapInternal()` shouldn't use `msg.sender`]]
+	1. `replyer A ---> BridgeFacet.execute() - msg.sender = A ---> BridgeFacet._handleExecuteLiquidity() - msg.sender = A ---> AssetLogic.swapFromLocalAssetIfNeeded() - msg.sender = A ---> AssetLogic._swapAsset() - msg.sender = A ---> SwapUtils.swapInternal msg.sender = A`
+	2. Checks relayer's balance instead of pool's balance
+87. [[2022-12-connext#[H-7] No way to update a Stable Swap once assigned to a key|[H-7] No way to update a Stable Swap once assigned to a key]]
+	1. *Smart contracts should implement complete lifecycle management for all critical system components*
+		1. Initialization mechanisms
+		2. Update mechanisms
+		3. Removal/deprecation mechanisms
+		4. Emergency pause/shutdown mechanisms
+88. [[2022-12-connext#[H-09] No way of removing Fraudulent Roots|[H-09] No way of removing Fraudulent Roots]]
+	1. See above
+89. [[2022-12-connext#[H-11] Missing mirrorConnector check on Optimism hub connector|[H-11] Missing mirrorConnector check on Optimism hub connector]]
+	1. always check for alternative entry points to critical functionality
+90. [[2022-12-connext#[M-06] The set of tokens in an internal swap pool cannot be updated|[M-06] The set of tokens in an internal swap pool cannot be updated]]
+	1. See 
+		1. [[2022-12-connext#[H-07] No way to update a Stable Swap once assigned to a key|[H-07] No way to update a Stable Swap once assigned to a key]]
+		2. [[2022-12-connext#[H-09] No way of removing Fraudulent Roots|[H-09] No way of removing Fraudulent Roots]]
+91. [[2022-12-connext#[M-10] `TypedMemView.sameType` does not use the correct right shift value to compare two `bytes29`s|[M-10] `TypedMemView.sameType` does not use the correct right shift value to compare two `bytes29`s]]
+	1. *When performing bitwise operations on packed data structures, ensure the bit shifting exactly isolates the intended components, accounting for any padding that occurs during type conversions.*
+92. [[2022-12-prePO#[H-01] griefing / blocking / delaying users to withdraw|[H-01] griefing / blocking / delaying users to withdraw]]
+	1. When a protocol manages user-specific operations (like withdrawals or deposits), each user's critical state variables should be isolated in mappings rather than sharing global variables that affect multiple users.
+		1. [[State_Isolation_vs_Sharing]]
+93. [[2022-12-prePO#[M-04] PrePO NFT holders will not be able to redeem collateral|[M-04] PrePO NFT holders will not be able to redeem collateral]]
+	1. #authorization_asymmetry 
+94.  [[2022-12-prePO#[M-05] `PrePOMarket.setFinalLongPayout()` shouldn't be called twice.|[M-05] `PrePOMarket.setFinalLongPayout()` shouldn't be called twice.]]
+	- Once user actions (like token redemptions) are taken based on a contract state, that state should either be immutable or changes to it must account for all previous actions.
+95. [[2022-12-prePO#[M-07] Users do not receive owed tokens if `TokenSender` contract cannot cover their owed amount.|[M-07] Users do not receive owed tokens if `TokenSender` contract cannot cover their owed amount.]]
+	1. *The `TokenSender` contract silently fails when it lacks sufficient tokens to pay user rebates, without tracking unpaid amounts or providing a mechanism for users to claim them later.*
+96. [[2022-11-isomorph#[H-01] User is unable to partially payback loan if they aren't able to post enough isoUSD to bring them back to minOpeningMargin|[H-01] User is unable to partially payback loan if they aren't able to post enough isoUSD to bring them back to minOpeningMargin]]
+	1. #Excessive_Constraint_Propagation
+97. [[2022-11-isomorph#[H-02] The calculation of `totalUSDborrowed` in `openLoan()` is not correct|[H-02] The calculation of `totalUSDborrowed` in `openLoan()` is not correct]]
+	1. #Double-check_the_complex_calculation 
+98. [[2022-11-isomorph#[H-07] User can steal rewards from other users by withdrawing their Velo Deposit NFTs from other users' depositors|[H-07] User can steal rewards from other users by withdrawing their Velo Deposit NFTs from other users' depositors]]
+	1. Missing authentication checks
+	2. Check `DepositReceipt`  same?
+99. [[2022-11-isomorph#[H-09] Swapping 100 tokens in `DepositReceipt_ETH` and `DepositReciept_USDC` breaks usage of `WBTC LP` and other high value tokens|[H-09] Swapping 100 tokens in `DepositReceipt_ETH` and `DepositReciept_USDC` breaks usage of `WBTC LP` and other high value tokens]]
+	1. Dynamic vs. Fixed Parameters
+100. [[2022-11-isomorph#[M-05] `increaseCollateralAmount` User is not allowed to increase collateral freely.|[M-05] `increaseCollateralAmount` User is not allowed to increase collateral freely.]]
+	1. #Excessive_Constraint_Propagation 
+### 101-150
+101. [[2022-12-NounsDAO#[M-07] Payer cannot withdraw accidental extra funds sent to the contract without canceling|[M-07] Payer cannot withdraw accidental extra funds sent to the contract without canceling]]
+	1. Streaming Token should be `rescue`
+102. [[2022-12-maple#[M-01] Users depositing to a pool with unrealized losses will take on the losses|[M-01] Users depositing to a pool with unrealized losses will take on the losses]]
+	1.  _Inconsistent or incomplete valuation mechanisms in transaction pricing can lead to mispricing and unfair outcomes for participants._
+103. [[2022-12-maple#[M-03] Unaccounted collateral is mishandled in `triggerDefault`|[M-03] Unaccounted collateral is mishandled in `triggerDefault`]]
+	1. *Always verify on-chain state for critical operations, especially when handling external assets or user inputs.*
+		1. The balances maintained by ERC20 contract are considered trustworthy. 代币合约中的余额更可信。

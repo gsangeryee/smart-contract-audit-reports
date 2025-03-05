@@ -5,7 +5,7 @@
 - Platform: 
 - Report Url: [link](link)
 ---
-# High Risk Findings (xx)
+# Critical & High Risk Findings (xx)
 
 ---
 

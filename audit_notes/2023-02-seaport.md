@@ -255,7 +255,7 @@ Spearbit: Verified
 ---
 ## [M-04] Advance orders of CONTRACT order types can generate orders with less consideration items that would break the aggregation routine
 ----
-- **Tags**: #business_logic 
+- **Tags**: #business_logic #array_index 
 - Number of finders: 4
 - Difficulty: Medium
 ---

@@ -31,6 +31,63 @@ The auction mechanism serves several purposes:
 - for protocol management
 - (option) auction
 
+
+## Interest (利息)
+
+- **单利（Linear Interest / Simple Interest）**  
+    单利只以初始本金作为计算利息的依据，不考虑前期已经产生的利息。也就是说，每个计息期内产生的利息金额固定，与时间长度成正比。例如，若本金为 P，年利率为 r，经过 t 年后，总利息为 P × r × t，最终金额为：
+    
+    > A = P(1 + r·t)  
+    > 每年的收益是固定的，不会因前期利息而增多。
+- **复利（Compounded Interest / Compound Interest）**  
+    复利不仅以本金计算利息，而且将每期产生的利息累加到本金中，再次计算下一期的利息，即“利滚利”。如果本金为 P，年利率为 r，经过 t 年后，总金额为：
+    
+    > A = P × (1 + r)^(t)  
+    > 当复利的计息周期不是一年时，公式可推广为：  
+    > A = P × (1 + r/n)^(n·t)  
+    > 其中 n 表示每年复利的次数。这种方式使得利息随着时间呈**指数增长**。
+
+---
+### 2. 增长方式和效果
+
+- **增长速度**
+    
+    - 单利增长是**线性增长**：每个计息期利息相同，增长速度恒定。
+    - 复利增长是**指数增长**：由于每期利息均加入本金中，后续计算时本金基数不断增大，因此增长速度越来越快。
+- **长期效果**  
+    在相同本金、利率和期限下，复利累计的利息明显高于单利。这也是为什么在长期投资或贷款中，复利效应常被视为“时间的魔力”，既能使财富迅速增值，也可能使债务不断累积。
+    
+
+---
+
+### 3. 应用场景
+
+- **单利**  
+    常用于短期贷款、部分储蓄产品或民间借贷中，因为计算简单、每期收益固定，适合期限较短的金融工具。
+    
+- **复利**  
+    广泛用于长期投资、储蓄账户、定期存款和贷款（例如房贷）的计算。由于复利能带来更高的累计利息，投资者常利用复利效应实现财富增值，而债务人则需要注意复利可能导致负担加重。
+    
+
+---
+### 4. 小结
+
+- **计算公式**
+    
+    - 单利：A = P(1 + r·t)
+    - 复利：A = P × (1 + r/n)^(n·t) 或 A = P × (1 + r)^(t)（当计息周期为一年时）
+
+当每年利率不同的情况下，复利的计算不再是简单的指数形式 A = P × (1 + r)ⁿ，而是需要把每一年的增长因子连乘起来，即
+
+> A = P × ∏₍ᵢ₌₁₎ⁿ (1 + rᵢ)
+    
+- **核心差异**  
+    单利只计算本金的利息，而复利则是将已得利息与本金一起作为下期计算基础，从而使得总金额随时间呈指数级上升。
+    
+
+
+总体来说，复利在长期运作中能够显著提高资产的增值效应，但同时如果作为债务利息的计算方式，则会使还款压力增大。因此，在不同的金融情境中，理解和选择适当的利息计算方法非常重要。
+
 ## Collateral
 
 Collateral is like the property deed you give to a bank when taking a mortgage. When borrowers want to take a loan from the protocol, they must first provide collateral - which could be NFTs in an ERC721 pool or tokens in an ERC20 pool. This collateral serves as security for the loan. If borrowers fail to repay, their collateral can be liquidated (sold) to cover the debt. In the code, collateral is tracked per borrower and can be auctioned off during liquidation events.
@@ -38,8 +95,7 @@ Collateral is like the property deed you give to a bank when taking a mortgage. 
 - from borrowers
 - own by protocol, when borrowers fail to repay
 - need to auction
-
-## Deposits, reserves and collateral in one example
+### Deposits, reserves and collateral in one example
 
 ```plaintext
 Example Flow:
@@ -237,3 +293,38 @@ The audit finding reveals a critical flaw:
 Delta-neutrality requires **active rebalancing** and **access to collateral**. If rebalancing locks funds (as in UDX), the system collapses. This is why proper accounting and withdrawal mechanisms are critical.
 
 - [[2023-01-UXD#[H-05] USDC deposited to `PerpDepository.sol` are irretrievable and effectively causes UDX to become `undercollateralized`]]
+
+## Stream
+
+The **Stream** contract is designed to allow a payer to transfer tokens gradually to a recipient over time. Here are the key aspects: 
+
+### What is "Stream"?(流式转账，分期付款)
+
+- **Purpose:**  
+    The contract implements a token streaming mechanism. Instead of sending a lump sum of tokens, the payer deposits tokens into the contract, which then gradually releases them to the recipient at a fixed rate (tokens per second). This approach mimics vesting or continuous payment arrangements.
+    
+- **Functionality:**
+    
+    - **Continuous Payment:** Once the stream starts, the recipient can withdraw the tokens that have vested over time.
+    - **Cancellation:** Either the payer or the recipient can cancel the stream at any time. When canceled, the contract calculates and distributes the fair share of tokens to both parties.
+    - **Design Origin:** The contract is a fork of the Sablier protocol, a well-known solution for streaming payments. It also leverages the `Clone` pattern to optimize gas costs by reading immutable parameters directly from the code.
+
+### What is the "Streaming Token"?
+
+- **Designated Token:**  
+    The streaming token is the specific ERC20 token that is used for the stream. This token is central to the contract’s purpose—it's the asset being streamed from the payer to the recipient.
+    
+- **Handling in the Contract:**
+    - **Intentional Use:** Unlike other tokens, the streaming token is intentionally deposited to fund the stream. Its balance directly affects how much the recipient can withdraw over time.
+    - **Accidental Deposits Issue:** If extra amounts of the streaming token (beyond what is needed for the stream) are accidentally sent to the contract, the contract does not provide a simple rescue function to recover these excess funds. The only way to retrieve them would be to cancel the stream, which could disrupt the ongoing payment process.
+
+### Summary
+
+- **Stream:** A smart contract enabling time-based token payments, where funds are released gradually according to a pre-set schedule.
+- **Streaming Token:** The specific ERC20 token designated for these payments. Its management is tightly integrated into the stream’s lifecycle, and any accidental surplus (beyond the required balance) is problematic because it ties directly into the stream’s accounting mechanism.
+
+In essence, while the Stream contract facilitates smooth, continuous payments, it also requires careful handling of the designated streaming token to avoid unintended disruptions in the payment schedule.
+
+### Example
+- [[2022-12-NounsDAO#[M-07] Payer cannot withdraw accidental extra funds sent to the contract without canceling]]
+	- 1. Streaming Token should be `rescue`

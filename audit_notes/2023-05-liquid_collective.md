@@ -1,6 +1,6 @@
 # 2023-05-liquid_collective
 ---
-- Category: #staking_pool #liquid_staking #services #yield_aggregator #cross-chain 
+- Category: #staking_pool #liquid_staking #services #yield_aggregator #cross-chain #array_index 
 - Note Create 2024-12-25
 - Platform: Spearbit
 - Report Url: [LiquidCollective3-Spearbit-Security-Review](https://github.com/spearbit/portfolio/blob/master/pdfs/LiquidCollective3-Spearbit-Security-Review.pdf)

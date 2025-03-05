@@ -16,7 +16,7 @@
 	1. **Cross-contract Comparisons**: Compare related contracts for inconsistencies in key functionalities.
 	2. **Key Functions**: Focus on critical operations such as `withdraw`, `deposit`, or similar sensitive actions.
 	3. **Validation Checks**: Look for missing or inconsistent validations, especially regarding access control or permissions.
--  Data Validation 
+- Data Validation 
 	- Verifying input parameter constraints
 	- Checking for proper data range and type validations
 - edge cases
@@ -39,8 +39,15 @@
 	- [[2023-02-astaria#[H-11] `processEpoch()` needs to be called regularly[H-11] `processEpoch()` needs to be called regularly]]
 - Check array parameter types (memory vs storage)
 	- [[2023-02-astaria#[H-10] Refactor `_paymentAH()`]]
-- Check  `owner ≠ msg.sender`
-	- [[2023-02-astaria#[M-10] `redeemFutureEpoch` transfers the shares from the `msg.sender` to the vault instead of from the `owner`||[M-10] `redeemFutureEpoch` transfers the shares from the `msg.sender` to the vault instead of from the `owner`]]
+- Check  `msg.sender`, `account`, `owner`, `receiver`
+	- `owner ≠ msg.sender`
+		- [[2023-02-astaria#[M-10] `redeemFutureEpoch` transfers the shares from the `msg.sender` to the vault instead of from the `owner`||[M-10] `redeemFutureEpoch` transfers the shares from the `msg.sender` to the vault instead of from the `owner`]]
+	- flash loan `receiver` -> `msg.sender`
+		- [[2023-06-lybra#[H-01] There is a vulnerability in the `executeFlashloan` function of the `PeUSDMainnet` contract. Hackers can use this vulnerability to burn other people's eUSD token balance without permission|[H-01] There is a vulnerability in the `executeFlashloan` function of the `PeUSDMainnet` contract. Hackers can use this vulnerability to burn other people's eUSD token balance without permission]]
+	- `account` ->`msg.sender`
+		- [[2022-11-backed#[M-05] `PaprController.buyAndReduceDebt msg.sender` can lose paper by paying the debt twice|[M-05] `PaprController.buyAndReduceDebt msg.sender` can lose paper by paying the debt twice]]
+	- Balance account -> msg.sender
+		- [[2022-12-connext#[H-01] `swapInternal()` shouldn't use `msg.sender`|[H-01] `swapInternal()` shouldn't use `msg.sender`]]
 - Check whether crucial parameters have limits.
 	- Reward rates/speeds
 		- [[2023-01-popcorn#[H-09] Attacker can steal 99% of total balance from any reward token in any Staking contract|[H-09] Attacker can steal 99% of total balance from any reward token in any Staking contract]]
@@ -54,6 +61,8 @@
 		- [[2023-02-astaria#[H-20] `commitToLiens` transfers extra assets to the borrower when protocol fee is present|[H-20] `commitToLiens` transfers extra assets to the borrower when protocol fee is present]]
 	- Error Type: Part for Whole
 		- [[2023-01-ajna#[M-04] Incorrect MOMP calculation in neutral price calculation|[M-04] Incorrect MOMP calculation in neutral price calculation]]
+	- #Double-check_the_complex_calculation #loan_with_interest
+		- [[2022-11-isomorph#[H-02] The calculation of `totalUSDborrowed` in `openLoan()` is not correct|[H-02] The calculation of `totalUSDborrowed` in `openLoan()` is not correct]]
 - Danger of `delete` on Structs
 	- In Solidity, when you delete a struct from storage, all its fields are reset to their default values. So loan.lender becomes address(0) because that's the default for address types.
 	- [[2023-01-cooler#[H-03] Fully repaying a loan will result in debt payment being lost|[H-03] Fully repaying a loan will result in debt payment being lost]]
@@ -62,6 +71,32 @@
 	- [[2023-01-cooler#[H-03] Fully repaying a loan will result in debt payment being lost|[H-03] Fully repaying a loan will result in debt payment being lost]]
 - *Double-check the complex calculation*
 	- [[2023-01-UXD#[M-06] Inaccurate Perp debt calculation|[M-06] Inaccurate Perp debt calculation]]
+- Check Array Index
+	- [[2022-12-liquid-collective#[H-2] Order of calls to `removeValidators` can affect the resulting validator keys set]]
+	- [[2023-02-astaria#[H-10] Refactor `_paymentAH()`]]
+	- [[2023-02-seaport#[M-04] Advance orders of CONTRACT order types can generate orders with less consideration items that would break the aggregation routine]]
+	- [[2023-05-liquid_collective#[H-01] `_pickNextValidatorsToExitFromActiveOperators` uses the wrong index to query stopped validator]]
+- How subtraction is used in comparison logic.
+	*Mathematical equivalence doesn't mean functional equivalence.*
+	- [[2022-12-liquid-collective#[C-3] `OperatorsRegistry._getNextValidatorsFromActiveOperators` can DOS Alluvial staking if there's an operator with `funded==stopped` and `funded == min(limit, keys)`]]
+- Ensure all potential contributions to a final outcome are fully accounted for before making irreversible decisions.
+	- [[2022-11-backed#[H-01] Borrowers may earn auction proceeds without filling the debt shortfall]]
+- When a system has multiple functions that operate on the same resource, but implements authorization/validation checks inconsistently across those functions, security gaps emerge.
+	- Checks when adding but missing checks when updating (increasing)
+	- `Adding logic = Increasing logic`
+	- [[2022-11-backed#[M-02] Disabled NFT collateral should not be used to mint debt]]
+- Check transfer process
+	- #transfer_vs_transferFrom 
+	- [[2022-11-backed#[M-06] `PaprController` pays swap fee in `buyAndReduceDebt`, not user|[M-06] `PaprController` pays swap fee in `buyAndReduceDebt`, not user]]
+- Smart contracts should implement complete lifecycle management for all critical system components
+	1. Initialization mechanisms
+	2. Update mechanisms
+	3. Removal/deprecation mechanisms
+	4. Emergency pause/shutdown mechanisms
+	5. [[2022-12-connext#[H-7] No way to update a Stable Swap once assigned to a key|[H-7] No way to update a Stable Swap once assigned to a key]]
+	6. [[2022-12-connext#[H-09] No way of removing Fraudulent Roots|[H-09] No way of removing Fraudulent Roots]]
+- The balances maintained by ERC20 contract are considered trustworthy. 代币合约中的余额更可信。
+	- [[2022-12-maple#[M-03] Unaccounted collateral is mishandled in `triggerDefault`|[M-03] Unaccounted collateral is mishandled in `triggerDefault`]]
 # Typical Logical Issues
 
 - Process Control Points vs. System Control Points

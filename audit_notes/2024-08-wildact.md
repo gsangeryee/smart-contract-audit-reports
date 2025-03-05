@@ -337,7 +337,7 @@ When `FixedTermLoanHooks::onSetAnnualInterestAndReserveRatioBips` is called, rev
 ## [M-03]  Inconsistency across multiple repaying functions causing lender to pay extra fees
 
 ----
-- **Tags**: refer from #consistency
+- **Tags**:  #consistency #business_logic 
 - Number of finders: 6
 - Difficulty: Easy
 ---

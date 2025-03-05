@@ -595,7 +595,7 @@ The fundamental problem is that `params` is entirely controlled by the user call
 ---
 ## [H-10] Refactor `_paymentAH()`
 ----
-- **Tags**: #validation #business_logic 
+- **Tags**: #validation #business_logic #array_index 
 - Number of finders: 4
 - Difficulty: Medium
 ---

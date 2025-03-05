@@ -154,6 +154,7 @@ contract ConsistentImplementation {
 ### Real Cases
 
 - [[2024-08-wildact#[M-03] Inconsistency across multiple repaying functions causing lender to pay extra fees]]
+- [[2024-10-Primodium#[C-02] The portion of the pot corresponding to locked points is not distributed to the players]]
 
 ### Audit Key Points:
 1. Identification Points
@@ -335,3 +336,35 @@ function sensitiveOperation() {
     - Can legitimate operations be chained into attack?
     - Test multi-step sequences through different conditions
     - Map out state changes from each condition
+## [06] Ensure all potential contributions to a final outcome are fully accounted for before making irreversible decisions.
+
+### **General Principle for Future Audits:**
+
+**Ensure all potential contributions to a final outcome are fully accounted for before making irreversible decisions.**
+### **Detailed Explanation:**
+
+In systems involving multiple assets or processes (e.g., auctions), ensure that irreversible actions (such as writing off debt or transferring funds) are not finalized until all related processes are completed. This prevents decisions from being based on incomplete or outdated state information, ensuring accurate and fair outcomes.
+### **Checklist for Identifying Similar Issues:**
+
+1. **Identify Multi-Asset or Multi-Process Systems**:
+    - Look for protocols where an outcome (e.g., debt repayment or fund distribution) depends on multiple assets or processes.
+2. **Check for Premature Finalization**:
+    - Ensure the system does not make irreversible decisions based on incomplete data. For example, verify if debt is written off before all collateral auctions are completed.
+3. **Examine Asynchronous Processes**:
+    - Ensure the system considers asynchronous operations, such as auctions or price updates, before updating critical states.
+4. **Validate State Transitions**:
+    - Check that state changes reflect all possible contributions, not just a snapshot of the current state.
+5. **Confirm Proper Accounting**:
+    - Ensure any shortfalls, excesses, or pending amounts are tracked and used correctly before final payouts.
+### **Key Principles for Debt Management in Liquidations:**
+
+1. **Track Shortfalls Across Liquidation Events**:
+    - Ensure the system properly tracks remaining debt and fills any shortfall before transferring surplus proceeds to the borrower.
+2. **Accurate Debt Reconciliation**:
+    - Maintain an accurate reflection of the borrower’s debt, even when multiple auctions are happening. The system should check if other auctions are ongoing or upcoming.
+3. **Prioritize Debt Repayment Over Payouts**:
+    - Ensure that proceeds from liquidation auctions are used first to fill any outstanding debt before any surplus is transferred to the borrower.
+4. **Consider Ongoing Liquidations**:
+    - Check the status of all collateral, not just the remaining items in the vault, to avoid prematurely writing off debt when other assets are still being liquidated.
+## Example cases
+- [[2022-11-backed#[H-01] Borrowers may earn auction proceeds without filling the debt shortfall]]

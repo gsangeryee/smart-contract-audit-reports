@@ -308,3 +308,13 @@
 103. [[2022-12-maple#[M-03] Unaccounted collateral is mishandled in `triggerDefault`|[M-03] Unaccounted collateral is mishandled in `triggerDefault`]]
 	1. *Always verify on-chain state for critical operations, especially when handling external assets or user inputs.*
 		1. The balances maintained by ERC20 contract are considered trustworthy. 代币合约中的余额更可信。
+104. [[2022-12-sentiment#[M-01] `getRewards()` can be triggered by external parties which will result in the rewards not be tracking properly by the system|[M-01] `getRewards()` can be triggered by external parties which will result in the rewards not be tracking properly by the system]]
+	1. #financial_bypass 
+	2. When a financial protocol has functions that can be called directly (no access control) that handle value but don't properly update internal accounting systems, critical financial invariants can break.
+105. [[2022-11-redactedcartel#[H-06] fee loss in `AutoPxGmx` and `AutoPxGlp` and reward loss in `AutoPxGlp` by calling `PirexRewards.claim(pxGmx/pxGpl, AutoPx*)` directly which transfers rewards to `AutoPx`* pool without compound logic get executed and fee calculation logic and `pxGmx` wouldn't be executed for those rewards|[H-06] fee loss in `AutoPxGmx` and `AutoPxGlp` and reward loss in `AutoPxGlp` by calling `PirexRewards.claim(pxGmx/pxGpl, AutoPx*)` directly which transfers rewards to `AutoPx`* pool without compound logic get executed and fee calculation logic and `pxGmx` wouldn't be executed for those rewards]]
+	1. #financial_bypass 
+106. [[2022-11-redactedcartel#[M-12] Reward tokens mismanagement can cause users losing rewards|[M-12] Reward tokens mismanagement can cause users losing rewards]]
+	1. Hard-coded list in one contract (`PirexGmx`)
+	2. Dynamic, owner-controlled list in another contract (`PirexRewards`)
+	3. **State Update Before Action Completion**: User's reward state is reset to 0 _before_ rewards are actually transferred
+

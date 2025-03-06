@@ -1,5 +1,18 @@
 # Terms in DeFi
 
+## Basic
+- refund: 退款
+- redeem:
+- redemption: 赎回
+- ledger: 账簿，分类账，总账
+- recipient: 收款人
+- payer: 付款人
+- stream: 分期付款，流式转账
+- EMI ( Equated Monthly Installment): 等额月供
+- compound interest: 复利
+- linear interest: 单利
+- Derivatives: 衍生品
+
 ## Deposit
 
 Deposits are like savings accounts in a bank. When lenders (or depositors) put their tokens (like USDC or ETH) into the protocol, they're essentially making deposits. These depositors expect to earn interest on their deposits, just like you earn interest on a savings account. The protocol uses these deposits as a lending pool from which borrowers can take loans. In the code we saw, deposits are tracked in a deposits tree structure and represent the protocol's primary liabilities - money it owes back to depositors.

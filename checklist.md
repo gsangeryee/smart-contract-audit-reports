@@ -1,7 +1,8 @@
 *Summary from typical issues.*
 # Typical Common Issues
 
-- Check all code related to funds
+- Check all code related to funds, Reward, Bonus
+	- Reward, Bonus calculation 
 - Check the updates of states  
 	- Correctness of the update.
 	- Whether all updates have been made.

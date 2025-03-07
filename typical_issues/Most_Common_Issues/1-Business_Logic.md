@@ -317,4 +317,15 @@
 	1. Hard-coded list in one contract (`PirexGmx`)
 	2. Dynamic, owner-controlled list in another contract (`PirexRewards`)
 	3. **State Update Before Action Completion**: User's reward state is reset to 0 _before_ rewards are actually transferred
+107. [[2022-11-frankendao#[M-06] Staking `changeStakeTime` and `changeStakeAmount` are problematic given current staking design|[M-06] Staking `changeStakeTime` and `changeStakeAmount` are problematic given current staking design]]
+	1. *When a protocol stores calculated values based on global parameters instead of calculating them on-demand, parameter changes can create permanent inequities between users.*
+108. [[2022-11-frankendao#[M-07] `castVote` can be called by anyone even those without votes|[M-07] `castVote` can be called by anyone even those without votes]]
+	1. The smart contract allows users with zero voting power to cast votes and receive refunds, enabling an attacker to create multiple addresses and drain the vault through mass zero-vote submissions.
+109. [[2022-11-buffer#[M-03 ] `resolveQueuedTrades`is intended to be non atomic but invalid signature can still cause entire transaction to revert|[M-03 ] `resolveQueuedTrades`is intended to be non atomic but invalid signature can still cause entire transaction to revert]]
+	1. `ECDSA.recover` need `try` statement.
+110. [[2022-11-rage_trade#[H-02] `DnGmxJuniorVaultManager._rebalanceBorrow` logic is flawed and could result in vault liquidation|[H-02] `DnGmxJuniorVaultManager._rebalanceBorrow` logic is flawed and could result in vault liquidation]]
+	1. *This is a total logic error.*
+	2. **Principle**: Verify that conditional logic correctly aligns actions with intended outcomes across all possible input scenarios, especially in multi-variable systems.
+
+
 

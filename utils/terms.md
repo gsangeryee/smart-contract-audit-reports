@@ -12,6 +12,7 @@
 - compound interest: 复利
 - linear interest: 单利
 - Derivatives: 衍生品
+- Escrow: 托管
 
 ## Deposit
 

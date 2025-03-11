@@ -9,3 +9,5 @@ Don't update state refers to a guideline that advises against modifying the cont
 			- Asset transfers without corresponding state updates
 			- Functions that handle partial operations without proper cleanup
 			- Discrepancies between accounting systems (e.g., user balances vs. pool balances)
+3. [[2022-11-stakehouse#[M-21] EIP1559 rewards received by syndicate during the period when it has no registered knots can be lost|[M-21] EIP1559 rewards received by syndicate during the period when it has no registered knots can be lost]]
+	1. **Always handle all possible states of your system, especially edge cases like "zero" or "empty" states**.

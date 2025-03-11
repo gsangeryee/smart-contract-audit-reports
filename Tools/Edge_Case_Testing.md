@@ -30,4 +30,6 @@ The key to effective edge case testing is to think like an attacker:
 - What assumptions are the developers making that might not always hold true? 
 - When could multiple edge cases interact to create unexpected behavior?
 ## Example
-- [[2023-06-angle#[H-03] Poor detection of disputed trees allows claiming tokens from a disputed tree]]
+- [[2023-06-angle#[H-03] Poor detection of disputed trees allows claiming tokens from a disputed tree|[H-03] Poor detection of disputed trees allows claiming tokens from a disputed tree]]
+- **Always handle all possible states of your system, especially edge cases like "zero" or "empty" states**.
+	- [[2022-11-stakehouse#[M-21] EIP1559 rewards received by syndicate during the period when it has no registered knots can be lost|[M-21] EIP1559 rewards received by syndicate during the period when it has no registered knots can be lost]]

@@ -326,6 +326,26 @@
 110. [[2022-11-rage_trade#[H-02] `DnGmxJuniorVaultManager._rebalanceBorrow` logic is flawed and could result in vault liquidation|[H-02] `DnGmxJuniorVaultManager._rebalanceBorrow` logic is flawed and could result in vault liquidation]]
 	1. *This is a total logic error.*
 	2. **Principle**: Verify that conditional logic correctly aligns actions with intended outcomes across all possible input scenarios, especially in multi-variable systems.
+111. [[2022-11-stakehouse#[H-01] Any user being the first to claim rewards from `GiantMevAndFeesPool` can unexepectedly collect them all|[H-01] Any user being the first to claim rewards from `GiantMevAndFeesPool` can unexepectedly collect them all]]
+	1. The core vulnerability is indeed about how to properly handle rewards that arrive before any users have deposited into the pool.
+112. [[2022-11-stakehouse#[H-03] Theft of ETH of free floating SLOT holders|[H-03] Theft of ETH of free floating SLOT holders]]
+	1. **Always ensure proper accounting in cumulative financial systems**.  `+=` vs `=`
+113. [[2022-11-stakehouse#[H-08] function `withdrawETH` from `GiantMevAndFeesPool` can steal most of `eth` because of `idleETH` is reduced before burning token|[H-08] function `withdrawETH` from `GiantMevAndFeesPool` can steal most of `eth` because of `idleETH` is reduced before burning token]]
+	1. State variables must be updated in the correct sequence, especially when those variables are used in financial calculations that might be triggered by subsequent operations in the same function.
+114. [[2022-11-stakehouse#[M-21] EIP1559 rewards received by syndicate during the period when it has no registered knots can be lost|[M-21] EIP1559 rewards received by syndicate during the period when it has no registered knots can be lost]]
+	1. **Always handle all possible states of your system, especially edge cases like "zero" or "empty" states**.
+115. [[2022-11-stakehouse#[M-22] ETH sent when calling executeAsSmartWallet function can be lost|[M-22] ETH sent when calling executeAsSmartWallet function can be lost]]
+	1. In Ethereum and Solidity, when you call a function with ETH (using `{value: amount}`), that ETH is transferred directly to the contract being called. However, that ETH doesn't automatically "flow through" to any subsequent contract calls unless you explicitly forward it.
+116. [[2022-11-stakehouse#[M-25] Incorrect checking in `_assertUserHasEnoughGiantLPToClaimVaultLP`|[M-25] Incorrect checking in `_assertUserHasEnoughGiantLPToClaimVaultLP`]]
+	1. When validating state conditions for specific token operations, always ensure that the state being checked corresponds directly to the specific token being operated on, not a global or unrelated token.
+	2. programming error
+117. [[2022-11-stakehouse#[M-28] Funds are not claimed from syndicate for valid BLS keys of first key is invalid (no longer part of syndicate).|[M-28] Funds are not claimed from syndicate for valid BLS keys of first key is invalid (no longer part of syndicate).]]
+	1. The Single Point of Failure Anti-Pattern
+		This issue exemplifies a broader principle in smart contract design: **avoid making the execution of critical business logic dependent on a single validation check that isn't directly related to that logic**.
+
+
+
+
 
 
 

@@ -2,7 +2,10 @@
 # Typical Common Issues
 
 - Check all code related to funds, Reward, Bonus
-	- Reward, Bonus calculation 
+	- Reward
+		- initial reward before the first deposit
+			- [[2022-11-stakehouse#[H-01] Any user being the first to claim rewards from `GiantMevAndFeesPool` can unexepectedly collect them all|[H-01] Any user being the first to claim rewards from `GiantMevAndFeesPool` can unexepectedly collect them all]]
+	- Bonus
 - Check the updates of states  
 	- Correctness of the update.
 	- Whether all updates have been made.
@@ -64,6 +67,9 @@
 		- [[2023-01-ajna#[M-04] Incorrect MOMP calculation in neutral price calculation|[M-04] Incorrect MOMP calculation in neutral price calculation]]
 	- #Double-check_the_complex_calculation #loan_with_interest
 		- [[2022-11-isomorph#[H-02] The calculation of `totalUSDborrowed` in `openLoan()` is not correct|[H-02] The calculation of `totalUSDborrowed` in `openLoan()` is not correct]]
+	- **Always ensure proper accounting in cumulative financial systems**.
+		- `+=` vs `=`
+			- [[2022-11-stakehouse#[H-03] Theft of ETH of free floating SLOT holders|[H-03] Theft of ETH of free floating SLOT holders]]
 - Danger of `delete` on Structs
 	- In Solidity, when you delete a struct from storage, all its fields are reset to their default values. So loan.lender becomes address(0) because that's the default for address types.
 	- [[2023-01-cooler#[H-03] Fully repaying a loan will result in debt payment being lost|[H-03] Fully repaying a loan will result in debt payment being lost]]
@@ -98,6 +104,9 @@
 	6. [[2022-12-connext#[H-09] No way of removing Fraudulent Roots|[H-09] No way of removing Fraudulent Roots]]
 - The balances maintained by ERC20 contract are considered trustworthy. 代币合约中的余额更可信。
 	- [[2022-12-maple#[M-03] Unaccounted collateral is mishandled in `triggerDefault`|[M-03] Unaccounted collateral is mishandled in `triggerDefault`]]
+- When a contract acts as a proxy or intermediary for value transfer, it must explicitly forward received value to the destination contract.
+	- **Send ETH explicitly**. using `{value: amount}`
+		- [[2022-11-stakehouse#[M-22] ETH sent when calling executeAsSmartWallet function can be lost|[M-22] ETH sent when calling executeAsSmartWallet function can be lost]]
 # Typical Logical Issues
 
 - Process Control Points vs. System Control Points

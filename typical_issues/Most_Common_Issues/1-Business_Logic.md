@@ -341,7 +341,12 @@
 	2. programming error
 117. [[2022-11-stakehouse#[M-28] Funds are not claimed from syndicate for valid BLS keys of first key is invalid (no longer part of syndicate).|[M-28] Funds are not claimed from syndicate for valid BLS keys of first key is invalid (no longer part of syndicate).]]
 	1. The Single Point of Failure Anti-Pattern
-		This issue exemplifies a broader principle in smart contract design: **avoid making the execution of critical business logic dependent on a single validation check that isn't directly related to that logic**.
+		This issue exemplifies a broader principle in smart contract design: **avoid making the execution of critical business logic dependent on a single validation check that isn't directly related to that logic**
+118. [[2022-11-seadrop#[M-04] Token gated drops with a self-allowed `ERC721SeaDrop` or a variant of that can lead to the drop getting|[M-04] Token gated drops with a self-allowed `ERC721SeaDrop` or a variant of that can lead to the drop getting]]
+	1. Beware of Circular Dependencies in Access Control
+119. [[2022-11-seadrop#[M-05] `ERC721A` has mint caps that are not checked by `ERC721SeaDrop`|[M-05] `ERC721A` has mint caps that are not checked by `ERC721SeaDrop`]]
+	1. ERC721A mint caps
+		
 
 
 

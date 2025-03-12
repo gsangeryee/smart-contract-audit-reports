@@ -886,7 +886,7 @@ can be updated to the following code.
 ### Notes & Impressions
 
 #### Notes 
-{{Some key points that need to be noted. }}
+
 
 #### Impressions
 In Ethereum and Solidity, when you call a function with ETH (using `{value: amount}`), that ETH is transferred directly to the contract being called. However, that ETH doesn't automatically "flow through" to any subsequent contract calls unless you explicitly forward it.

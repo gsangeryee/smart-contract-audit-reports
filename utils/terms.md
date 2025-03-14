@@ -13,7 +13,42 @@
 - linear interest: 单利
 - Derivatives: 衍生品
 - Escrow: 托管
-
+- principal: 本金
+- outstanding principal: 为偿还本金
+- position: 头寸
+- **amortization**: 摊销，分期偿还
+- **annuity**: 年金
+- **arbitrage**: 套利
+- **asset**: 资产
+- **liability**: 负债
+- **balance sheet**: 资产负债表
+- **capital gain**: 资本利得
+- **capital loss**: 资本损失
+- **collateral**: 抵押品
+- **default**: 违约
+- **depreciation**: 折旧
+- **dividend**: 股息，红利
+- **equity**: 股权，净资产
+- **exchange rate**: 汇率
+- **hedging**: 对冲
+- **inflation**: 通货膨胀
+- **deflation**: 通货紧缩
+- **leverage**: 杠杆
+- **liquidity**: 流动性
+- **margin**: 保证金
+- **market capitalization (market cap)**: 市值
+- **mortgage**: 抵押贷款
+- **mutual fund**: 共同基金，互惠基金
+- **net worth**: 净资产
+- **options**: 期权
+- **overdraft**: 透支
+- **recession**: 经济衰退
+- **return on investment (ROI)**: 投资回报率
+- **securities**: 证券
+- **short selling (shorting)**: 做空
+- **stability fee**: 稳定费（通常用于 DeFi）
+- **underwriting**: 承销
+- **yield**: 收益率
 ## Deposit
 
 Deposits are like savings accounts in a bank. When lenders (or depositors) put their tokens (like USDC or ETH) into the protocol, they're essentially making deposits. These depositors expect to earn interest on their deposits, just like you earn interest on a savings account. The protocol uses these deposits as a lending pool from which borrowers can take loans. In the code we saw, deposits are tracked in a deposits tree structure and represent the protocol's primary liabilities - money it owes back to depositors.

@@ -1023,7 +1023,7 @@ This issue exemplifies a broader principle in smart contract design: **avoid mak
 
 ### Tools
 
-- [[[Single_Point_of_Failure]]]
+- [[[Single_Point_of_Failure]]
 ### Refine
 
 - [[1-Business_Logic]]

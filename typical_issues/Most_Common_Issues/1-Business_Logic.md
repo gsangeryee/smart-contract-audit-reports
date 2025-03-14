@@ -346,7 +346,14 @@
 	1. Beware of Circular Dependencies in Access Control
 119. [[2022-11-seadrop#[M-05] `ERC721A` has mint caps that are not checked by `ERC721SeaDrop`|[M-05] `ERC721A` has mint caps that are not checked by `ERC721SeaDrop`]]
 	1. ERC721A mint caps
-		
+120. [[2022-11-debtdao#[H-02] Non-existing revenue contract can be passed to `claimRevenue` to send all tokens to treasury|[H-02] Non-existing revenue contract can be passed to `claimRevenue` to send all tokens to treasury]]
+	1. Always validate that entities referenced in system operations actually exist within the system before performing operations based on their properties.
+	2. In essence, **never trust that an address or identifier passed to a function corresponds to a previously registered or valid entity without explicit verification**.
+121. [[2022-11-debtdao#[H-03] `addCredit` / `increaseCredit` cannot be called by lender first when token is ETH|[H-03] `addCredit` / `increaseCredit` cannot be called by lender first when token is ETH]]
+	1. **Mutual consent mechanisms must be carefully designed to separate approval logic from asset transfer logic, especially when dealing with native assets like ETH.**
+122. [[2022-11-debtdao#[H-04] Borrower can close a credit without repaying debt|[H-04] Borrower can close a credit without repaying debt]]
+	1. ***Input validation must be performed on all external inputs, especially those that control system state transitions.***
+
 
 
 

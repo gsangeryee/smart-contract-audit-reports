@@ -10,7 +10,7 @@
 ---
 ## [H-01] User is unable to partially payback loan if they aren't able to post enough isoUSD to bring them back to minOpeningMargin
 ----
-- **Tags**: #business_logic #Excessive_Constraint_Propagation 
+- **Tags**: #business_logic #Excessive_Constraint_Propagation #partilly_payback
 - Number of finders: 1
 - Difficulty: Hard
 ---

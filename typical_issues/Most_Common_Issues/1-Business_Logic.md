@@ -291,6 +291,7 @@
 	1. *The `TokenSender` contract silently fails when it lacks sufficient tokens to pay user rebates, without tracking unpaid amounts or providing a mechanism for users to claim them later.*
 96. [[2022-11-isomorph#[H-01] User is unable to partially payback loan if they aren't able to post enough isoUSD to bring them back to minOpeningMargin|[H-01] User is unable to partially payback loan if they aren't able to post enough isoUSD to bring them back to minOpeningMargin]]
 	1. #Excessive_Constraint_Propagation
+	2. #partilly_payback 
 97. [[2022-11-isomorph#[H-02] The calculation of `totalUSDborrowed` in `openLoan()` is not correct|[H-02] The calculation of `totalUSDborrowed` in `openLoan()` is not correct]]
 	1. #Double-check_the_complex_calculation 
 98. [[2022-11-isomorph#[H-07] User can steal rewards from other users by withdrawing their Velo Deposit NFTs from other users' depositors|[H-07] User can steal rewards from other users by withdrawing their Velo Deposit NFTs from other users' depositors]]
@@ -353,6 +354,18 @@
 	1. **Mutual consent mechanisms must be carefully designed to separate approval logic from asset transfer logic, especially when dealing with native assets like ETH.**
 122. [[2022-11-debtdao#[H-04] Borrower can close a credit without repaying debt|[H-04] Borrower can close a credit without repaying debt]]
 	1. ***Input validation must be performed on all external inputs, especially those that control system state transitions.***
+123. [[2022-10-inverse#[M-06] User can free from liquidation fee if its escrow balance is less than the calculated liquidation fee|[M-06] User can free from liquidation fee if its escrow balance is less than the calculated liquidation fee]]
+	1. Consider what happens when a user has insufficient funds to cover the full fee amount. (partial payment)
+	2. #partilly_payback 
+124. [[2022-10-inverse#[M-12] Users could get some DOLA even if they are on liquidation position|[M-12] Users could get some DOLA even if they are on liquidation position]]
+	1. collateral factors
+	2. Always use risk-adjusted valuations for credit decisions, not raw asset values.
+125. [[2022-10-inverse#[M-16] Calling repay function sends less DOLA to Market contract when `forceReplenish` function is not called while it could be called|[M-16] Calling repay function sends less DOLA to Market contract when `forceReplenish` function is not called while it could be called]]
+	1. **Ensure consistency across all paths that modify user positions**. In particular:
+		1. Any condition that should affect a user's debt or position must be checked in all relevant functions that modify that position.
+		2. Users shouldn't be able to evade penalties or additional costs by timing their actions to avoid certain mechanisms.
+		3. Protocol mechanisms like penalties or additional costs should be applied automatically rather than relying on external actors to trigger them.
+		4. When designing a protocol with multiple ways to modify a user's position, ensure that all paths lead to consistent economic outcomes.
 
 
 

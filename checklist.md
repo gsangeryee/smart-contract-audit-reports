@@ -107,6 +107,10 @@
 - When a contract acts as a proxy or intermediary for value transfer, it must explicitly forward received value to the destination contract.
 	- **Send ETH explicitly**. using `{value: amount}`
 		- [[2022-11-stakehouse#[M-22] ETH sent when calling executeAsSmartWallet function can be lost|[M-22] ETH sent when calling executeAsSmartWallet function can be lost]]
+- Consider what happens when a user has insufficient funds to cover the full fee amount(loan)
+	- #partilly_payback 
+	- [[2022-10-inverse#[M-06] User can free from liquidation fee if its escrow balance is less than the calculated liquidation fee|[M-06] User can free from liquidation fee if its escrow balance is less than the calculated liquidation fee]]
+	- [[2022-11-isomorph#[H-01] User is unable to partially payback loan if they aren't able to post enough isoUSD to bring them back to minOpeningMargin]]
 # Typical Logical Issues
 
 - Process Control Points vs. System Control Points

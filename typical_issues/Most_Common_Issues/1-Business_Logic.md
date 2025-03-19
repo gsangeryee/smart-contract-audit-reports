@@ -366,7 +366,30 @@
 		2. Users shouldn't be able to evade penalties or additional costs by timing their actions to avoid certain mechanisms.
 		3. Protocol mechanisms like penalties or additional costs should be applied automatically rather than relying on external actors to trigger them.
 		4. When designing a protocol with multiple ways to modify a user's position, ensure that all paths lead to consistent economic outcomes.
-
+126. [[2022-10-mover#[H-01] Attacker can steal the accumulated topup fees in the `topupproxy` contract's balance|[H-01] Attacker can steal the accumulated topup fees in the `topupproxy` contract's balance]]
+	1. Cross-Contract Privilege Escalation
+		- Different contracts share access control mechanisms (like whitelists) that should be separate
+		- Contracts grant excessive privileges (like unlimited allowances) beyond what's needed
+		- Accumulated value is stored in a contract that also processes transactions
+127. [[2022-10-holograph#[H-07] Failed job can't be recovered. NFT may be lost.|[H-07] Failed job can't be recovered. NFT may be lost.]]
+	1. caution: delete Mapping 
+	2. Only delete or modify resources after confirmed success, and always provide recovery mechanisms for failed operations.
+128. [[2022-10-holograph#[M-07] Attacker can force chaotic operator behavior|[M-07] Attacker can force chaotic operator behavior]]
+	1. #chaotic
+	2. The pod selection mechanism doesn't account for the possibility of many empty pods.
+129. [[2022-10-holograph#[M-12] Bond tokens (HLG) can get permanently stuck in operator|[M-12] Bond tokens (HLG) can get permanently stuck in operator]]
+	1. #paradox 
+	2. Access control Paradox: when a system has conflicting or circular dependencies between resource access and state requirements.
+130. [[2022-10-holograph#[M-13] Implementation code does not align with the business requirement Users are not charged with withdrawn fee when user unbound token in `HolographOperator.sol`|[M-13] Implementation code does not align with the business requirement Users are not charged with withdrawn fee when user unbound token in `HolographOperator.sol`]]
+	1. #PCPvsSCP 
+131. [[2022-10-holograph#[H-02] If user sets a low `gasPrice` the operator would have to choose between being locked out of the pod or executing the job anyway|[H-02] If user sets a low `gasPrice` the operator would have to choose between being locked out of the pod or executing the job anyway]]
+	1. Set `minGasPrice`
+132. [[2022-10-holograph#[H-04] An attacker can manipulate each pod and gain an advantage over the remainder Operators|[H-04] An attacker can manipulate each pod and gain an advantage over the remainder Operators]]
+	1. **Shared Randomness Sources**: When a single random number is used for multiple selections, check for mathematical relationships between the selections.
+133. [[2022-10-holograph#[M-03] Beaming job might freeze on dest chain under some conditions, leading to owner losing (temporarily) access to token|[M-03] Beaming job might freeze on dest chain under some conditions, leading to owner losing (temporarily) access to token]]
+	1. #gas_spike 
+134. [[2022-10-holograph#[M-17] Wrong slashing calculation rewards for operator that did not do his job|[M-17] Wrong slashing calculation rewards for operator that did not do his job]]
+	1. #PCPvsSCP 
 
 
 

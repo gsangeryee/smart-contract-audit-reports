@@ -390,7 +390,18 @@
 	1. #gas_spike 
 134. [[2022-10-holograph#[M-17] Wrong slashing calculation rewards for operator that did not do his job|[M-17] Wrong slashing calculation rewards for operator that did not do his job]]
 	1. #PCPvsSCP 
-
+135. [[2022-10-juicebox#[H-01] Making a payment to the protocol with `_dontMint` parameter will result in lost fund for user.|[H-01] Making a payment to the protocol with `_dontMint` parameter will result in lost fund for user.]]
+	1. **Track State Changes vs. Inputs**: 
+	2. **Beware of Early Returns**: 
+	3. **Follow the Money**: 
+	4. **Check Flag Parameters**: 
+	5. **Look for Asymmetric Operations**: 
+	6. **Test Edge Cases**: 
+	7. **Understand Developer Intent**: 
+136. [[2022-10-juicebox#[M-05] NFT not minted when contributed via a supported payment terminal|[M-05] NFT not minted when contributed via a supported payment terminal]]
+	1. **Currency/Type Mismatches**: Look for systems where one component accepts a broader range of input types than another interconnected component. These mismatches often lead to edge cases.
+137. [[2022-10-juicebox#[M-06] Beneficiary credit balance can unwillingly be used to mint low tier NFT|[M-06] Beneficiary credit balance can unwillingly be used to mint low tier NFT]]
+	1. Missing Ownership Controls
 
 
 

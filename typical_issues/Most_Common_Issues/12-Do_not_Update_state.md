@@ -11,3 +11,11 @@ Don't update state refers to a guideline that advises against modifying the cont
 			- Discrepancies between accounting systems (e.g., user balances vs. pool balances)
 3. [[2022-11-stakehouse#[M-21] EIP1559 rewards received by syndicate during the period when it has no registered knots can be lost|[M-21] EIP1559 rewards received by syndicate during the period when it has no registered knots can be lost]]
 	1. **Always handle all possible states of your system, especially edge cases like "zero" or "empty" states**.
+4. [[2022-10-juicebox#[H-01] Making a payment to the protocol with `_dontMint` parameter will result in lost fund for user.|[H-01] Making a payment to the protocol with `_dontMint` parameter will result in lost fund for user.]]
+	1. **Track State Changes vs. Inputs**: 
+	2. **Beware of Early Returns**: 
+	3. **Follow the Money**: 
+	4. **Check Flag Parameters**: 
+	5. **Look for Asymmetric Operations**: 
+	6. **Test Edge Cases**: 
+	7. **Understand Developer Intent**: 

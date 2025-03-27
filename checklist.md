@@ -1,6 +1,8 @@
 *Summary from typical issues.*
 # Typical Common Issues
 
+- Never trust user-provided addresses for critical financial operations. Always maintain strict, predefined paths for token movements and approvals.
+	- [[2022-10-lifi#[M-12] Facets approve arbitrary addresses for ERC20 tokens|[M-12] Facets approve arbitrary addresses for ERC20 tokens]]
 - Check all code related to funds, Reward, Bonus
 	- Reward
 		- initial reward before the first deposit
@@ -111,6 +113,7 @@
 	- #partilly_payback 
 	- [[2022-10-inverse#[M-06] User can free from liquidation fee if its escrow balance is less than the calculated liquidation fee|[M-06] User can free from liquidation fee if its escrow balance is less than the calculated liquidation fee]]
 	- [[2022-11-isomorph#[H-01] User is unable to partially payback loan if they aren't able to post enough isoUSD to bring them back to minOpeningMargin]]
+
 # Typical Logical Issues
 
 - Process Control Points vs. System Control Points

@@ -402,6 +402,20 @@
 	1. **Currency/Type Mismatches**: Look for systems where one component accepts a broader range of input types than another interconnected component. These mismatches often lead to edge cases.
 137. [[2022-10-juicebox#[M-06] Beneficiary credit balance can unwillingly be used to mint low tier NFT|[M-06] Beneficiary credit balance can unwillingly be used to mint low tier NFT]]
 	1. Missing Ownership Controls
+138. [[2022-10-lifi#[H-07] LiFi protocol isn't hardened|[H-07] LiFi protocol isn't hardened]]
+	1. Over-Reliance on Off-Chain data
+	2. Lack of On-Chain Verification
+139. [[2022-10-lifi#[M-03] Replace `createRetryableTicketNoRefundAliasRewrite()` with `depositEth()`|[M-03] Replace `createRetryableTicketNoRefundAliasRewrite()` with `depositEth()`]]
+	1. non-standard usage
+	2. #arbitrum [address-aliasing](https://docs.arbitrum.io/how-arbitrum-works/l1-to-l2-messaging#address-aliasing)
+140. [[2022-10-lifi#[M-9] What if the receiver of Axelar `_executeWithToken()` doesn’t claim all tokens|[M-9] What if the receiver of Axelar `_executeWithToken()` doesn’t claim all tokens]]
+	1. Incomplete token transfers
+	2. Missing recovery mechanisms
+141. [[2022-10-lifi#[M-10] Remaining tokens can be swept from the LiFi Diamond or the Executor|[M-10] Remaining tokens can be swept from the LiFi Diamond or the Executor]]
+	1. Initial Balance Protection
+142. [[2022-10-lifi#[M-12] Facets approve arbitrary addresses for ERC20 tokens|[M-12] Facets approve arbitrary addresses for ERC20 tokens]]
+	1. *Never trust user-provided addresses for critical financial operations. Always maintain strict, predefined paths for token movements and approvals.*
+
 
 
 

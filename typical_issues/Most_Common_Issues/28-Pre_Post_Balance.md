@@ -4,3 +4,5 @@ Pre/Post Balance refers to the comparison of an address's token balance before a
 
 1. [[2022-11-redactedcartel#[H-06] fee loss in `AutoPxGmx` and `AutoPxGlp` and reward loss in `AutoPxGlp` by calling `PirexRewards.claim(pxGmx/pxGpl, AutoPx*)` directly which transfers rewards to `AutoPx`* pool without compound logic get executed and fee calculation logic and `pxGmx` wouldn't be executed for those rewards|[H-06] fee loss in `AutoPxGmx` and `AutoPxGlp` and reward loss in `AutoPxGlp` by calling `PirexRewards.claim(pxGmx/pxGpl, AutoPx*)` directly which transfers rewards to `AutoPx`* pool without compound logic get executed and fee calculation logic and `pxGmx` wouldn't be executed for those rewards]]
 	1. #financial_bypass 
+2. [[2022-10-lifi#[M-15] Processing of end balances|[M-15] Processing of end balances]]
+	1. #pre/post_balance pre-existing balances

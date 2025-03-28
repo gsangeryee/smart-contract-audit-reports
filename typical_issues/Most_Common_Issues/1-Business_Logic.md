@@ -415,6 +415,12 @@
 	1. Initial Balance Protection
 142. [[2022-10-lifi#[M-12] Facets approve arbitrary addresses for ERC20 tokens|[M-12] Facets approve arbitrary addresses for ERC20 tokens]]
 	1. *Never trust user-provided addresses for critical financial operations. Always maintain strict, predefined paths for token movements and approvals.*
+143. [[2022-10-lifi#[M-13] `FeeCollector` not well integrated|[M-13] `FeeCollector` not well integrated]]
+	1. **Follow the Single Responsibility Principle**
+144. [[2022-10-lifi#[M-15] Processing of end balances|[M-15] Processing of end balances]]
+	1. #pre/post_balance pre-existing balances
+145. [[2022-10-lifi#[M-16] Processing of initial balances|[M-16] Processing of initial balances]]
+	1. #pre/post_balance pre-existing balances
 
 
 
